@@ -15,9 +15,8 @@ class CreateMateriaPrimasTable extends Migration
     {
         Schema::create('materia_primas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
+            $table->string('nombre');
             $table->string('medida');
-            
             $table->timestamps();
         });
     }
@@ -29,6 +28,11 @@ class CreateMateriaPrimasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('materia_primas');
+        Schema::create('materia_primas', function (Blueprint $table) {
+            $table->dropColumn('id');
+            $table->dropColumn('nombre');
+            $table->dropColumn('medida');
+            $table->dropColumn('slug');
+        });
     }
 }

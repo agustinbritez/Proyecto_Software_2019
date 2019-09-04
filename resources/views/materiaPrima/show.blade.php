@@ -3,22 +3,20 @@
 @section('head','Materia Prima ')
 
 @section('contenidoCentral')
-<form>
+<form method="POST">
       
 
         <div class="form-row"> 
-                <div class="col- float-left">
-                  <label for="inputEmail4">Nombre:</label>
-                   
-                    
-                </div>
-                <div class="col-8 float-left">
-                <input disabled value="{{$materiaPrima->name}}" class="form-control " id="inputEmail4" placeholder="Nombre de Materia Prima">
+                <label for="inputEmail4">Nombre:</label>   
+                <input disabled value="{{$materiaPrima->nombre}}" class="form-control " id="" placeholder="Nombre de Materia Prima">
+                <label for="inputEmail4">Medida:</label>   
+                <input disabled value="{{$materiaPrima->medida}}" class="form-control " id="" placeholder="Nombre de Materia Prima">
+                
+        </div>
 
-                </div>
-              </div>
-
-        <button type="submit" class="btn btn-primary">Volver</button>
+        
+          <br>
+          <a href="/materiaPrima/{{$materiaPrima->id}}/edit" class="btn btn-primary">Modificar</a> 
 </form>
         
   

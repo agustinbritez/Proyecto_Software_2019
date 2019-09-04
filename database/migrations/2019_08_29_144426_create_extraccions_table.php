@@ -13,11 +13,12 @@ class CreateExtraccionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('extraccions', function (Blueprint $table) {
+        Schema::create('extracciones', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->bigInteger('materia_prima_id');
+            $table->BigInteger('materiaPrima_id')->unsigned();
+            $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
+    
             $table->timestamps();
-            $table->foreign('materia_prima_id')->references('id')->on('materia_primas');
         });
     }
 
@@ -28,6 +29,6 @@ class CreateExtraccionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('extraccions');
+        Schema::dropIfExists('extracciones');
     }
 }

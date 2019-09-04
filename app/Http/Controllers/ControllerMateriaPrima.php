@@ -36,10 +36,16 @@ class ControllerMateriaPrima extends Controller
      */
     public function store(Request $request)
     {
+        //validacion de los campos de entrada
+        $validateData = $request->validate([
+            'nombre'=>'required|max: 50',
+            'medida'=>'required'
+        ]);
+
         $materiaPrima = new MateriaPrima();
         //busca el inpunt con el nombre 'name' y guar su valor en el atributo 'name'
-        $materiaPrima->name= $request->input('name');
-        $materiaPrima->medida='pepe';
+        $materiaPrima->nombre= $request->input('nombre');
+        $materiaPrima->medida=$request->input('medida');
         //guarda en la base de datos
         $materiaPrima->save();
         return 'Saved';
@@ -65,9 +71,9 @@ class ControllerMateriaPrima extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit (MateriaPrima $materiaPrima)
     {
-        //
+        return view('materiaPrima.edit',compact('materiaPrima'));
     }
 
     /**
@@ -77,9 +83,11 @@ class ControllerMateriaPrima extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, MateriaPrima $materiaPrima)
     {
-        //
+        $materiaPrima->fill($request->all());
+        $materiaPrima->save();
+        return 'updated';
     }
 
     /**

@@ -11,10 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+use Illuminate\Routing\RouteGroup;
+
+Route::middleware(['auth'])->group(function(){
+    Route::get('/admin', function () {
+        return view('admin_panel.index');
+    });
+
 });
 
 Route::get ('/prueba','ControladorPrueba@prueba');
 
 Route::resource('/materiaPrima','controllerMateriaPrima');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
