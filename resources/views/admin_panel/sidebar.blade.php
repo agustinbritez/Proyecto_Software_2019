@@ -3,7 +3,7 @@
         <!-- Brand Logo -->
         <a href="/home" class="brand-link">
 
-          <span class="brand-text font-weight-bold align-content-center">ReCoop</span>
+          <span class="brand-text font-weight-bold align-content-center">MyG Sublimacion</span>
         </a>
 
         <!-- Sidebar -->
@@ -28,15 +28,15 @@
                     <a href="#" class="nav-link active">
                       <i class="nav-icon fas fa-warehouse"></i>
                       <p>
-                        Gestion Almacen
+                        Gestion Produccion
                         <i class="right fas fa-angle-left"></i>
                       </p>
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a href="/" class="nav-link">
+                            <a href="{{ route('materiaPrima.index') }}" class="nav-link">
                                 <i class="fas fa-cube nav-icon"></i>
-                                <p>Productos</p>
+                                <p>Materia Prima</p>
                             </a>
                         </li>
                     </ul>
@@ -50,8 +50,10 @@
                             </li>
                     </ul>
 
-                  </li>
-
+                </li>
+              @can('usuarios_index')
+                
+              
               <li class="nav-item has-treeview ">
                 <a href="#" class="nav-link active">
                     <i class="nav-icon fas fa-users-cog"></i>
@@ -63,7 +65,7 @@
                   
                       <ul class="nav nav-treeview">
                         <li class="nav-item">
-                          <a href="{{ route('materiaPrima.index') }}" class="nav-link">
+                          <a href="{{ route('usuarios.index') }}" class="nav-link">
                             <i class="far fa-user nav-icon"></i>
                             <p>Usuarios</p>
                           </a>
@@ -86,7 +88,7 @@
                     </li>
                   </ul>
               </li>
-
+              @endcan
             </ul>
           </nav>
           <!-- /.sidebar-menu -->

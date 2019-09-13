@@ -16,7 +16,17 @@ class CreateMateriaPrimasTable extends Migration
         Schema::create('materia_primas', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
-            $table->string('medida');
+            $table->string('detalle');
+            $table->integer('cantidad');
+            $table->double('precioUnitario');
+            $table->string('color');
+            
+            $table->unsignedBigInteger('tipoMateriaPrima_id');
+            $table->foreign('tipoMateriaPrima_id')->references('id')->on('tipo_materia_primas');
+            //unidad de medida
+            $table->unsignedBigInteger('medida_id');
+            $table->foreign('medida_id')->references('id')->on('medidas');
+            
             $table->timestamps();
         });
     }
@@ -31,8 +41,8 @@ class CreateMateriaPrimasTable extends Migration
         Schema::create('materia_primas', function (Blueprint $table) {
             $table->dropColumn('id');
             $table->dropColumn('nombre');
-            $table->dropColumn('medida');
-            $table->dropColumn('slug');
+            $table->dropColumn('detalle');
+            
         });
     }
 }

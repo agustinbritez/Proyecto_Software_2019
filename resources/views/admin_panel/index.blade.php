@@ -5,10 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-  <title>ReCoop</title>
+  <title>MyG Sublimacion</title>
 
   <!-- Font Awesome Icons -->
-<link rel="stylesheet" href="{{ asset('admin_panel/plugins/fontawesome-free/css/all.min.css') }}">
+
+<link rel="stylesheet" href="{{ asset('css/app.css') }}">
+<link rel="stylesheet" href="{{ asset('admin_panel/plugins/fontawesome/css/all.min.css') }}">
+<link rel="stylesheet" href="{{ asset('admin_panel/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+<link rel="stylesheet" href="{{ asset('admin_panel/plugins/select2/css/select2.css') }}">
   <!-- IonIcons -->
   <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
@@ -48,7 +52,9 @@
                         </div><!-- /.row -->
                       </div><!-- /.container-fluid -->
                     </div> --}}
-                    <div class="content">
+              <div class="content">
+
+                {{-- ********Controlador de errores******** --}}
                       @if ($errors->any())
                           
                       <div class="alert alert-danger">
@@ -59,6 +65,7 @@
                           </ul>
                       </div>
                       @endif
+                 {{-- ******** Fin del controlador de errores*********      --}}
                       @yield('content')
                     </div>
             </div>
@@ -88,5 +95,13 @@
 
     <script src="{{asset('admin_panel/dist/js/demo.js')}}"></script>
     @stack('scripts')
-</body>
+    <script>
+      $(document).ready(function(){
+        $('.select2').select2();
+      };
+    </script>
+      
+
+  </body>
+
 </html>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\User;
 
 class UserController extends Controller
 {
@@ -13,7 +14,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        $users= User::all();
+        return view('usuarios.index',compact('users'));
     }
 
     /**
@@ -23,7 +25,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $usuario= new User();
+        return view('usuarios.create',compact('usuario'));
     }
 
     /**
@@ -34,7 +37,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         //validacion de los campos de entrada
+         $validateData = $request->validate([
+            'nombre'=>'required|max: 50',
+            'password'=>'required',
+            'apellido'=>'required',
+            'documento'=>'required',
+            'email'=>'required'
+
+        ]);
+
+        $usuario = new User();
+        //busca el inpunt con el nombre 'name' y guar su valor en el atributo 'name'
+        $usuario->nombre= $request->input('nombre');
+        $usuario->apellido=$request->input('apellido');
+        $usuario->email=$request->input('email');
+        $usuario->documento=$request->input('documento');
+        $usuario->password=crypt($request->input('password'));
+        //guarda en la base de datos
+        $usuario->save();
+        return redirect('/usuarios');
     }
 
     /**
@@ -43,9 +65,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $usuario)
     {
-        //
+        return view('usuarios.show',compact('usuario'));
     }
 
     /**
@@ -54,9 +76,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(User $usuario)
     {
-        //
+        return view('usuarios.edit',compact('usuario'));
     }
 
     /**
@@ -66,9 +88,11 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $usuario)
     {
-        //
+        $usuario->fill($request->all());
+        $usuario->save();
+        return redirect('/usuarios');
     }
 
     /**
@@ -77,8 +101,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $usuario )
     {
-        //
+        $usuario->delete();
+        return redirect('/usuarios');
     }
 }

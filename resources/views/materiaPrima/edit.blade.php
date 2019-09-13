@@ -1,24 +1,33 @@
-@extends('layouts.app')
+@extends('admin_panel.index')
 
-@section('head','Editar ')
-
-@section('contenidoCentral')
+@section('content')
 <form class="form-group" method="POST" action="/materiaPrima/{{$materiaPrima->id}}" enctype="multipart/form-data">
     @method('PUT')
     @csrf  
-    <div class="form-group">
-      <label for="">Nombre:</label>   
-      <input  value="{{$materiaPrima->nombre}}" class="form-control "  placeholder="Nombre de Materia Prima" name="nombre">
-    </div>
-    <div class="form-group">
-      <label for="">Medida:</label>   
-      <input  value="{{$materiaPrima->medida}}" class="form-control "  placeholder="Medida" name="medida">
-    </div>
+    @include('materiaPrima.form')
      <br>
-     <button type="submit" class="btn btn-primary">Actualizar</button>
+     
+     <button type="submit" class="btn btn-primary" >Actualizar</button>
+
 </form>
-        
-  
-  
+
+    {{-- Boton para eliminar --}}
+<form action="/materiaPrima/{{$materiaPrima->id}}" class="form-group" method="POST">
+         
+  @method('DELETE')
+  @csrf   
+        <button class="btn btn-danger" type="submit">Eliminar</button>
+
+</form>
+{{-- Finaliza el codigo para eliminar --}}
+      
 
 @endsection
+    @push('scripts')
+    <script>
+            $(document).ready(function(){
+              $('.select2').select2();
+            };
+          </script>
+            
+      @endpush

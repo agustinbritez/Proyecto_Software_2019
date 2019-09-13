@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\MateriaPrima;
+use App\TipoMateriaPrima;
 use Illuminate\Http\Request;
 
 class ControllerMateriaPrima extends Controller
@@ -15,6 +16,7 @@ class ControllerMateriaPrima extends Controller
     public function index()
     {
         $materiasPrimas= MateriaPrima::all();
+       
         return view ('materiaPrima.index',compact('materiasPrimas'));
     }
 
@@ -25,7 +27,10 @@ class ControllerMateriaPrima extends Controller
      */
     public function create()
     {
-        return view('materiaPrima.create');
+        $materiaPrima=new MateriaPrima();
+        
+        $tipoMateriaPrimas= TipoMateriaPrima::all();
+        return view('materiaPrima.create',compact('materiaPrima','tipoMateriaPrimas'));
     }
 
     /**
@@ -48,7 +53,7 @@ class ControllerMateriaPrima extends Controller
         $materiaPrima->medida=$request->input('medida');
         //guarda en la base de datos
         $materiaPrima->save();
-        return 'Saved';
+        return redirect('/materiaPrima');
         //return $request->all();
 
     }
@@ -72,8 +77,9 @@ class ControllerMateriaPrima extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit (MateriaPrima $materiaPrima)
-    {
-        return view('materiaPrima.edit',compact('materiaPrima'));
+    {   
+        $tipoMateriaPrimas= TipoMateriaPrima::all();
+        return view('materiaPrima.edit',compact('materiaPrima','tipoMateriaPrimas'));
     }
 
     /**
@@ -87,7 +93,7 @@ class ControllerMateriaPrima extends Controller
     {
         $materiaPrima->fill($request->all());
         $materiaPrima->save();
-        return 'updated';
+        return redirect('/materiaPrima');
     }
 
     /**
@@ -96,8 +102,9 @@ class ControllerMateriaPrima extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(MateriaPrima $materiaPrima)
     {
-        //
+        $materiaPrima->delete();
+        return redirect('/materiaPrima');
     }
 }
