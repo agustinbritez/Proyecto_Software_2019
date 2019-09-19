@@ -20,17 +20,54 @@ Route::middleware(['auth'])->group(function(){
 //users
 Route::get('users','UserController@index')->name('usuarios.index')->middleware('permission:usuarios_index');
 Route::get('users','UserController@show')->name('usuarios.show')->middleware('permission:usuarios_show');
-Route::get('users/create','UserController@create')->name('usuarios.crate')->middleware('permission:usuarios_create');
+Route::get('users/create','UserController@create')->name('usuarios.create')->middleware('permission:usuarios_create');
 Route::get('users/{usuario}/edit','UserController@edit')->name('usuarios.edit')->middleware('permission:usuarios_edit');
 Route::get('users','UserController@delete')->name('usuarios.delete')->middleware('permission:usuarios_delete');
 
 //    Route::resource('/usuarios','UserController');
 });
  Route::resource('/usuarios','UserController');
-// Route::resource('/roles','UserController');
+
+ Route::get('materiaPrima','ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
+Route::get('materiaPrima/{materiaPrima}/show','ControllerMateriaPrima@show')->name('materiaPrima.show')->middleware('permission:materiaPrima_show');
+Route::get('materiaPrima/create','ControllerMateriaPrima@create')->name('materiaPrima.create')->middleware('permission:materiaPrima_create');
+Route::post('materiaPrima','ControllerMateriaPrima@store')->name('materiaPrima.store')->middleware('permission:materiaPrima_store');
+Route::get('materiaPrima/{materiaPrima}/edit','ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
+Route::put('materiaPrima/{materiaPrima}','ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
+Route::get('materiaPrima/{materiaPrima}','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
+
+//Item
+Route::get('item','ItemController@index')->name('item.index')->middleware('permission:item_index');
+Route::get('item/{item}/show','ItemController@show')->name('item.show')->middleware('permission:item_show');
+Route::get('item/create','ItemController@create')->name('item.create')->middleware('permission:item_create');
+Route::post('item','ItemController@store')->name('item.store')->middleware('permission:item_store');
+Route::get('item/{item}/edit','ItemController@edit')->name('item.edit')->middleware('permission:item_edit');
+Route::put('item/{item}','ItemController@update')->name('item.update')->middleware('permission:item_update');
+Route::get('item/{item}','ItemController@destroy')->name('item.destroy')->middleware('permission:item_delete');
+
+//Categoria
+Route::get('categoria','CategoriaController@index')->name('categoria.index')->middleware('permission:categoria_index');
+Route::get('categoria/{categoria}/show','CategoriaController@show')->name('categoria.show')->middleware('permission:categoria_show');
+Route::get('categoria/create','CategoriaController@create')->name('categoria.create')->middleware('permission:categoria_create');
+Route::post('categoria','CategoriaController@store')->name('categoria.store')->middleware('permission:categoria_store');
+Route::get('categoria/{id}/edit','CategoriaController@edit')->name('categoria.edit')->middleware('permission:categoria_edit');
+Route::post('categoria/update','CategoriaController@update')->name('categoria.update')->middleware('permission:categoria_update');
+Route::get('categoria/destroy/{id}','CategoriaController@destroy')->name('categoria.destroy')->middleware('permission:categoria_delete');
+//  Route::resource('categoria','categoriaController');
+
+//prueba
+Route::resource('ajax-crud', 'AjaxCrudController');
+
+Route::post('ajax-crud/update', 'AjaxCrudController@update')->name('ajax-crud.update');
+
+Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
+
+ //Route::get('materiaPrima/{id}/destroy','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:usuarios_delete');
+
+ // Route::resource('/roles','UserController');
 // Route::resource('/usuarios','UserController');
 
-Route::resource('/materiaPrima','controllerMateriaPrima');
+// Route::resource('/materiaPrima','ControllerMateriaPrima');
 
 Auth::routes();
 

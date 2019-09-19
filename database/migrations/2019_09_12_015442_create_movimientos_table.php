@@ -25,8 +25,8 @@ class CreateMovimientosTable extends Migration
             $table->unsignedBigInteger('tipoMovimiento_id');
             $table->foreign('tipoMovimiento_id')->references('id')->on('tipo_movimientos');
 
-            $table->unsignedBigInteger('materiaPrima_id');
-            $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
+            $table->unsignedBigInteger('item_id');
+            $table->foreign('item_id')->references('id')->on('items');
 
             $table->timestamps();
         });

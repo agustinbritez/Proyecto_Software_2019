@@ -49,7 +49,7 @@ class UserController extends Controller
 
         $usuario = new User();
         //busca el inpunt con el nombre 'name' y guar su valor en el atributo 'name'
-        $usuario->nombre= $request->input('nombre');
+        $usuario->name= $request->input('nombre');
         $usuario->apellido=$request->input('apellido');
         $usuario->email=$request->input('email');
         $usuario->documento=$request->input('documento');

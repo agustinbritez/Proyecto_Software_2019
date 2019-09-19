@@ -4,16 +4,16 @@
 <div class="container-fluid">
 
     
-    <form class="form-group" method="POST" action="/materiaPrima/{{$materiaPrima->id}}" enctype="multipart/form-data">
+    <form class="form-group" method="POST" action="/item/{{$item->id}}" enctype="multipart/form-data">
     @method('PUT')
     @csrf  
-    @include('materiaPrima.form')
+    @include('item.form')
      <br>
  
          <button type="submit" class="btn btn-primary" >Actualizar</button>
        
          {{-- Boton para eliminar --}}
-         <a  href="{{route('materiaPrima.destroy',$materiaPrima)}}" onclick="return confirm('¿Seguro que desea eliminarlo?')"> 
+         <a  href="{{route('item.destroy',$item)}}" onclick="return confirm('¿Seguro que desea eliminarlo?')"> 
             <span  class="btn btn-danger " >
                     <span class="fas fa-tresh-alt"> Borrar</span>
             </span>

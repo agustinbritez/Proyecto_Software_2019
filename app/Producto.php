@@ -12,11 +12,11 @@ class Producto extends Model
     public function estado (){
         return $this->belongsTo(Estado::class);
     }
-    public function items (){
-        return $this->belongsTo(Item::class);
+    public function itemModelo (){
+        return $this->belongsTo(Item::class,'itemModelo_id');
     }
-    public function materiaPrimas (){
-        return $this->belongsToMany(MateriaPrima::class,'materia_prima_id');
+    public function itemsPersonalizados (){
+        return $this->belongsToMany(Item::class);
     }
     public function sublimacions (){
         return $this->belongsToMany(Sublimacion::class);

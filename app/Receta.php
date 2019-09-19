@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Receta extends Model
 {
-    public function item()
+    public function itemPadre()
     {
-        return $this->belongsTo(Item::class);
+        return $this->belongsTo(Item::class,'itemPadre_id');
     }
 
-    public function tipoMateriaPrima()
+    public function itemHijo()
     {
-        return $this->belongsTo(TipoMateriaPrima::class);
+        return $this->belongsTo(Item::class,'itemHijo_id');
     }
 }

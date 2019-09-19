@@ -3,9 +3,9 @@
 @section('content')
 <div class="container-fluid">
 
-    <form class="form-group" method="POST" action="{{route('materiaPrima.index')}}">
+    <form class="form-group" method="POST" action="{{route('item.index')}}">
         @csrf {{-- Se utiliza para evitar injecciones  --}}
-        @include('materiaPrima.form')
+        @include('item.form')
         <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
 </div>

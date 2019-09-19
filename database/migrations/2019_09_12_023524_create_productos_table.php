@@ -16,9 +16,6 @@ class CreateProductosTable extends Migration
         Schema::create('productos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->boolean('aceptado');
-            $table->string('nombre');
-            $table->string('detalle');
-            $table->double('precio');
 
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
@@ -26,8 +23,8 @@ class CreateProductosTable extends Migration
             $table->unsignedBigInteger('estado_id');
             $table->foreign('estado_id')->references('id')->on('estados');
             
-            $table->unsignedBigInteger('item_id');
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->unsignedBigInteger('itemModelo_id');
+            $table->foreign('itemModelo_id')->references('id')->on('items');
             
             $table->timestamps();
         });

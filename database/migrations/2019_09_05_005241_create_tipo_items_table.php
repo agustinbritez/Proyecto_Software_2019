@@ -20,7 +20,14 @@ class CreateTipoItemsTable extends Migration
 
             $table->unsignedBigInteger('flujoTrabajo_id')->nullable();
             $table->foreign('flujoTrabajo_id')->references('id')->on('flujo_trabajos');
+            
+            $table->unsignedBigInteger('categoria_id')->nullable();
+            $table->foreign('categoria_id')->references('id')->on('categorias');
+            
+            $table->unsignedBigInteger('medida_id')->nullable();
+            $table->foreign('medida_id')->references('id')->on('medidas');
 
+            
             $table->timestamps();
         });
     }

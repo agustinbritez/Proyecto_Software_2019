@@ -13,15 +13,15 @@
 		<div class="col-sm-12">
 			<div class="card text-left">
 				<div class="card-header">
-					Lista de Materia Primas
+					Lista de Items
 				</div>
 				<div class="card-body">
-						<a class="btn btn-primary  " href="{{route('materiaPrima.create')}}">
-								Agregar Nueva Materia Prima <span  class="fal fa-plus-circle"></span>
+						<a class="btn btn-primary  " href="{{route('item.create')}}">
+								Agregar Nuevo Item <span  class="fal fa-plus-circle"></span>
 						</a>
 					
 					<hr>
-					@include('materiaPrima.table')
+					@include('item.table')
 				</div>
 				<div class="card-footer text-muted">
 					{{-- 2 days ago --}}

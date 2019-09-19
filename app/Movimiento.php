@@ -14,7 +14,7 @@ class Movimiento extends Model
         return $this->belongsTo(Proveedor::class);
     }
     
-    public function materiaPrima(){
-        return $this->belongsTo(MateriaPrima::class);
+    public function item(){
+        return $this->belongsTo(Item::class);
     }
 }
