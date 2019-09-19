@@ -58,6 +58,14 @@
                 </ul>
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
+                                <a href="{{ route('tipoItem.index') }}" class="nav-link">
+                                    <i class="fas fa-people-carry nav-icon"></i>
+                                    <p>Tipo de Item</p>
+                                </a>
+                            </li>
+                    </ul>
+                    <ul class="nav nav-treeview">
+                            <li class="nav-item">
                                 <a href="/" class="nav-link">
                                     <i class="fas fa-people-carry nav-icon"></i>
                                     <p>Proveedores</p>

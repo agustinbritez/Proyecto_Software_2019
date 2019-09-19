@@ -55,6 +55,19 @@ Route::post('categoria/update','CategoriaController@update')->name('categoria.up
 Route::get('categoria/destroy/{id}','CategoriaController@destroy')->name('categoria.destroy')->middleware('permission:categoria_delete');
 //  Route::resource('categoria','categoriaController');
 
+//Tipo Item
+Route::get('tipoItem','TipoItemController@index')->name('tipoItem.index')->middleware('permission:tipoItem_index');
+Route::get('tipoItem/{tipoItem}/show','TipoItemController@show')->name('tipoItem.show')->middleware('permission:tipoItem_show');
+Route::get('tipoItem/create','TipoItemController@create')->name('tipoItem.create')->middleware('permission:tipoItem_create');
+Route::post('tipoItem','TipoItemController@store')->name('tipoItem.store')->middleware('permission:tipoItem_store');
+Route::get('tipoItem/{id}/edit','TipoItemController@edit')->name('tipoItem.edit')->middleware('permission:tipoItem_edit');
+Route::post('tipoItem/update','TipoItemController@update')->name('tipoItem.update')->middleware('permission:tipoItem_update');
+Route::get('tipoItem/destroy/{id}','TipoItemController@destroy')->name('tipoItem.destroy')->middleware('permission:tipoItem_delete');
+//  Route::resource('categoria','categoriaController');
+
+
+
+
 //prueba
 Route::resource('ajax-crud', 'AjaxCrudController');
 

@@ -29,7 +29,8 @@ class CategoriaController extends Controller
             ->rawColumns(['action'])
             ->make(true);
         }
-        return view('categoria/index');
+       
+        return view('categoria.index');
     }
     
     /**
@@ -62,6 +63,7 @@ class CategoriaController extends Controller
         {
             return response()->json(['errors' => $error->errors()->all()]);
         }
+        //si el check box es verdadero se le asigna '0' 
         if($request->has('base')){
             $da=0;
         }else{

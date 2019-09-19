@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class TipoItem extends Model
 {
+    protected $guarded= [];
+
+
     public function medida()
     {
-        return $this->belongsTo(Medida::class);
+        return $this->belongsTo(Medida::class,'medida_id');
     }
 
     public function flujoTrabajo()
     {
-        return $this->belongsTo(FlujoTrabajo::class);
+        return $this->belongsTo(FlujoTrabajo::class,'flujoTrabajo_id');
     }
     
     public function items()
@@ -24,6 +27,6 @@ class TipoItem extends Model
     
     public function categoria()
     {
-        return $this->belongsTo(Categoria::class);
+        return $this->belongsTo(Categoria::class,'categoria_id');
     }
 }
