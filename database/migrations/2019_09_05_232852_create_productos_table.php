@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMovimientosTable extends Migration
+class CreateProductosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateMovimientosTable extends Migration
      */
     public function up()
     {
-        Schema::create('movimientos', function (Blueprint $table) {
+        Schema::create('productos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->double('precioUnitario');
-            $table->integer('cantidad');
-            $table->date('fecha');
+            $table->boolean('aceptado');
+            $table->string('imagenPrincipal');
 
-            
-
+        
             $table->timestamps();
         });
     }
@@ -32,6 +30,6 @@ class CreateMovimientosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('movimientos');
+        Schema::dropIfExists('productos');
     }
 }

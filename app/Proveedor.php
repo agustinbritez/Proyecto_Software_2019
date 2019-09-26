@@ -16,8 +16,10 @@ class Proveedor extends Model
     public function movimientos (){
         return $this->hasMany(Movimiento::class);
     }
-    public function items (){
-        return $this->belongsToMany(Item::class);
+    public function materiaPrimas()
+    {
+ 
+       return $this->belongsToMany(MateriaPrima::class);
     }
 
 }

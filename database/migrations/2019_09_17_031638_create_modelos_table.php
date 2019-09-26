@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateItemsTable extends Migration
+class CreateModelosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,19 +13,17 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('modelos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre')->nullable();
             $table->string('detalle')->nullable();
-            $table->integer('cantidad')->nullable();
+            $table->boolean('venta')->nullable();
             $table->double('precioUnitario')->nullable();
+            $table->string('imagenPrincipal')->nullable();
             
            
-            $table->unsignedBigInteger('tipoItem_id')->nullable();
-            $table->foreign('tipoItem_id')->references('id')->on('tipo_items');
-        
-            $table->timestamps();
            
+            $table->timestamps();
         });
     }
 
@@ -36,6 +34,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('modelos');
     }
 }

@@ -3,16 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
+use App\Modelo;
 class Receta extends Model
 {
-    public function itemPadre()
+    public function modeloPadre()
     {
-        return $this->belongsTo(Item::class,'itemPadre_id');
+        return $this->belongsTo(Modelo::class,'modeloPadre_id');
     }
 
-    public function itemHijo()
+    public function modeloHijo()
     {
-        return $this->belongsTo(Item::class,'itemHijo_id');
+        return $this->belongsTo(Modelo::class,'modeloHijo_id');
     }
 }

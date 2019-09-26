@@ -6,6 +6,7 @@ use App\Categoria;
 use Illuminate\Http\Request;
 use DataTables;
 use Validator;
+
 // FUENTE https://www.webslesson.info/2019/04/laravel-58-ajax-crud-tutorial-using-datatables.html
 class CategoriaController extends Controller
 {
@@ -19,7 +20,7 @@ class CategoriaController extends Controller
         
         if(request()->ajax())
         {
-            return datatables()->of(Categoria::latest()->get())
+            return DataTables::of(Categoria::latest()->get())
             ->addColumn('action', function($data){
                 $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Editar</button>';
                 $button .= '&nbsp;&nbsp;';

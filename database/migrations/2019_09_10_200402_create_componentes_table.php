@@ -17,10 +17,6 @@ class CreateComponentesTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre');
 
-            $table->unsignedBigInteger('item_id')->nullable();
-            $table->foreign('item_id')->references('id')->on('items');
-        
-
             $table->timestamps();
         });
     }

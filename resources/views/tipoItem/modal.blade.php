@@ -30,11 +30,8 @@
             <label>Flujos de Trabajos</label>
             <select class="form-control select2" style="width: 100%;" id="flujoTrabajo_id" name="flujoTrabajo_id">
               
-              
-              
               @foreach ($flujosTrabajos as $flujo)
               <option value="{{$flujo->id}}">{{$flujo->nombre}}</option>  
-              
               @endforeach
             </select>
           </div>
@@ -46,21 +43,13 @@
             <select class="form-control select2" style="width: 100%;" id="categoria_id" name="categoria_id">
               
               
-              {{-- @if($tipo->categoria!=null) --}}
+             
               @foreach ($categorias as $cat)
-              {{-- @if ($cat->id!=$tipo->categoria->id) --}}
+          
               <option value="{{$cat->id}}">{{$cat->nombre}}</option>  
               
-              {{-- @else --}}
-              {{-- <option selected="selected" value="{{$cat->id}}" >{{$cat->nombre}}</option> --}}
-              
-              {{-- @endif --}}
               @endforeach
-              {{-- @else
-                @foreach ($categorias as $cat)
-                <option value="{{$cat->id}}">{{$cat->nombre}}</option> 
-                @endforeach
-                @endif --}}
+            
                 
               </select>
             </div>
@@ -70,21 +59,12 @@
               <select class="form-control select2" style="width: 100%;" id="medida_id" name="medida_id">
                 
                 
-                {{-- @if($tipo->medida!=null) --}}
                 @foreach ($medidas as $medida)
-                {{-- @if ($medida->id!=$tipo->medida->id) --}}
+              
                 <option value="{{$medida->id}}">{{$medida->nombre}}</option>  
                 
-                {{-- @else --}}
-                {{-- <option selected="selected" value="{{$medida->id}}" >{{$medida->nombre}}</option> --}}
-                
-                {{-- @endif --}}
                 @endforeach
-                {{-- @else
-                  @foreach ($medidas as $medida)
-                  <option value="{{$medida->id}}">{{$medida->nombre}}</option> 
-                  @endforeach
-                  @endif --}}
+            
                   
                 </select>
               </div>
@@ -170,7 +150,7 @@
         $('#create_record').click(function(){
           $('#form_result').html('');
           $('.modal-title').text("Agregar Nueva Tipo Item");
-          $('#action_button').val("Add");
+          $('#action_button').val("Agregar");
           $('#action').val("Add");
           $('#formModal').modal('show');
           $('#nombre').val('');
@@ -280,6 +260,7 @@
             $(document).on('click', '.delete', function(){
               id = $(this).attr('id');
               $('#ok_button').text('Ok')
+              $('.modal-title').text("Confirmacion");
               $('#confirmModal').modal('show');
             });
             

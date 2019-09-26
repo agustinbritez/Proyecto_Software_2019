@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Imagen;
-use App\Item;
-use App\TipoItem;
+use App\ImagenIndividual;
 use Illuminate\Http\Request;
 
-class ItemController extends Controller
+class ImagenIndividualController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,9 +14,7 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items=Item::all();
-        $tipoItems=TipoItem::all();
-        return view('item.index',compact('items','tipoItems'));
+        //
     }
 
     /**
@@ -39,28 +35,16 @@ class ItemController extends Controller
      */
     public function store(Request $request)
     {
-        $item= Item::create($request->all());
-        if($request->hasFile('imagenPrincipal')){
-            $imagen=new Imagen();
-                $file=$request->file('imagenPrincipal');
-                $name=time().$file->getExtension();
-                $imagen->nombre=$name;
-                $imagen->ruta=public_path().'/imagenes/'.$request->tipoImagen.'/'.$name;
-                $file->move($imagen->ruta,$name);
-                $imagen->save();
-        }
-        $item->imagenPrincipal=$imagen->id;
-    
-        
+        //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param  \App\ImagenIndividual  $imagenIndividual
      * @return \Illuminate\Http\Response
      */
-    public function show(Item $item)
+    public function show(ImagenIndividual $imagenIndividual)
     {
         //
     }
@@ -68,10 +52,10 @@ class ItemController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Item  $item
+     * @param  \App\ImagenIndividual  $imagenIndividual
      * @return \Illuminate\Http\Response
      */
-    public function edit(Item $item)
+    public function edit(ImagenIndividual $imagenIndividual)
     {
         //
     }
@@ -80,10 +64,10 @@ class ItemController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Item  $item
+     * @param  \App\ImagenIndividual  $imagenIndividual
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Item $item)
+    public function update(Request $request, ImagenIndividual $imagenIndividual)
     {
         //
     }
@@ -91,10 +75,10 @@ class ItemController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Item  $item
+     * @param  \App\ImagenIndividual  $imagenIndividual
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Item $item)
+    public function destroy(ImagenIndividual $imagenIndividual)
     {
         //
     }

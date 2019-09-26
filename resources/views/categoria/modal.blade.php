@@ -113,7 +113,7 @@
     $('#create_record').click(function(){
       $('#form_result').html('');
       $('.modal-title').text("Agregar Nueva Categoria");
-      $('#action_button').val("Add");
+      $('#action_button').val("Agregar");
       $('#action').val("Add");
       $('#formModal').modal('show');
       $('#nombre').val('');
@@ -121,6 +121,7 @@
       $('#hidden_id').val('');
       $('#base').prop("checked", false); 
     });
+    
     //el boton edit en el index que mostrara el modal
     $(document).on('click', '.edit', function(){
       var id = $(this).attr('id');
@@ -222,6 +223,7 @@
             $(document).on('click', '.delete', function(){
               categoria_id = $(this).attr('id');
               $('#ok_button').text('Ok')
+              $('.modal-title').text("Confirmacion"); 
               $('#confirmModal').modal('show');
             });
             
@@ -231,6 +233,7 @@
                 beforeSend:function(){$('#ok_button').text('Eliminando...');},
                 success:function(data){
                   setTimeout(function(){
+                    
                     $('#confirmModal').modal('hide');
                     $('#data-table').DataTable().ajax.reload();
                   }, 0);

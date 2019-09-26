@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMovimientosTable extends Migration
+class AddRelationToModelosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateMovimientosTable extends Migration
      */
     public function up()
     {
-        Schema::create('movimientos', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->double('precioUnitario');
-            $table->integer('cantidad');
-            $table->date('fecha');
-
+        Schema::table('modelos', function (Blueprint $table) {
+            $table->unsignedBigInteger('flujoTrabajo_id')->nullable();
+            $table->foreign('flujoTrabajo_id')->references('id')->on('flujo_trabajos');
             
-
-            $table->timestamps();
+            
         });
     }
 
@@ -32,6 +28,8 @@ class CreateMovimientosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('movimientos');
+        Schema::table('modelos', function (Blueprint $table) {
+            //
+        });
     }
 }

@@ -12,19 +12,23 @@ class Producto extends Model
     public function estado (){
         return $this->belongsTo(Estado::class);
     }
-    public function itemModelo (){
-        return $this->belongsTo(Item::class,'itemModelo_id');
+    //las materias primas que se utilizan para un producto
+    public function materiaPrimas (){
+        return $this->belongsTo(MateriaPrima::class);
     }
-    public function itemsPersonalizados (){
-        return $this->belongsToMany(Item::class);
-    }
+
     public function sublimacions (){
         return $this->belongsToMany(Sublimacion::class);
     }
-    public function imagens (){
-        return $this->hasMany(Imagen::class);
+    public function modelo (){
+        return $this->belongsTo(Modelo::class);
     }
     public function detallePedido (){
         return $this->hasMany(DetallePedido::class);
     }
+    public function imagenes()
+   {
+
+      return $this->belongsToMany(ImagenIndividual::class);
+   }
 }

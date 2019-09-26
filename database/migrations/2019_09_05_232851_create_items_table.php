@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateMateriaPrimasTable extends Migration
+class CreateItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,20 @@ class CreateMateriaPrimasTable extends Migration
      */
     public function up()
     {
-        Schema::create('materia_primas', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre')->nullable();
             $table->string('detalle')->nullable();
             $table->integer('cantidad')->nullable();
             $table->double('precioUnitario')->nullable();
-            $table->string('color')->nullable();
-            $table->string('imagenPrincipal')->nullable();
             
            
+            // $table->unsignedBigInteger('tipoItem_id')->nullable();
+            // $table->foreign('tipoItem_id')->references('id')->on('tipo_items');
             
+           
             $table->timestamps();
+           
         });
     }
 
@@ -35,11 +37,6 @@ class CreateMateriaPrimasTable extends Migration
      */
     public function down()
     {
-        Schema::create('materia_primas', function (Blueprint $table) {
-            $table->dropColumn('id');
-            $table->dropColumn('nombre');
-            $table->dropColumn('detalle');
-            
-        });
+        Schema::dropIfExists('items');
     }
 }

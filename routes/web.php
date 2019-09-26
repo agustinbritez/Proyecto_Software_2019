@@ -28,13 +28,16 @@ Route::get('users','UserController@delete')->name('usuarios.delete')->middleware
 });
  Route::resource('/usuarios','UserController');
 
- Route::get('materiaPrima','ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
+//Categoria
+Route::get('materiaPrima','ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
 Route::get('materiaPrima/{materiaPrima}/show','ControllerMateriaPrima@show')->name('materiaPrima.show')->middleware('permission:materiaPrima_show');
 Route::get('materiaPrima/create','ControllerMateriaPrima@create')->name('materiaPrima.create')->middleware('permission:materiaPrima_create');
 Route::post('materiaPrima','ControllerMateriaPrima@store')->name('materiaPrima.store')->middleware('permission:materiaPrima_store');
-Route::get('materiaPrima/{materiaPrima}/edit','ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
-Route::put('materiaPrima/{materiaPrima}','ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
-Route::get('materiaPrima/{materiaPrima}','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
+Route::get('materiaPrima/{id}/edit','ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
+Route::post('materiaPrima/update','ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
+Route::get('materiaPrima/destroy/{id}','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
+//  Route::resource('materiaPrima','materiaPrimaController');
+
 
 //Item
 Route::get('item','ItemController@index')->name('item.index')->middleware('permission:item_index');
@@ -65,7 +68,19 @@ Route::post('tipoItem/update','TipoItemController@update')->name('tipoItem.updat
 Route::get('tipoItem/destroy/{id}','TipoItemController@destroy')->name('tipoItem.destroy')->middleware('permission:tipoItem_delete');
 //  Route::resource('categoria','categoriaController');
 
+//Proveedor
+Route::get('proveedor','ProveedorController@index')->name('proveedor.index')->middleware('permission:proveedor_index');
+Route::get('proveedor/{proveedor}/show','ProveedorController@show')->name('proveedor.show')->middleware('permission:proveedor_show');
+Route::get('proveedor/create','ProveedorController@create')->name('proveedor.create')->middleware('permission:proveedor_create');
+Route::post('proveedor','ProveedorController@store')->name('proveedor.store')->middleware('permission:proveedor_store');
+Route::get('proveedor/{id}/edit','ProveedorController@edit')->name('proveedor.edit')->middleware('permission:proveedor_edit');
+Route::post('proveedor/update','ProveedorController@update')->name('proveedor.update')->middleware('permission:proveedor_update');
+Route::get('proveedor/destroy/{id}','ProveedorController@destroy')->name('proveedor.destroy')->middleware('permission:proveedor_delete');
+//  Route::resource('categoria','categoriaController');
 
+
+//pdf
+Route::get('pdf/MateriPrima','PdfController@materiPrima')->name('materiaPrima.pdf');
 
 
 //prueba

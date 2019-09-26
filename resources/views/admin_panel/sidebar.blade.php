@@ -66,7 +66,7 @@
                     </ul>
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
-                                <a href="/" class="nav-link">
+                                <a href="{{ route('proveedor.index') }}" class="nav-link">
                                     <i class="fas fa-people-carry nav-icon"></i>
                                     <p>Proveedores</p>
                                 </a>

@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class FlujoTrabajo extends Model
 {
-    public function tipoItems()
+    public function modelos()
     {
  
-       return $this->hasMany(Item::class);
+       return $this->hasMany(Modelo::class);
     }
 
     public function transicions()

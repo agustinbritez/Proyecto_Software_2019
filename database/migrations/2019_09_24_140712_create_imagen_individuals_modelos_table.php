@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAjaxCrudsTable extends Migration
+class CreateImagenIndividualsModelosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAjaxCrudsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ajax_cruds', function (Blueprint $table) {
+        Schema::create('imagen_individuals_modelos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateAjaxCrudsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ajax_cruds');
+        Schema::dropIfExists('imagen_individuals_modelos');
     }
 }

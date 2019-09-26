@@ -32,11 +32,6 @@ class Item extends Model
         return $this->hasMany(Componente::class);
     }
 
-    public function imagens()
-    {
-        return $this->belongsToMany(Imagen::class);
-    }
-
     public function productosModelos()
     {
         return $this->hasMany(Producto::class);

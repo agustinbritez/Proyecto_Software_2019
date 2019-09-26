@@ -18,12 +18,6 @@ class CreateRecetasTable extends Migration
             $table->boolean('modificable');
             $table->integer('prioridad');
             $table->integer('cantidad');
-
-            $table->unsignedBigInteger('itemHijo_id')->nullable();
-            $table->foreign('itemHijo_id')->references('id')->on('items');
-        
-            $table->unsignedBigInteger('itemPadre_id')->nullable();
-            $table->foreign('itemPadre_id')->references('id')->on('items');
         
 
 
