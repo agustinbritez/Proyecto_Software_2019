@@ -17,6 +17,7 @@ class CreateTipoImagensTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre');
             $table->timestamps();
+            
         });
     }
 

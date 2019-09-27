@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MateriaPrima extends Model
 {
+   use SoftDeletes;
    // protected $fillable = ['nombre', 'medida_id','tipoMateriaPrima_id','detalle','cantidad','precioUnitario','color'];
    // protected $fillable = ['nombre', 'detalle','cantidad','precioUnitario','color'];
    protected $guarded= [];

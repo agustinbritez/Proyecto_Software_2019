@@ -17,7 +17,6 @@ class CreateSublimacionsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('imagen_id');
             $table->foreign('imagen_id')->references('id')->on('imagens');
-            
             $table->timestamps();
         });
     }

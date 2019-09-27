@@ -24,7 +24,7 @@ class CreateDocumentosTable extends Migration
         
             $table->unsignedBigInteger('usuarios_id')->nullable();
             $table->foreign('usuarios_id')->references('id')->on('users');
-        
+            $table->softDeletes();
             $table->timestamps();
         });
     }

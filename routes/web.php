@@ -23,19 +23,20 @@ Route::get('users','UserController@show')->name('usuarios.show')->middleware('pe
 Route::get('users/create','UserController@create')->name('usuarios.create')->middleware('permission:usuarios_create');
 Route::get('users/{usuario}/edit','UserController@edit')->name('usuarios.edit')->middleware('permission:usuarios_edit');
 Route::get('users','UserController@delete')->name('usuarios.delete')->middleware('permission:usuarios_delete');
-
+//pdf
+Route::get('pdf/MateriPrima','PdfController@materiPrima')->name('materiaPrima.pdf');
 //    Route::resource('/usuarios','UserController');
 });
  Route::resource('/usuarios','UserController');
 
-//Categoria
+//materia Prim
 Route::get('materiaPrima','ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
 Route::get('materiaPrima/{materiaPrima}/show','ControllerMateriaPrima@show')->name('materiaPrima.show')->middleware('permission:materiaPrima_show');
 Route::get('materiaPrima/create','ControllerMateriaPrima@create')->name('materiaPrima.create')->middleware('permission:materiaPrima_create');
 Route::post('materiaPrima','ControllerMateriaPrima@store')->name('materiaPrima.store')->middleware('permission:materiaPrima_store');
 Route::get('materiaPrima/{id}/edit','ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
 Route::post('materiaPrima/update','ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
-Route::get('materiaPrima/destroy/{id}','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
+Route::delete('materiaPrima/destroy','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
 //  Route::resource('materiaPrima','materiaPrimaController');
 
 

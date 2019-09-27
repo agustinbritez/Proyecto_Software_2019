@@ -30,6 +30,7 @@ class CreatePedidosTable extends Migration
             $table->foreign('estado_id')->references('id')->on('estados');
         
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

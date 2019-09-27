@@ -19,6 +19,7 @@ class CreateTipoMovimientosTable extends Migration
             $table->string('detalle');
             $table->boolean('operacion');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

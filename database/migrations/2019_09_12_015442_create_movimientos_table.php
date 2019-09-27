@@ -18,10 +18,8 @@ class CreateMovimientosTable extends Migration
             $table->double('precioUnitario');
             $table->integer('cantidad');
             $table->date('fecha');
-
-            
-
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

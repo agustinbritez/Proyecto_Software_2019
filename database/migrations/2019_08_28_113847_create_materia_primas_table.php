@@ -21,7 +21,7 @@ class CreateMateriaPrimasTable extends Migration
             $table->double('precioUnitario')->nullable();
             $table->string('color')->nullable();
             $table->string('imagenPrincipal')->nullable();
-            
+            $table->softDeletes();
            
             
             $table->timestamps();

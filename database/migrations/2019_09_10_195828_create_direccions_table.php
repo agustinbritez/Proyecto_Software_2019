@@ -22,6 +22,7 @@ class CreateDireccionsTable extends Migration
             $table->string('provincia');
             $table->string('localidad');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

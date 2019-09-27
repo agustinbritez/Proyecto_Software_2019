@@ -19,6 +19,7 @@ class CreateCategoriasTable extends Migration
             $table->string('detalle')->nullable();
             $table->boolean('base')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

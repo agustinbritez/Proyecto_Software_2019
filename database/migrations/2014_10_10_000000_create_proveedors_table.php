@@ -18,6 +18,7 @@ class CreateProveedorsTable extends Migration
             $table->string('nombre');
             $table->string('email');
             $table->string('razonSocial');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

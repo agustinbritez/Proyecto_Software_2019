@@ -18,6 +18,7 @@ class CreateMedidasTable extends Migration
             $table->string('nombre');
             $table->string('detalle');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
