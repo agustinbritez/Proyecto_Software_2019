@@ -24,21 +24,34 @@ Route::get('users/create','UserController@create')->name('usuarios.create')->mid
 Route::get('users/{usuario}/edit','UserController@edit')->name('usuarios.edit')->middleware('permission:usuarios_edit');
 Route::get('users','UserController@delete')->name('usuarios.delete')->middleware('permission:usuarios_delete');
 //pdf
-Route::get('pdf/MateriPrima','PdfController@materiPrima')->name('materiaPrima.pdf');
+Route::post('pdf/MateriaPrima','PdfController@materiaPrima')->name('pdf.materiaPrima');
+Route::post('pdf/Proveedor','PdfController@proveedor')->name('pdf.proveedor');
+
 //    Route::resource('/usuarios','UserController');
 });
  Route::resource('/usuarios','UserController');
 
-//materia Prim
+//materia Prima
 Route::get('materiaPrima','ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
 Route::get('materiaPrima/{materiaPrima}/show','ControllerMateriaPrima@show')->name('materiaPrima.show')->middleware('permission:materiaPrima_show');
 Route::get('materiaPrima/create','ControllerMateriaPrima@create')->name('materiaPrima.create')->middleware('permission:materiaPrima_create');
 Route::post('materiaPrima','ControllerMateriaPrima@store')->name('materiaPrima.store')->middleware('permission:materiaPrima_store');
 Route::get('materiaPrima/{id}/edit','ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
+Route::get('materiaPrima/parametros','ControllerMateriaPrima@obtenerParametros')->name('materiaPrima.parametros')->middleware('permission:materiaPrima_edit');
 Route::post('materiaPrima/update','ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
 Route::delete('materiaPrima/destroy','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
 //  Route::resource('materiaPrima','materiaPrimaController');
 
+//Movimientos
+Route::get('movimiento','MovimientoController@index')->name('movimiento.index')->middleware('permission:movimiento_index');
+Route::get('movimiento/{movimiento}/show','MovimientoController@show')->name('movimiento.show')->middleware('permission:movimiento_show');
+Route::get('movimiento/create','MovimientoController@create')->name('movimiento.create')->middleware('permission:movimiento_create');
+Route::post('movimiento','MovimientoController@store')->name('movimiento.store')->middleware('permission:movimiento_store');
+Route::get('movimiento/{id}/edit','MovimientoController@edit')->name('movimiento.edit')->middleware('permission:movimiento_edit');
+Route::get('movimiento/parametros','MovimientoController@obtenerParametros')->name('movimiento.parametros')->middleware('permission:movimiento_edit');
+Route::post('movimiento/update','MovimientoController@update')->name('movimiento.update')->middleware('permission:movimiento_update');
+Route::delete('movimiento/destroy','MovimientoController@destroy')->name('movimiento.destroy')->middleware('permission:movimiento_delete');
+//  Route::resource('movimiento','movimientoController');
 
 //Item
 Route::get('item','ItemController@index')->name('item.index')->middleware('permission:item_index');
@@ -76,12 +89,10 @@ Route::get('proveedor/create','ProveedorController@create')->name('proveedor.cre
 Route::post('proveedor','ProveedorController@store')->name('proveedor.store')->middleware('permission:proveedor_store');
 Route::get('proveedor/{id}/edit','ProveedorController@edit')->name('proveedor.edit')->middleware('permission:proveedor_edit');
 Route::post('proveedor/update','ProveedorController@update')->name('proveedor.update')->middleware('permission:proveedor_update');
-Route::get('proveedor/destroy/{id}','ProveedorController@destroy')->name('proveedor.destroy')->middleware('permission:proveedor_delete');
-//  Route::resource('categoria','categoriaController');
+Route::delete('proveedor/destroy','ProveedorController@destroy')->name('proveedor.destroy')->middleware('permission:proveedor_delete');
+//  Route::resource('proveedor','ProveedorController');
 
 
-//pdf
-Route::get('pdf/MateriPrima','PdfController@materiPrima')->name('materiaPrima.pdf');
 
 
 //prueba

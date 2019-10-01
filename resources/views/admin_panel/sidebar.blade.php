@@ -1,5 +1,5 @@
 <!-- Main Sidebar Container -->
-<aside class="main-sidebar elevation-4 sidebar-dark-primary">
+<aside class="main-sidebar elevation-4 sidebar-dark-primary sidebar-color-success">
         <!-- Brand Logo -->
         <a href="/home" class="brand-link">
 
@@ -7,7 +7,7 @@
         </a>
 
         <!-- Sidebar -->
-        <div class="sidebar">
+        <div class="sidebar " >
           <!-- Sidebar user panel (optional) -->
           <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
@@ -40,22 +40,22 @@
                             </a>
                         </li>
                     </ul>
-                    <ul class="nav nav-treeview">
+                    {{-- <ul class="nav nav-treeview">
                       <li class="nav-item">
                           <a href="{{ route('item.index') }}" class="nav-link">
                               <i class="fas fa-cube nav-icon"></i>
                               <p>Item</p>
                           </a>
                       </li>
-                  </ul>
-                  <ul class="nav nav-treeview">
+                  </ul> --}}
+                  {{-- <ul class="nav nav-treeview">
                     <li class="nav-item">
                         <a href="{{ route('categoria.index') }}" class="nav-link">
                             <i class="fas fa-cube nav-icon"></i>
                             <p>Categoria</p>
                         </a>
-                    </li>
-                </ul>
+                    </li> --}}
+                {{-- </ul>
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('tipoItem.index') }}" class="nav-link">
@@ -63,7 +63,7 @@
                                     <p>Tipo de Item</p>
                                 </a>
                             </li>
-                    </ul>
+                    </ul> --}}
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <a href="{{ route('proveedor.index') }}" class="nav-link">
@@ -73,18 +73,26 @@
                             </li>
                     </ul>
                     <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="{{ route('movimiento.index') }}" class="nav-link">
+                                    <i class="fas  nav-icon"></i>
+                                    <p>Movimientos</p>
+                                </a>
+                            </li>
+                    </ul>
+                    {{-- <ul class="nav nav-treeview">
                         <li class="nav-item">
                         <a href="{{route('ajax-crud.index')}}" class="nav-link">
                                 <i class="fas fa-people-carry nav-icon"></i>
                                 <p>prueba</p>
                             </a>
                         </li>
-                </ul>
+                </ul> --}}
                 </li>
               @can('usuarios_index')
                 
               
-              <li class="nav-item has-treeview ">
+              {{-- <li class="nav-item has-treeview ">
                 <a href="#" class="nav-link active">
                     <i class="nav-icon fas fa-users-cog"></i>
                     <p>
@@ -116,7 +124,7 @@
                       </a>
                     </li>
                   </ul>
-              </li>
+              </li> --}}
               @endcan
             </ul>
           </nav>

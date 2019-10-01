@@ -21,16 +21,18 @@
         font-size: 14px;
         /*font-family: SourceSansPro;*/
     }
-    
+    .texto{
+        font-size: 14px;
+    }
     #logo{
-        float: left;
+        /* float: left; */
         margin-top: 1%;
         margin-left: 2%;
         margin-right: 2%;
     }
     
     #imagen{
-        width: 400px;
+        width: 200px;
     }
     
     #datos{
@@ -50,6 +52,13 @@
     
     #fecha{
         /*position: relative;*/
+        float: right;
+        margin-top: -3%;
+        margin-left: 2%;
+        margin-right: 2%;
+        font-size: 14px;
+    }
+    #datosDerecha{
         float: right;
         margin-top: -3%;
         margin-left: 2%;
@@ -86,7 +95,7 @@
         font-size: 15px;
     }
     #fa{
-        color: #FFFFFF;
+        color: #000000;
         font-size: 15px;
     }
     
@@ -167,44 +176,66 @@
 
 <body>
     <br><br>
-    <div class="container">
-
-        <header>
-
-            <div class="container ">
-                    <div class="row">
-                        <div class="col border " >
-                            
-                            <div id="logo">
-                                <a ><img id="imagen" class="float-left rounded " src="{{ asset('images/logo-mygsublimacion.jpg') }}"> </a>
-                            </div>
-                        </div>
-                        {{-- Columna 2 con 2 filas --}}
-                        <div class="col border ">
-                            {{-- Fila 1 --}}
-                            <div class="row">
-                                <div class="col border ">
-                                    <h3>MyG Sublimación</h3>
-                                </div>
-                                <div class="col border ">
-                                    <div class="row">Numero Reporte: _ _ _ _ _ _  </div>
-                                    <div class="row">Direccion: _ _ _ _ _ _ _ _ _ _ </div>
-                                    <div class="row">Usuario: {{  Auth::user()->apellido .' '.Auth::user()->name }} </div>
-                                    <div class="row">Correo: {{  Auth::user()->email }}</div>
-                                    <div class="row">Telefono Empresa: 3752-_ _ _ _ _ _</div>
-                                </div>
-                            </div>
-                            {{-- Fila 2 --}}
-                            <div class="row" >
-                                <div class="col-8 border ">YO SOY IROMAN</div>
-                                <div class="col border ">Fecha: {{ \Carbon\Carbon::now()->format('d/m/Y')}}</div>
-                            </div>
-                        </div>
+    
+    
+    <header>
+            <div id="fecha">
+                    <p>Fecha: {{ \Carbon\Carbon::now()->format('d/m/Y')}}</p>
+                </div>
+        <div id="logo" class="">
+            <a ><img id="imagen" class="float-left rounded " src="{{public_path('images/logo-mygsublimacion.jpg')}}"> </a>
+        </div>
+        {{-- <div id="datos">
+            <p id="encabezado">
+                <b>COOPERATIVA DE AGUA POTABLE</b><br>Av. 9 de Julio 1368, San Jose - Misiones, Argentina<br>Telefono:(+54)3758655665<br>Email:coop_agua@gmail.com
+            </p>
+        </div> --}}
+        
+        <div id="datosDerecha" class="border ">
+            <div >Numero Reporte: _ _ _ _ _ _  </div>
+            <div >Direccion: _ _ _ _ _ _ _ _ _ _ </div>
+            <div >Usuario: {{  Auth::user()->apellido .' '.Auth::user()->name }} </div>
+            <div >Correo: {{  Auth::user()->email }}</div>
+            <div >Telefono Empresa: 3752-_ _ _ _ _ _</div>
+        </div>
+        
+        {{-- <div id="fecha">
+            <p>Fecha: {{ \Carbon\Carbon::now()->format('d/m/Y')}}</p>
+        </div>
+        
+        <div id="user">
+            Generado por: {{ Auth::user()->name . ' ' . Auth::user()->apellido }}
+        </div> --}}
+        
+        {{-- <div class="container ">
+            <div class="row">
+                <div class="col border " >
+                    
+                    <div id="logo">
+                        <a ><img id="imagen" class="float-left rounded " src="{{ asset('images/logo-mygsublimacion.jpg') }}"> </a>
                     </div>
                 </div>
+                
+                <div class="col border ">
+                    
+                    <div class="row">
+                        <div class="col border ">
+                            <h3>MyG Sublimación</h3>
+                        </div>
+                        
+                    </div>
+                    
+                    <div class="row" >
+                        <div class="col-8 border ">YO SOY IROMAN</div>
+                        <div class="col border ">Fecha: {{ \Carbon\Carbon::now()->format('d/m/Y')}}</div>
+                    </div>
+                </div>
+            </div>
+        </div> --}}
     </header>
-        <br>
+    <br>
     <section>
+        <br>
         @yield('content')
     </section>
     <br>
@@ -214,10 +245,12 @@
     </div>
     
     <footer>
+        @yield('footer')
+        {{-- <div align="left">{{ \Carbon\Carbon::now()->format('d/m/Y')}}</div> --}}
         <div class="page-number"></div>
     </footer>
     
-</div>
+    
 </body>
 </html>
 

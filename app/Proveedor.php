@@ -6,11 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Proveedor extends Model
 {
-    public function documents (){
+    protected $fillable = [
+
+        'nombre', 'email','razonSocial'
+
+    ];
+    // protected $guarded= [];
+    public function documentos (){
         return $this->hasMany(Documento::class);
     }
 
-    public function direccions (){
+    public function direcciones (){
         return $this->belongsToMany(Direccion::class);
     }
     public function movimientos (){

@@ -2,124 +2,197 @@
 
 namespace App\Http\Controllers;
 
+use App\Direccion;
+use App\Documento;
 use App\Proveedor;
 use Illuminate\Http\Request;
 use DataTables;
 class ProveedorController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Display a listing of the resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function index()
     {
-        if(request()->ajax())
-        {
-            return DataTables::of(Proveedor::latest()->get())
-            ->addColumn('action', function($data){
-                $button = '<button type="button" name="edit" id="'.$data->id.'" class="edit btn btn-primary btn-sm">Editar</button>';
-                $button .= '&nbsp;&nbsp;';
-                $button .= '<button type="button" name="delete" id="'.$data->id.'" class="delete btn btn-danger btn-sm">Eliminar</button>';
-                return $button;
-            })->rawColumns(['action'])
-            ->make(true);
-        }
-
         
-        return view('proveedor.index');
+        $proveedores=Proveedor::all();
+        return view ('proveedor.index',compact('proveedores'));
     }
-
+    
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    * Show the form for creating a new resource.
+    *
+    * @return \Illuminate\Http\Response
+    */
     public function create()
     {
         //
     }
-
+    
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    * Store a newly created resource in storage.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
     public function store(Request $request)
     {
-        $proveedor= new Proveedor();
-        $proveedor->nombre=$request->input('nombre');
-        $proveedor->email=$request->input('email');
-        $proveedor->razonSocial=$request->input('razonSocial');
-        $proveedor->save();
-        // $form_data = array(
-        //     'nombre' =>  $request->input('nombre'),
-        //     'email' =>  $request->input('email'),
-        //     'razonSocial' => $request->input('razonSocial'),
+        $rules = [
+            'nombre'    =>  'required',
+            'email'     =>  'required',
+            'razonSocial'     =>  'required',
             
-        // );
+            // 'documento_nombre'     =>  'required',
+            // 'documento_numero'     =>  'required',
+            
+            // 'direccion_calle'     =>  'required',
+            // 'direccion_numero'     =>  'required'
+            // 'direccion_postal'     =>  'required',
+            // 'direccion_pais'     =>  'required',
+            // 'direccion_provincia'     =>  'required',
+            // 'direccion_localidad'     =>  'required',
+        ];
         
-        // Proveedor::create($form_data);
+        $messages = [
+            'nombre.required' => 'Agrega el nombre del proveedor.',
+            'email.required' =>'Agrega el email del proveedor.',
+            'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
+            
+            // 'documento_nombre.required' => 'Agrega el tipo de documento',
+            // 'documento_numero.required' => 'Agrega el numero del documento',
+            
+            // 'direccion_calle'     =>  'Agrega la calle del proveedor',
+            // 'direccion_numero'     =>  'Agrega el numero de la calle del proveedor'
+        ];
         
-        return response()->json(['success' => 'Proveedor creado exitosamente.']);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Proveedor  $proveedor
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Proveedor $proveedor)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Proveedor  $proveedor
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-         //obtengo el objeto  para ser usado en el javascript click edit
-         if(request()->ajax())
-         {
-             $data = Proveedor::findOrFail($id);
-             return response()->json(['data' => $data]);
-         }
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Proveedor  $proveedor
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request)
-    {
-        $form_data = array(
-            'nombre'       =>   $request->nombre,
-            'email'        =>   $request->email,
-            'razonSocial' => $request->input('razonSocial')
-        );
-        Proveedor::whereId($request->hidden_id)->update($form_data);
+        $this->validate($request, $rules, $messages);
+        // $documento=Documento::create([
+            //     'nombre'=>$request->documento_nombre,
+            //     'numero'=>$request->documento_numero
+            //     ]);
+            
+            //     $direccion=Direccion::create([
+                //         'calle'=>$request->direccion_calle,
+                //         'numero'=>$request->direccion_numero,
+                //         'codigopostal'=>$request->direccion_codigoPostal,
+                //         'pais'=>$request->direccion_pais,
+                //         'provincia'=>$request->direccion_provincia,
+                //         'localidad'=>$request->direccion_localidad
+                //         ]);   
+                
+                $form_data = array(
+                    'nombre'        =>  $request->nombre,
+                    'email'         =>  $request->email,
+                    'razonSocial'         =>  $request->razonSocial
+                );
+                //si no crea es porque hay agun atributo que no permite null que esta vacio
+                $proveedor=Proveedor::create($form_data);
+                // $proveedor->documentos()->sync($documento);
+                // $proveedor->direcciones()->sync($direccion);
+                // return response()->json(['success' => 'Materia Prima Guardada Con Exito.']);
+                return redirect()->back()->with('success','Proveedor creado con exito!');
+            }
+            
+            /**
+            * Display the specified resource.
+            *
+            * @param  \App\Proveedor  $proveedor
+            * @return \Illuminate\Http\Response
+            */
+            public function show(Proveedor $proveedor)
+            {
+                //
+            }
+            
+            /**
+            * Show the form for editing the specified resource.
+            *
+            * @param  \App\Proveedor  $proveedor
+            * @return \Illuminate\Http\Response
+            */
+            public function edit($id)
+            {
+                if(request()->ajax())
+                {
+                    $data = Proveedor::findOrFail($id);
+                    
+                    return response()->json(['data' => $data]);
+                }
+            }
+            
+            /**
+            * Update the specified resource in storage.
+            *
+            * @param  \Illuminate\Http\Request  $request
+            * @param  \App\Proveedor  $proveedor
+            * @return \Illuminate\Http\Response
+            */
+            public function update(Request $request)
+            {
+                $rules = [
+                    'nombre'    =>  'required',
+                    'email'     =>  'required',
+                    'razonSocial'     =>  'required',
+                    
+                    // 'documento_nombre'     =>  'required',
+                    // 'documento_numero'     =>  'required',
+                    
+                    // 'direccion_calle'     =>  'required',
+                    // 'direccion_numero'     =>  'required'
+                    // 'direccion_postal'     =>  'required',
+                    // 'direccion_pais'     =>  'required',
+                    // 'direccion_provincia'     =>  'required',
+                    // 'direccion_localidad'     =>  'required',
+                ];
+                
+                $messages = [
+                    'nombre.required' => 'Agrega el nombre del proveedor.',
+                    'email.required' =>'Agrega el email del proveedor.',
+                    'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
+                    
+                    // 'documento_nombre.required' => 'Agrega el tipo de documento',
+                    // 'documento_numero.required' => 'Agrega el numero del documento',
+                    
+                    // 'direccion_calle'     =>  'Agrega la calle del proveedor',
+                    // 'direccion_numero'     =>  'Agrega el numero de la calle del proveedor'
+                ];
+                
+                $this->validate($request, $rules, $messages);
+                // $documento=Documento::create([
+                    //     'nombre'=>$request->documento_nombre,
+                    //     'numero'=>$request->documento_numero
+                    //     ]);
+                    
+                    //     $direccion=Direccion::create([
+                        //         'calle'=>$request->direccion_calle,
+                        //         'numero'=>$request->direccion_numero,
+                        //         'codigopostal'=>$request->direccion_codigoPostal,
+                        //         'pais'=>$request->direccion_pais,
+                        //         'provincia'=>$request->direccion_provincia,
+                        //         'localidad'=>$request->direccion_localidad
+                        //         ]);   
+                        
+                        $proveedor=Proveedor::find($request->hidden_id);
+                        $proveedor->update($request->all());
+                        // $proveedor->documentos()->sync($documento);
+                        // $proveedor->direcciones()->sync($direccion);
+                        // return response()->json(['success' => 'Materia Prima Guardada Con Exito.']);
+                        return redirect()->back()->with('success','Proveedor actualizado con exito!');
+            }
+            
+            /**
+            * Remove the specified resource from storage.
+            *
+            * @param  \App\Proveedor  $proveedor
+            * @return \Illuminate\Http\Response
+            */
+            public function destroy(Request $request)
+            {
+                $proveedor=Proveedor::find($request->button_delete);
+                $proveedor->delete();
+                return redirect()->back()->with('success','Proveedor eliminado exitosamente');
+            }
+        }
         
-        return response()->json(['success' => 'Se actualizo correctamente']);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Proveedor  $proveedor
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        Proveedor::find($id)->delete();
-        return response()->json(['success'=>'El proveedor  fue eliminado exitosamente.']);
-    }
-}

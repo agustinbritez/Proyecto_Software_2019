@@ -22,7 +22,6 @@
   <link rel="stylesheet" href="{{ asset('admin_panel/dist/css/adminlte.min.css') }}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-  <link href="{{asset('admin_panel/plugins/select2/css/select2.css')}}" rel="stylesheet">
 
 
   
@@ -60,16 +59,7 @@
               <div class="content">
 
                 {{-- ********Controlador de errores******** --}}
-                      @if ($errors->any())
-                          
-                      <div class="alert alert-danger">
-                          <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{$error}}</li>
-                            @endforeach
-                          </ul>
-                      </div>
-                      @endif
+                      @include('layouts.mensaje')
                  {{-- ******** Fin del controlador de errores*********      --}}
                       @yield('content')
                     </div>

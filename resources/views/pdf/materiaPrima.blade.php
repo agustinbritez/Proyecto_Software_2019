@@ -1,7 +1,7 @@
 @extends('layouts.pdf')
 @section('content')
 
-</section>
+{{-- </section>
 <br>
 <h3>Lista de Materia Primas</h3>
 <section>
@@ -10,13 +10,16 @@
         
         
     </div>
-</section>
+</section> --}}
 <br>
-<section>
+
     <div>
-        <table id="lista">
+<br>
+<br>
+<br>
+        <table  class="table table-bordered" >
             <thead>
-                <tr id="fa">
+                <tr >
                     <th>ID</th>
                     <th>Nombre</th>
                     <th>Precio Unitario</th>
@@ -49,8 +52,9 @@
             
         </table>
     </div>
+
     @section('cantidad')
-    {{-- {{$cant}} --}}
+    {{sizeof($materiaPrimas)}}
     @endsection
     @stop
     

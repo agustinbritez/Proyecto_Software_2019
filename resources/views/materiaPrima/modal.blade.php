@@ -8,6 +8,11 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
+                <div class="alert alert-danger print-error-msg" style="display:none">
+                    
+                    <ul></ul>
+                    
+                </div>
                 <span id="form_result"></span>
                 <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
                     @csrf
@@ -59,7 +64,7 @@
                     
                     <div class="form-group col">
                         <label>Modelos : </label>
-                        <select class="select2" multiple="multiple" name="modelos[]" data-placeholder="Seleccione Un Modelo"
+                        <select class="select2" multiple="multiple" id='modelos' name="modelos[]" data-placeholder="Seleccione Un Modelo"
                         style="width: 100%;">
                         
                         
@@ -121,21 +126,46 @@
 <script>
     $(document).ready(function(){
         // var table = $('#movimientos').DataTable();
-        
-        
+        var medidasGlobal;
+        var modelosGlobal;
+        const vacio='Cualquiera';
+        //cargamos por primera vez las variables globales
+        $.ajax({
+            url:"/materiaPrima/parametros",
+            contentType: false,
+            cache:false,
+            processData: false,
+            dataType:"json",
+            success:function(html){
+                medidasGlobal=html.totalMedidas;
+                modelosGlobal=html.totalModelos;
+            }
+        });
         
         var table=$('#data-table').DataTable({
-            "columnDefs": [
-            // { "orderable": false, "targets":5  }
-            // { "orderable": false,"targets":6  }
-            ]
+            // "search": false
         });
+        
         //la siguiente funcion recarga toda la tabla
         $('#reiniciar').click(function(){
             // $("#tipoMovimiento ").prop("selectedIndex", 0) ;
             
             $('#filtro_nombre').val('');
             $('#filtro_cantidad').val('');
+            //cargar el select
+            $('#filtro_modelo').find('option').remove();
+            $('#filtro_modelo').append($('<option>', {
+                value: -1,
+                text: vacio,
+            }));
+            modelosGlobal.forEach(modelo => {
+                $('#filtro_modelo').append($('<option>', {
+                    value: modelo.id,
+                    text: modelo.nombre,
+                }));
+                $('#filtro_modelo').prop("selectedIndex", 0);
+            });
+            
             //  $('#filtro_modelo').prop("selectedIndex", 0) ;
             $.fn.dataTable.ext.search.pop(
             function( settings, data, dataIndex ) {
@@ -147,10 +177,10 @@
             );
             table.draw() ;
         }) ;
-        //la siguiente funcion filtra toda la tabla
-        $('#filtrar').click(function(){
-            
-            var filtro_nombre = $('#filtro_nombre').val().trim() ;
+        
+        //****************************************** FILTRO DE LA TABLA**************************************************************
+        function filtro_funcion(){
+            var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
             var filtro_cantidad = $('#filtro_cantidad').val();
             // alert(filtro_cant    idad.length);
             var filtro_modelo = $('#filtro_modelo option:selected').text();
@@ -159,7 +189,7 @@
             if((filtro_nombre!='')){
                 cantidad_filtros++;
             }
-            if(filtro_modelo!='Cualquiera'){
+            if(filtro_modelo!=vacio){
                 cantidad_filtros++;
             }
             if(filtro_cantidad.length>0){
@@ -175,104 +205,152 @@
                 //si retorna falso saca de la tabla
                 return true ;
             });
-            
-            
-            
-            var filtro_completos=0;
-            var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
-                //si no hay filtro que cargue todo
-                if(cantidad_filtros==0){
-                    return true;
-                }
-                //si son todo los filtros que realice todas las acciones directamente
-                filtro_completos=0;
-                if(cantidad_filtros==3){
-                    var contieneModelo=data[5].indexOf(filtro_modelo);
-                    //si contieneModelo es -1 no encontro en la cadena 
-                    (contieneModelo>-1)? filtro_completos++ : 0;
-                    (filtro_cantidad==data[3])? filtro_completos++ :0;
-                    (filtro_nombre==data[1])? filtro_completos++ :0;
-                    //si cummple con los tres filtro que guarde en la tabla la fila
-                    return filtro_completos==cantidad_filtros? true:false;
+             
+            //si no hay filtro que cargue todo
+            if(cantidad_filtros>0){
+                
+                
+                var filtro_completos=0;
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
                     
-                }else{
-                    // si hay 1 o 2 filtros que compruebe todo
-
-                    //en data data[1] la columna 1 que es Nombre en data[0] esta la columna ID
-                    //se coloco un if mas dentro de cada uno para optimizar
-                    if((filtro_modelo!='Cualquiera')){
+                    //si son todo los filtros que realice todas las acciones directamente
+                    filtro_completos=0;
+                    if(cantidad_filtros==3){
                         var contieneModelo=data[5].indexOf(filtro_modelo);
                         //si contieneModelo es -1 no encontro en la cadena 
                         (contieneModelo>-1)? filtro_completos++ : 0;
-                        if(filtro_completos==cantidad_filtros){
-                            return true;
-                        }
-                    }
-                    if((filtro_cantidad.length>0)){
-                        
                         (filtro_cantidad==data[3])? filtro_completos++ :0;
-                        if(filtro_completos==cantidad_filtros){
-                            return true;
+                        (data[1].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
+                        //si cummple con los tres filtro que guarde en la tabla la fila
+                        return filtro_completos==cantidad_filtros? true:false;
+                        
+                    }else{
+                        // si hay 1 o 2 filtros que compruebe todo
+                        
+                        //en data data[1] la columna 1 que es Nombre en data[0] esta la columna ID
+                        //se coloco un if mas dentro de cada uno para optimizar
+                        if((filtro_modelo!=vacio)){
+                            var contieneModelo=data[5].indexOf(filtro_modelo);
+                            //si contieneModelo es -1 no encontro en la cadena 
+                            (contieneModelo>-1)? filtro_completos++ : 0;
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
+                            }
                         }
-                    }
-                    if((filtro_nombre!='')){
-                        (filtro_nombre==data[1])? filtro_completos++ :0;
-                        if(filtro_completos==cantidad_filtros){
-                            return true;
+                        if((filtro_cantidad.length>0)){
+                            
+                            (filtro_cantidad==data[3])? filtro_completos++ :0;
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
+                            }
                         }
+                        if((filtro_nombre!='')){
+                            (data[1].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
+                            }
+                        }
+                        //retorna saca de la tabla porque no cumple con ningun filtro 
+                        
+                        return false;
                     }
-                    //retorna saca de la tabla porque no cumple con ningun filtro 
                     
-                    return false;
                 }
-                
+                $.fn.dataTable.ext.search.push( filtradoTabla )
             }
-            $.fn.dataTable.ext.search.push( filtradoTabla )
-            table.draw();
             
-        }) ;
-        //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
-        $('#create_record').click(function(){
-            $('#form_result').html('');
-            $("#sample_form").attr("action","{{route('materiaPrima.store')}}");
-            $('.modal-title').text("Agregar Nueva Materia Prima");
-            $('#action_button').val("Agregar");
-            $('#action').val("Add");
-            $('#formModal').modal('show');
-            $('#nombre').val('');
-            $('#detalle').val('');
-            $('#precioUnitario').val('');
-            $('#cantidad').val('');
-            // $('#imagenPrincipal').val('');
-            $('#hidden_id').val('');
-        });
-        //el boton edit en el index que mostrara el modal
-        $(document).on('click', '.edit', function(){
-            var id = $(this).attr('id');
-            $("#sample_form").attr("action","{{route('materiaPrima.update')}}");
-            $('#form_result').html('');
-            $.ajax({
-                url:"/materiaPrima/"+id+"/edit",
-                contentType: false,
-                cache:false,
-                processData: false,
-                dataType:"json",
-                success:function(html){
-                    //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
-                    $('#nombre').val(html.data.nombre);
-                    $('#detalle').val(html.data.detalle);
-                    $('#precioUnitario').val(html.data.precioUnitario);
-                    $('#cantidad').val(html.data.cantidad);
-                    $('#hidden_id').val(html.data.id);
-                    $('#medidaSeleccionada').text( html.medida.nombre);
-                    // $('#medida_id option').removeProp('selected');  
-                    // $('#medida_id option').each(function () {
-                        //     if ($(this).val() == html.data.medida_id) {
-                            //         this.selected = true;
+            table.draw();
+        };
+        
+        
+        $('#filtro_nombre').keyup(function (){
+            return filtro_funcion();
+            //********************************Codigo para que busque en tiempo real el nombre********************************************************** 
+            // var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
+            // $.fn.dataTable.ext.search.pop(
+            // function( settings, data, dataIndex ) {
+                //     return true ;
+                // });
+                
+                // var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
+                    //     return  data[1].toUpperCase().includes(filtro_nombre)? true : false;  
+                    // };
+                    // $.fn.dataTable.ext.search.push( filtradoTabla )
+                    // table.draw();
+                    
+                });
+                
+                
+                
+                //la siguiente funcion filtra toda la tabla
+                $('#filtrar').click(function(){
+                    return filtro_funcion();
+                }) ;
+                
+                
+                //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
+                $('#create_record').click(function(){
+                    $('#form_result').html('');
+                    $("#sample_form").attr("action","{{route('materiaPrima.store')}}");
+                    $('.modal-title').text("Agregar Nueva Materia Prima");
+                    $('#action_button').val("Agregar");
+                    $('#action').val("Add");
+                    $('#formModal').modal('show');
+                    $('#nombre').val('');
+                    $('#detalle').val('');
+                    $('#precioUnitario').val('');
+                    $('#cantidad').val('');
+                    $('#modelos').find('option').attr('selected',false).ready();
+                    // $('#imagenPrincipal').val('');
+                    $('#hidden_id').val('');
+                });
+                
+                
+                //el boton edit en el index que mostrara el modal
+                $(document).on('click', '.edit', function(){
+                    var id = $(this).attr('id');
+                    $("#sample_form").attr("action","{{route('materiaPrima.update')}}");
+                    $('#form_result').html('');
+                    $.ajax({
+                        url:"/materiaPrima/"+id+"/edit",
+                        contentType: false,
+                        cache:false,
+                        processData: false,
+                        dataType:"json",
+                        success:function(html){
+                            medidasGlobal=html.totalMedidas;
+                            modelosGlobal=html.totalModelos;
+                            //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
+                            $('#nombre').val(html.data.nombre);
+                            $('#detalle').val(html.data.detalle);
+                            $('#precioUnitario').val(html.data.precioUnitario);
+                            $('#cantidad').val(html.data.cantidad);
+                            $('#hidden_id').val(html.data.id);
+                            $('#medidaSeleccionada').text( html.medida.nombre);
+                            //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
                             
-                            //     }else{this.selected = false;} });
+                            $('#modelos').find('option').remove();
+                            html.totalModelos.forEach(modelo => {
+                                $('#modelos').append($('<option>', {
+                                    value: modelo.id,
+                                    text: modelo.nombre,
+                                }));
+                            });
+                            html.modelos.forEach(modelo => {
+                                $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
+                            });
+                            //*******************************Cargar el selected de Medidas SELECT SIMPLE********************************************
+                            $('#medida_id').find('option').remove();
+                            html.totalMedidas.forEach(medida => {
+                                $('#medida_id').append($('<option>', {
+                                    value: medida.id,
+                                    text: medida.nombre,
+                                }));
+                            });
+                            $('#medida_id option[value="'+html.medida.id+'"]').attr('selected','selected');
                             
-                            // $('#medida_id option[value="'+html.data.medida_id+'"]').prop('selected',true);                                                                            
+                            
+                            
                             $('.modal-title').text("Editar Materia Prima");
                             $('#action_button').val("Editar");
                             $('#action').val("Edit");
@@ -285,27 +363,147 @@
                 
                 
                 var id;
-                
                 $(document).on('click', '.delete', function(){
-                    
                     id = $(this).attr('id');
-                    
                     $('#materia_delete').val(id);
                     $('#ok_button').text('Ok')
                     $('.modal-title').text("Confirmacion");
                     $('#confirmModal').modal('show');
                 });
+                
                 $('#formDelete').on('submit',function(){
                     $('#ok_button').text('Eliminando...')
                 });
-                // $(document).on('submit', 'ok_button', function(){
-                    
-                    //     $('#ok_button').text('Eliminando...')
-                    // });
-                    
-                    
-                    
-                });
-            </script>
-            
-            
+                
+                
+                
+                // $('#sample_form').on('submit', function(event){
+                    //     event.preventDefault();
+                    //     // var file = $("#imagenPrincipal")[0].files[0];
+                    //     // formData.append("file", file, file.name);
+                    //     $('#form_result').html('');
+                    //     if($('#action').val() == 'Add')
+                    //     {
+                        
+                        //         $.ajax({
+                            //             url:"{{ route('materiaPrima.store') }}",
+                            //             method:"POST",
+                            //             data: new FormData(this),
+                            //             contentType: false,
+                            //             cache:false,
+                            //             processData: false,
+                            //             dataType:"json",
+                            //             success: function(data) {
+                                //                 $('#data-table').DataTable().ajax.reload();
+                                //                 if($.isEmptyObject(data.error)){
+                                    
+                                    //                     alert(data.success);
+                                    
+                                    //                 }else{
+                                        
+                                        //                     printErrorMsg(data.error);
+                                        
+                                        //                 }
+                                        
+                                        //             }
+                                        //         })
+                                        //     }
+                                        
+                                        //     //boton action dentro del modal osea guardar se activa la actualizacion
+                                        //     if($('#action').val() == "Edit")
+                                        //     {
+                                            
+                                            //         $.ajax({
+                                                //             url:"{{ route('materiaPrima.update') }}",
+                                                //             method:"POST",
+                                                //             data:new FormData(this),
+                                                //             contentType: false,
+                                                //             cache: false,
+                                                //             processData: false,
+                                                //             dataType:"json",
+                                                //             success:function(data)
+                                                //             {
+                                                    //                 var html = '';
+                                                    //                 if(data.errors)
+                                                    //                 {
+                                                        //                     html = '<div class="alert alert-danger">';
+                                                            //                         for(var count = 0; count < data.errors.length; count++)
+                                                            //                         {
+                                                                //                             html += '<p>' + data.errors[count] + '</p>';
+                                                                //                         }
+                                                                //                         html += '</div>';
+                                                                //                     }
+                                                                
+                                                                //                     // if(data.success)
+                                                                //                     // {
+                                                                    //                         //     html = '<div class="alert alert-success">' + data.success + '</div>';
+                                                                    //                         //     //blanquea todo campos de entrda del modal
+                                                                    //                         //     // $('#sample_form')[0].reset();
+                                                                    //                         //     $('#data-table').DataTable().ajax.reload();
+                                                                    //                         // }
+                                                                    //                         $('#form_result').html(html);
+                                                                    
+                                                                    //                     }
+                                                                    //                 });
+                                                                    //             }
+                                                                    //         });
+                                                                    
+                                                                    
+                                                                    
+                                                                });
+                                                                
+                                                                // $(document).ready(function() {
+                                                                    
+                                                                    //     $('#sample_form').on('submit', function(e){
+                                                                        
+                                                                        //         e.preventDefault();
+                                                                        
+                                                                        
+                                                                        //         $.ajax({
+                                                                            
+                                                                            //             url: "{{ route('materiaPrima.store') }}",
+                                                                            
+                                                                            //             type:'POST',
+                                                                            
+                                                                            
+                                                                            //             success: function(data) {
+                                                                                
+                                                                                
+                                                                                
+                                                                                //             },
+                                                                                //             error: function(data){
+                                                                                    //                 if($.isEmptyObject(data.errors)){
+                                                                                        
+                                                                                        //                     alert('giil');
+                                                                                        
+                                                                                        //                 }else{
+                                                                                            
+                                                                                            //                     printErrorMsg(data.errors);
+                                                                                            
+                                                                                            //                 }
+                                                                                            //             }
+                                                                                            
+                                                                                            //         });
+                                                                                            
+                                                                                            
+                                                                                            //     }); 
+                                                                                            
+                                                                                            
+                                                                                            //     function printErrorMsg (msg) {
+                                                                                                
+                                                                                                //         $(".print-error-msg").find("ul").html('');
+                                                                                                
+                                                                                                //         $(".print-error-msg").css('display','block');
+                                                                                                
+                                                                                                //         $.each( msg, function( key, value ) {
+                                                                                                    
+                                                                                                    //             $(".print-error-msg").find("ul").append('<li>'+value+'</li>');
+                                                                                                    
+                                                                                                    //         });
+                                                                                                    
+                                                                                                    //     }
+                                                                                                    
+                                                                                                    // });
+                                                                                                </script>
+                                                                                                
+                                                                                                

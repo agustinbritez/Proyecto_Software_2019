@@ -1,67 +1,74 @@
-@extends('layouts.pdf2')
+@extends('layouts.pdf')
 @section('content')
 
-<div>
-    <table id="titulo">
-        <thead>
-            <tr>
-                <th id="fac">Listado de Proveedores</th>
-            </tr>
-        </thead>
-        <tbody>
-{{--
-            <tr>
-
-                <th><p id="cliente"> Desde: <br>
-
-                Hasta: </p></th>
-
-            </tr> --}}
-
-        </tbody>
-    </table>
-</div>
-</section>
+{{-- </section>
 <br>
+<h3>Lista de Materia Primas</h3>
 <section>
-<div>
-
-
-
-</div>
-</section>
+    <div>
+        
+        
+        
+    </div>
+</section> --}}
 <br>
-<section>
-<div>
-    <table id="lista">
-        <thead>
-            <tr id="fa">
-            <th>Nr</th>
-            <th>Nombre</th>
-                <th>Cuit</th>
-                <th>Email</th>
-                <th>Telefono</th>
-            </tr>
-        </thead>
 
-        <tbody>
+    <div>
+<br>
+<br>
+<br>
+        <table  class="table table-bordered" >
+            <thead>
+                <tr >
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Razon Social</th>
+                    <th>Documento </th>
+                    <th>Direccion </th>
+                   
+                </tr>
+            </thead>
+            
+            <tbody>
+                @if (sizeof($proveedores)>0)
+						
+                @foreach ($proveedores as $proveedor)
+                <tr>
+                    
+                    <th>{{$proveedor->id}} </th>
+                    <th>{{$proveedor->nombre}} </th>
+                    <th>{{$proveedor->email}} </th>
+                    <th>{{$proveedor->razonSocial}} </th>
+                    {{-- <th>Sin Documento  </th> --}}
+                
 
-            @foreach ($proveedores as $prov)
-            <tr>
-            <td>{{$prov->id}}</td>
-                <td>{{$prov->nombre}}</td>
-                <td>{{$prov->cuit}}</td>
-                <td>{{$prov->email}}</td>
-                <td>{{$prov->telefono}}</td>
-            </tr>
-            @endforeach
-        </tbody>
-        <tbody>
-        </tbody>
+                    @if (sizeof($proveedor->documentos)>0)
+                    <th>{{$proveedor->documentos[0]->nombre .' - '.$proveedor->documentos[0]->numero}}  </th>
+                    @else
+                    <th>Sin Documento  </th>
+                    @endif
+                    
+                    @if (empty($proveedor->direcciones))
+                    <th>{{'Calle: '. $proveedor->direcciones[0]->calle .', Numero: '.$proveedor->direcciones[0]->numero}}  </th>
+                    @else
+                    <th>Sin Direccion  </th>
+                    @endif
+                   
+                    
+                    
+                </tr>
+                @endforeach
+                @endif	
+            </tbody>
+            <tbody>
+            </tbody>
+            
+        </table>
+    </div>
 
-    </table>
-</div>
-@section('cantidad')
-    {{$cant}}
-@endsection
-@stop
+    @section('cantidad')
+    {{sizeof($proveedores)}}
+    @endsection
+    @stop
+    
