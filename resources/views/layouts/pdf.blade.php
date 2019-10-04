@@ -198,6 +198,20 @@
             <div >Correo: {{  Auth::user()->email }}</div>
             <div >Telefono Empresa: 3752-_ _ _ _ _ _</div>
         </div>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+        
+    
+    <div id="">
+        <div >Filtros Aplicados:  </div>
+        @yield('filtrosAplicados')
+        
+    </div>
+
         
         {{-- <div id="fecha">
             <p>Fecha: {{ \Carbon\Carbon::now()->format('d/m/Y')}}</p>

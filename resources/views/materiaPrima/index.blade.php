@@ -23,48 +23,49 @@
 				
 				
 				<div class="card-body">
-					<form action="{{route('pdf.materiaPrima')}}" method="POST" enctype="multipart/form-data">
-					@csrf
-					<div align="right">
-						
-						<button type="submit"  class="btn  btn-success  btn-flat btn-sm">Reporte Materia Prima</button>
+					<form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data">
+						@csrf
+						<div align="right">
+							
+							<button type="submit"  class="btn  btn-success  btn-flat btn-sm">Reporte Materia Prima</button>
+						</div>
+						<hr>
+						<div class="row">
+							
+							<div class="form-group col-md-3">
+								<label>Nombre : </label>
+								<input class="form-control"  type="text" name="filtro_nombre" id="filtro_nombre" data-placeholder="Ingrese un nombre a filtrar"
+								style="width: 100%;">
+							</div>
+							<div class="form-group col-md-3">
+								<label>Cantidad : </label>
+								<input class="form-control"  type="number" name="filtro_cantidad" id="filtro_cantidad" style="width: 100%;">
+							</div>
+							<div class="form-group col-md-3">
+								<label>Modelo : </label>
+								<select class="select2"  name="filtro_modelo" id="filtro_modelo" data-placeholder="Seleccione Un Modelo"
+								style="width: 100%;">
+								{{-- <option value="" selected>Cualquiera</option> --}}
+								<option value="-1">Cualquiera</option>  
+								@if(sizeof($modelos)>0)
+								@foreach ($modelos as $modelo)
+								<option value="{{$modelo->id}}">{{$modelo->nombre}}</option>  
+								@endforeach
+								
+								@endif
+							</select>				
+						</div>
 					</div>
-					<hr>
-				<div class="row">
 					
-					<div class="form-group col-md-3">
-						<label>Nombre : </label>
-						<input class="form-control"  type="text" name="filtro_nombre" id="filtro_nombre" data-placeholder="Ingrese un nombre a filtrar"
-						style="width: 100%;">
-					</div>
-					<div class="form-group col-md-3">
-						<label>Cantidad : </label>
-						<input class="form-control"  type="number" name="filtro_cantidad" id="filtro_cantidad" style="width: 100%;">
-					</div>
-					<div class="form-group col-md-3">
-						<label>Modelo : </label>
-						<select class="select2"  name="filtro_modelo" id="filtro_modelo" data-placeholder="Seleccione Un Modelo"
-						style="width: 100%;">
-						{{-- <option value="" selected>Cualquiera</option> --}}
-						<option value="-1">Cualquiera</option>  
-						@if(sizeof($modelos)>0)
-						@foreach ($modelos as $modelo)
-						<option value="{{$modelo->id}}">{{$modelo->nombre}}</option>  
-						@endforeach
-						
-						@endif
-					</select>				
+				</form>
+			</div>
+			<div class="card-footer text-muted">
+				<div class="text-center">
+					<button type="button" name="filtrar" id="filtrar" class="btn btn-success btn-sm">Filtrar</button>
+					<button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar Tabla</button>
 				</div>
 			</div>
-		</form>
-		</div>
-		<div class="card-footer text-muted">
-			<div class="text-center">
-				<button type="button" name="filtrar" id="filtrar" class="btn btn-success btn-sm">Filtrar</button>
-				<button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar Tabla</button>
-			</div>
-			
-		</div>
+		
 	</div>
 	
 	<div class="card text-left">
@@ -86,6 +87,7 @@
 					<thead style="background-color:white ; color:black;">
 						<tr>
 							<th>ID</th>
+							<th>Imagen</th>
 							<th>Nombre</th>
 							<th>Precio Unitario</th>
 							<th>Cantidad</th>
@@ -104,6 +106,8 @@
 						<tr>
 							
 							<th>{{$materia->id}} </th>
+							
+						<th><img src="{{asset("/imagenes/materia_primas/".$materia->imagenPrincipal)}}" alt="" width='70px' height='70px'></th>
 							<th>{{$materia->nombre}} </th>
 							<th>{{$materia->precioUnitario}} </th>
 							<th>{{$materia->cantidad}} </th>
@@ -135,6 +139,7 @@
 					<tfoot style="background-color:#ccc; color:white;">
 						<tr>
 							<th>ID</th>
+							<th>Imagen</th>
 							<th>Nombre</th>
 							<th>Precio Unitario</th>
 							<th>Cantidad</th>
@@ -159,16 +164,7 @@
 
 @endsection
 
-@push('scripts')
-<script>
-	$(document).ready(function(){
-		$('.select2').select2(
-			// {theme: 'bootstrap4'}
-			);
-		
-	});
-</script>
-@endpush
+
 
 @section('htmlFinal')
 @include('materiaPrima.modal')   

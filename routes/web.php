@@ -24,8 +24,8 @@ Route::get('users/create','UserController@create')->name('usuarios.create')->mid
 Route::get('users/{usuario}/edit','UserController@edit')->name('usuarios.edit')->middleware('permission:usuarios_edit');
 Route::get('users','UserController@delete')->name('usuarios.delete')->middleware('permission:usuarios_delete');
 //pdf
-Route::post('pdf/MateriaPrima','PdfController@materiaPrima')->name('pdf.materiaPrima');
-Route::post('pdf/Proveedor','PdfController@proveedor')->name('pdf.proveedor');
+Route::get('pdf/MateriaPrima','PdfController@materiaPrima')->name('pdf.materiaPrima');
+Route::get('pdf/Proveedor','PdfController@proveedor')->name('pdf.proveedor');
 
 //    Route::resource('/usuarios','UserController');
 });

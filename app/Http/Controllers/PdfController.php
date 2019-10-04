@@ -36,12 +36,19 @@ class PdfController extends Controller
         if($filtro_cantidad!=''){
             $cantidad_filtros++;
         }
+        
 
         //******************************* Si no pide filtros devuelve todas las materias primas ******************************************* */
 
         if($cantidad_filtros==0){
+
             $pdf=PDF::loadView('pdf.materiaPrima',['materiaPrimas'=>$materiaPrimas]);
-            return $pdf->stream('pdf.materiaPrima');
+            $dom_pdf = $pdf->getDomPDF();
+            $canvas = $dom_pdf->get_canvas();
+            $y = $canvas->get_height() - 35;
+            $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+          
+            return $pdf->stream();
         }
         
         
@@ -61,6 +68,11 @@ class PdfController extends Controller
                 $filtro_completos==$cantidad_filtros? true:$materiaPrimas->pull($key);
             }
             $pdf=PDF::loadView('pdf.materiaPrima',['materiaPrimas'=>$materiaPrimas]);
+            $dom_pdf = $pdf->getDomPDF();
+            $canvas = $dom_pdf->get_canvas();
+            $y = $canvas->get_height() - 35;
+            $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+          
             return $pdf->stream('pdf.materiaPrima');
         }
         //******************************* Si pide 1 o 2 filtro entra aca ******************************************* */
@@ -83,8 +95,17 @@ class PdfController extends Controller
             $filtro_completos==$cantidad_filtros? true:$materiaPrimas->pull($key);
         }
 
-        $pdf=PDF::loadView('pdf.materiaPrima',['materiaPrimas'=>$materiaPrimas]);
-        return $pdf->stream('pdf.materiaPrima');
+        
+        $pdf=PDF::loadView('pdf.materiaPrima',['materiaPrimas'=>$materiaPrimas,
+        'filtro_nombre'=>$filtro_nombre,'filtro_cantidad'=>$filtro_cantidad,'filtro_modelo'=>$filtro_modelo]);
+        // return $pdf->stream('pdf.materiaPrima');
+        $dom_pdf = $pdf->getDomPDF();
+
+        $canvas = $dom_pdf->get_canvas();
+        $y = $canvas->get_height() - 35;
+        $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+      
+        return $pdf->stream();
         // return view('pdf.materiaPrima',compact('materiaPrimas'));
     } 
 
@@ -115,7 +136,8 @@ class PdfController extends Controller
         //******************************* Si no pide filtros devuelve todas las materias primas ******************************************* */
 
         if($cantidad_filtros==0){
-            $pdf=PDF::loadView('pdf.proveedor',['proveedores'=>$proveedores]);
+            $pdf=PDF::loadView('pdf.proveedor',['proveedores'=>$proveedores,'filtro_nombre'=>$filtro_nombre,
+            'filtro_documento'=>$filtro_documento,'filtro_email'=>$filtro_email]);
             return $pdf->stream('pdf.proveedor');
         }
         

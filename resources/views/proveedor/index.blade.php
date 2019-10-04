@@ -23,7 +23,7 @@
 				
 				
 				<div class="card-body">
-					<form action="{{route('pdf.proveedor')}}" method="POST" enctype="multipart/form-data">
+					<form action="{{route('pdf.proveedor')}}" method="GET" enctype="multipart/form-data">
 					@csrf
 					<div align="right">
 						

@@ -15,7 +15,7 @@ class CreateMateriaPrimasTable extends Migration
     {
         Schema::create('materia_primas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nombre')->nullable();
+            $table->string('nombre')->nullable()->unique();
             $table->string('detalle')->nullable();
             $table->integer('cantidad')->nullable();
             $table->double('precioUnitario')->nullable();

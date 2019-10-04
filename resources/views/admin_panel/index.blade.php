@@ -76,6 +76,9 @@
     <script src="{{ asset('js/app.js') }}"></script>
     <!-- jQuery -->
     <script src="{{asset('admin_panel/plugins/jquery/jquery.min.js')}}"></script>
+    
+
+    <script src="{{asset('admin_panel/plugins/inputmask/jquery.inputmask.bundle.js')}}"></script>
     <!-- Bootstrap -->
     <script src="{{asset('admin_panel/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
     <!-- AdminLTE -->
@@ -89,8 +92,18 @@
     <script src="{{asset('admin_panel/plugins/chart.js/Chart.min.js')}}"></script>
 
     <script src="{{asset('admin_panel/dist/js/demo.js')}}"></script>
+    
+ 
+    <script>
+      
+      $(document).ready(function(){
+        $('.select2').select2(
+		// {theme: 'bootstrap4'}
+		)});
+     
+    </script>
+  
     @stack('scripts')
-
   </body>
 
 </html>

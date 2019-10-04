@@ -28,7 +28,6 @@ class MateriaPrima extends Model
 
    public function medida()
    {
-
       return $this->belongsTo(Medida::class,'medida_id');
    }
    public function productos()
@@ -45,4 +44,5 @@ class MateriaPrima extends Model
 
       return $this->belongsToMany(ImagenIndividual::class);
    }
+
 }
