@@ -17,7 +17,7 @@ class CreateDireccionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('calle');
             $table->string('numero');
-            $table->string('codigopostal');
+            $table->string('codigoPostal');
             $table->string('pais');
             $table->string('provincia');
             $table->string('localidad');

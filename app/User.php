@@ -41,7 +41,7 @@ class User extends Authenticatable
 
     public function documento()
     {
-        return $this->hasMany(Documento::class);
+        return $this->belongsTo(Documento::class);
     }    
     public function direccions()
     {

@@ -39,6 +39,19 @@
                                 <p>Materia Prima</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                          <a href="{{ route('proveedor.index') }}" class="nav-link">
+                              <i class="fas fa-people-carry nav-icon"></i>
+                              <p>Proveedores</p>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href="{{ route('movimiento.index') }}" class="nav-link">
+                            <i class="fas  nav-icon"></i>
+                            <p>Movimientos</p>
+                        </a>
+                    </li>
+
                     </ul>
                     {{-- <ul class="nav nav-treeview">
                       <li class="nav-item">
@@ -64,22 +77,12 @@
                                 </a>
                             </li>
                     </ul> --}}
-                    <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('proveedor.index') }}" class="nav-link">
-                                    <i class="fas fa-people-carry nav-icon"></i>
-                                    <p>Proveedores</p>
-                                </a>
-                            </li>
+                    {{-- <ul class="nav nav-treeview">
+                            
                     </ul>
                     <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('movimiento.index') }}" class="nav-link">
-                                    <i class="fas  nav-icon"></i>
-                                    <p>Movimientos</p>
-                                </a>
-                            </li>
-                    </ul>
+                            
+                    </ul> --}}
                     {{-- <ul class="nav nav-treeview">
                         <li class="nav-item">
                         <a href="{{route('ajax-crud.index')}}" class="nav-link">
@@ -88,6 +91,34 @@
                             </a>
                         </li>
                 </ul> --}}
+                </li>
+
+                <li class="nav-item has-treeview  ">
+                  <a href="#" class="nav-link active">
+                        <i class="nav-icon fas fa-warehouse"></i>
+                        <p>
+                          Gestion Parametros
+                          <i class="right fas fa-angle-left"></i>
+                        </p>
+                      </a>
+
+                      <ul class="nav nav-treeview">
+                          <li class="nav-item">
+                              <a href="{{ route('direccion.index') }}" class="nav-link">
+                                  <i class="fas  nav-icon"></i>
+                                  <p>Direcciones</p>
+                              </a>
+                          </li>
+                      </ul>
+                    
+                      <ul class="nav nav-treeview">
+                          <li class="nav-item">
+                              <a href="{{ route('documento.index') }}" class="nav-link">
+                                  <i class="fas  nav-icon"></i>
+                                  <p>Documentos</p>
+                              </a>
+                          </li>
+                      </ul>
                 </li>
               @can('usuarios_index')
                 

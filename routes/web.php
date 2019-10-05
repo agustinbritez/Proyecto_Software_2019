@@ -53,6 +53,28 @@ Route::post('movimiento/update','MovimientoController@update')->name('movimiento
 Route::delete('movimiento/destroy','MovimientoController@destroy')->name('movimiento.destroy')->middleware('permission:movimiento_delete');
 //  Route::resource('movimiento','movimientoController');
 
+//Direccion
+Route::get('direccion','direccionController@index')->name('direccion.index')->middleware('permission:direccion_index');
+Route::get('direccion/{direccion}/show','direccionController@show')->name('direccion.show')->middleware('permission:direccion_show');
+Route::get('direccion/create','direccionController@create')->name('direccion.create')->middleware('permission:direccion_create');
+Route::post('direccion','direccionController@store')->name('direccion.store')->middleware('permission:direccion_store');
+Route::get('direccion/{id}/edit','direccionController@edit')->name('direccion.edit')->middleware('permission:direccion_edit');
+Route::get('direccion/parametros','direccionController@obtenerParametros')->name('direccion.parametros')->middleware('permission:direccion_edit');
+Route::post('direccion/update','direccionController@update')->name('direccion.update')->middleware('permission:direccion_update');
+Route::delete('direccion/destroy','direccionController@destroy')->name('direccion.destroy')->middleware('permission:direccion_delete');
+//  Route::resource('direccion','direccionController');
+
+//Documento
+Route::get('documento','documentoController@index')->name('documento.index')->middleware('permission:documento_index');
+Route::get('documento/{documento}/show','documentoController@show')->name('documento.show')->middleware('permission:documento_show');
+Route::get('documento/create','documentoController@create')->name('documento.create')->middleware('permission:documento_create');
+Route::post('documento','documentoController@store')->name('documento.store')->middleware('permission:documento_store');
+Route::get('documento/{id}/edit','documentoController@edit')->name('documento.edit')->middleware('permission:documento_edit');
+Route::get('documento/parametros','documentoController@obtenerParametros')->name('documento.parametros')->middleware('permission:documento_edit');
+Route::post('documento/update','documentoController@update')->name('documento.update')->middleware('permission:documento_update');
+Route::delete('documento/destroy','documentoController@destroy')->name('documento.destroy')->middleware('permission:documento_delete');
+//  Route::resource('documento','documentoController');
+
 //Item
 Route::get('item','ItemController@index')->name('item.index')->middleware('permission:item_index');
 Route::get('item/{item}/show','ItemController@show')->name('item.show')->middleware('permission:item_show');

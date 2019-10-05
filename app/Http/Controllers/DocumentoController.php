@@ -14,7 +14,8 @@ class DocumentoController extends Controller
      */
     public function index()
     {
-        //
+        $documentos = Documento::all();
+        return view('documento.index', compact('documentos'));
     }
 
     /**
@@ -23,8 +24,8 @@ class DocumentoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
+    { 
+
     }
 
     /**
@@ -35,7 +36,37 @@ class DocumentoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->nombre = strtoupper($request->nombre);
+        //obtengo  las borradas si el nombre se repite la reuso
+        $documentoExistente = Documento::where('nombre', $request->nombre)->where('deleted_at', "<>", null)->withTrashed()->first();
+        if ($documentoExistente != null) {
+        //*****************************************************************************************************8 */
+        //si el nombre esta repetido en un documento eliminado 
+        //la volvemos a revivir y le actualizamos con los datos del nuevo
+            $request->hidden_id = $documentoExistente->id;
+            $this->update($request);
+            return redirect()->back()->with('success', 'Documento Creado Con Exito!');
+        }
+
+        $rules = [
+            'nombre'    =>  'required|unique:documentos'
+        ];
+
+        $messages = [
+            'nombre.required' => 'Agrear nombre del documento',
+
+            'nombre.unique' => 'El documento debe ser unico, ya existe uno con el mismo nombre',
+        ];
+
+        $this->validate($request, $rules, $messages);
+
+        $form_data = array(
+            'nombre'    =>  $request->nombre
+        );
+
+        $documento = Documento::create($form_data);
+
+        return redirect()->back()->with('success', 'Documento Creado Con Exito!');
     }
 
     /**
@@ -55,9 +86,15 @@ class DocumentoController extends Controller
      * @param  \App\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function edit(Documento $documento)
+    public function edit($id)
     {
-        //
+        if (request()->ajax()) {
+            $data = Documento::findOrFail($id);
+
+            return response()->json([
+                'data' => $data, 
+            ]);
+        }
     }
 
     /**
@@ -67,9 +104,29 @@ class DocumentoController extends Controller
      * @param  \App\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Documento $documento)
+    public function update(Request $request)
     {
-        //
+        $rules = [
+            'nombre'    =>  'required|unique:documentos,nombre,' . $request->hidden_id,
+        ];
+
+        $messages = [
+            'nombre.required' => 'Agrear nombre del documento',
+
+            'nombre.unique' => 'El documento debe ser unico, ya existe uno con el mismo nombre',
+        ];
+
+        $request->nombre = strtoupper($request->nombre);
+        $this->validate($request, $rules, $messages);
+
+        $form_data = array(
+            'nombre'    =>  $request->nombre,
+        );
+        $documento = Documento::withTrashed()->find($request->hidden_id);
+        $documento->restore();
+        $documento->update($form_data);
+    
+        return redirect()->back()->with('success', 'Actualizado Correctamente');
     }
 
     /**
@@ -78,8 +135,10 @@ class DocumentoController extends Controller
      * @param  \App\Documento  $documento
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Documento $documento)
+    public function destroy(Request $request)
     {
-        //
+        $documento = Documento::find($request->boton_delete);
+        $documento->delete();
+        return redirect()->back();
     }
 }

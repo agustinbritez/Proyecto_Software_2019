@@ -7,10 +7,10 @@
 
 <br>          
 
-<div class="conteiner">
+<div class="container">
 	
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col">
 			<div class="card text-left">
 				
 				<div class="card-header">

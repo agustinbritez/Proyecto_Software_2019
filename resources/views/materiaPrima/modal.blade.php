@@ -447,8 +447,7 @@
                                 $('#action_button').val("Editar");
                                 $('#action').val("Edit");
                                 $('#formModal').modal('show');
-                                // alert("{{$medidas[0]->nombre}}");
-                                // alert(data.medida.nombre);
+
                             }
                         })
                     });

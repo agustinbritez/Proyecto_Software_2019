@@ -3,16 +3,19 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Documento extends Model
 {
-    public function proveedor()
+    use SoftDeletes;
+    protected $guarded = [];
+    public function proveedores()
     {
-        return $this->belongsTo(Proveedor::class);
+        return $this->hasMany(Proveedor::class);
     }
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }

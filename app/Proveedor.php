@@ -12,19 +12,19 @@ class Proveedor extends Model
 
     ];
     // protected $guarded= [];
-    public function documentos (){
-        return $this->hasMany(Documento::class);
-    }
+    
 
-    public function direcciones (){
-        return $this->belongsToMany(Direccion::class);
+    public function direccion (){
+        return $this->belongsTo(Direccion::class);
+    }
+    public function documento (){
+        return $this->belongsTo(Documento::class);
     }
     public function movimientos (){
         return $this->hasMany(Movimiento::class);
     }
     public function materiaPrimas()
     {
- 
        return $this->belongsToMany(MateriaPrima::class);
     }
 
