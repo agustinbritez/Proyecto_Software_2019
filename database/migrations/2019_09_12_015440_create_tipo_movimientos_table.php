@@ -16,7 +16,7 @@ class CreateTipoMovimientosTable extends Migration
         Schema::create('tipo_movimientos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
-            $table->string('detalle');
+            $table->string('detalle')->nullable();
             $table->boolean('operacion');
             $table->timestamps();
             $table->softDeletes();

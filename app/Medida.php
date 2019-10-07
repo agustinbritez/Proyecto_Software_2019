@@ -3,10 +3,16 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Medida extends Model
 {
-    function materiaPrimas(){
+
+    use SoftDeletes;
+    protected $guarded = [];
+    
+    function materiaPrimas()
+    {
         return $this->hasMany(MateriaPrima::class);
     }
 }

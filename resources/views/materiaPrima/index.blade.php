@@ -32,16 +32,16 @@
 						<hr>
 						<div class="row">
 							
-							<div class="form-group col-md-3">
+							<div class="form-group col">
 								<label>Nombre : </label>
 								<input class="form-control"  type="text" name="filtro_nombre" id="filtro_nombre" data-placeholder="Ingrese un nombre a filtrar"
 								style="width: 100%;">
 							</div>
-							<div class="form-group col-md-3">
+							<div class="form-group col">
 								<label>Cantidad : </label>
 								<input class="form-control"  type="number" name="filtro_cantidad" id="filtro_cantidad" style="width: 100%;">
 							</div>
-							<div class="form-group col-md-3">
+							<div class="form-group col">
 								<label>Modelo : </label>
 								<select class="select2"  name="filtro_modelo" id="filtro_modelo" data-placeholder="Seleccione Un Modelo"
 								style="width: 100%;">

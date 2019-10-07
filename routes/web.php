@@ -53,6 +53,28 @@ Route::post('movimiento/update','MovimientoController@update')->name('movimiento
 Route::delete('movimiento/destroy','MovimientoController@destroy')->name('movimiento.destroy')->middleware('permission:movimiento_delete');
 //  Route::resource('movimiento','movimientoController');
 
+//Tipo Movimiento
+Route::get('tipoMovimiento','tipoMovimientoController@index')->name('tipoMovimiento.index')->middleware('permission:tipoMovimiento_index');
+Route::get('tipoMovimiento/{tipoMovimiento}/show','tipoMovimientoController@show')->name('tipoMovimiento.show')->middleware('permission:tipoMovimiento_show');
+Route::get('tipoMovimiento/create','tipoMovimientoController@create')->name('tipoMovimiento.create')->middleware('permission:tipoMovimiento_create');
+Route::post('tipoMovimiento','tipoMovimientoController@store')->name('tipoMovimiento.store')->middleware('permission:tipoMovimiento_store');
+Route::get('tipoMovimiento/{id}/edit','tipoMovimientoController@edit')->name('tipoMovimiento.edit')->middleware('permission:tipoMovimiento_edit');
+Route::get('tipoMovimiento/parametros','tipoMovimientoController@obtenerParametros')->name('tipoMovimiento.parametros')->middleware('permission:tipoMovimiento_edit');
+Route::post('tipoMovimiento/update','tipoMovimientoController@update')->name('tipoMovimiento.update')->middleware('permission:tipoMovimiento_update');
+Route::delete('tipoMovimiento/destroy','tipoMovimientoController@destroy')->name('tipoMovimiento.destroy')->middleware('permission:tipoMovimiento_delete');
+//  Route::resource('tipoMovimiento','tipoMovimientoController');
+
+//Medidas
+Route::get('medida','medidaController@index')->name('medida.index')->middleware('permission:medida_index');
+Route::get('medida/{medida}/show','medidaController@show')->name('medida.show')->middleware('permission:medida_show');
+Route::get('medida/create','medidaController@create')->name('medida.create')->middleware('permission:medida_create');
+Route::post('medida','medidaController@store')->name('medida.store')->middleware('permission:medida_store');
+Route::get('medida/{id}/edit','medidaController@edit')->name('medida.edit')->middleware('permission:medida_edit');
+Route::get('medida/parametros','medidaController@obtenerParametros')->name('medida.parametros')->middleware('permission:medida_edit');
+Route::post('medida/update','medidaController@update')->name('medida.update')->middleware('permission:medida_update');
+Route::delete('medida/destroy','medidaController@destroy')->name('medida.destroy')->middleware('permission:medida_delete');
+//  Route::resource('medida','medidaController');
+
 //Direccion
 Route::get('direccion','direccionController@index')->name('direccion.index')->middleware('permission:direccion_index');
 Route::get('direccion/{direccion}/show','direccionController@show')->name('direccion.show')->middleware('permission:direccion_show');

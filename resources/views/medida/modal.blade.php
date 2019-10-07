@@ -1,5 +1,5 @@
  
- <div id="formModal" class="modal fade" role="dialog" data-backdrop='false'>
+ <div id="formModal" class="modal fade" role="dialog">
     
     <div class="modal-dialog" role="document">
         <div class="modal-content ">
@@ -20,37 +20,15 @@
                     @csrf
                     <div class="container">
                         <div class="form-group  ">
-                            <label class="control-label" >Calle: </label>
+                            <label class="control-label" >Nombre: </label>
                             
-                            <input type="text" name="calle" id="calle" required placeholder="Ingrese la Calle" class="form-control" />
+                            <input type="text" name="nombre" id="nombre" required placeholder="Ingrese el nombre de la medida" class="form-control" />
                         </div>
-                        
-                        <div class="form-group ">
-                            <label class="control-label">Numero : </label>
-                            <input type="text" class="form-control text-left" name="numero" id="numero"  data-mask data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
-                        </div>
-                        
                         <div class="form-group  ">
-                            <label class="control-label" >Codigo Posta: </label>
-                            <input type="text" class="form-control text-left" name="codigoPostal" id="codigoPostal"  data-mask data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
-                        </div>
-                        
-                        <div class="form-group  ">
-                            <label class="control-label" >Localidad: </label>
+                            <label class="control-label" >Detalle: </label>
                             
-                            <input type="text" name="localidad" id="localidad" required placeholder="Ingrese una Localidad" class="form-control" />
+                            <input type="text" name="detalle" id="detalle"  placeholder="Ingrese el detalle de la medida" class="form-control" />
                         </div>
-                        
-                        <div class="form-group  ">
-                            <label class="control-label" >Provincia: </label>
-                            
-                            <input type="text" name="provincia" id="provincia" required placeholder="Ingrese una Provincia" class="form-control" />
-                        </div>
-                        <div class="form-group  ">
-                            <label class="control-label" >Pais: </label>
-                            <input type="text" name="pais" id="pais" required placeholder="Ingrese un Pais" class="form-control" />
-                        </div> 
-                        
                     </div>
                 </div>
                 <div class="modal-footer justify-content-around" >
@@ -79,7 +57,7 @@
                 <h4 align="center" style="margin:0;">¿Esta seguro que desea borrarlo?</h4>
             </div>
             <div class="modal-footer">
-                <form id="formDelete" action="{{route('direccion.destroy')}}" method="POST">
+                <form id="formDelete" action="{{route('medida.destroy')}}" method="POST">
                     @csrf
                     @method('DELETE')
                     {{-- Paso el id de la materia  aborrar en boton_delete--}}
@@ -100,14 +78,7 @@
     
     
     $(document).ready(function(){
-        //variables globales 
-        //indices del data table que uso para el filtro
-        // var indiceCalle=1;
-        // var indiceNumero=2;
-        // var indiceCodigoPostal=3;
-        // var indiceLocalidad=4;
-        // var indiceProvincia=5;
-        // var indicePais=6;
+     
         var table= $('#data-table').DataTable({
             "language": {
                 "sProcessing":     "Procesando...",
@@ -152,17 +123,13 @@
             
             
             $('#form_result').html('');
-            $("#sample_form").attr("action","{{route('direccion.store')}}");
-            $('.modal-title').text("Agregar Nueva Direccion");
+            $("#sample_form").attr("action","{{route('medida.store')}}");
+            $('.modal-title').text("Agregar Nueva Medida");
             $('#action_button').val("Agregar");
             $('#action').val("Add");
-            $('#calle').val('');
-            $('#numero').val('');
-            $('#codigoPostal').val('');
-            $('#localidad').val('');
-            $('#provincia').val('');
-            $('#pais').val('');
-            // $('#imagenPrincipal').val('');
+            $('#nombre').val('')
+            $('#detalle').val('');
+            
             $('#hidden_id').val('');
             
             $('#formModal').modal('show');
@@ -173,10 +140,10 @@
         //el boton edit en el index que mostrara el modal
         $(document).on('click', '.edit', function(){
             var id = $(this).attr('id');
-            $("#sample_form").attr("action","{{route('direccion.update')}}");
+            $("#sample_form").attr("action","{{route('medida.update')}}");
             $('#form_result').html('');
             $.ajax({
-                url:"/direccion/"+id+"/edit",
+                url:"/medida/"+id+"/edit",
                 contentType: false,
                 cache:false,
                 processData: false,
@@ -184,14 +151,11 @@
                 success:function(html){
                  
                     //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
-                    $('#calle').val(html.data.calle);
-                    $('#numero').val(html.data.numero);
-                    $('#codigoPostal').val(html.data.codigoPostal);
-                    $('#localidad').val(html.data.localidad);
-                    $('#provincia').val(html.data.provincia);
-                    $('#pais').val(html.data.pais);
+                    $('#nombre').val(html.data.nombre);
+                    $('#detalle').val(html.data.detalle);
+
                     $('#hidden_id').val(html.data.id);
-                    $('.modal-title').text("Editar Direccion");
+                    $('.modal-title').text("Editar medida");
                     $('#action_button').val("Editar");
                     $('#action').val("Edit");
                     $('#formModal').modal('show');
