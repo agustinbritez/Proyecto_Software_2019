@@ -7,7 +7,7 @@
 
 <br>          
 
-<div class="conteiner">
+<div class="container">
 	
 	<div class="row">
 		<div class="col-sm-12">
@@ -84,7 +84,6 @@
 							<th>Razon Social</th>
 							<th>Documento </th>
 							<th>Direccion </th>
-							{{-- <th>Imagen Principal</th> --}}
 							<th >&nbsp; </th>
 							
 							
@@ -100,21 +99,22 @@
 							<th>{{$proveedor->nombre}} </th>
 							<th>{{$proveedor->email}} </th>
 							<th>{{$proveedor->razonSocial}} </th>
-							{{-- <th>Sin Documento  </th> --}}
 						
 
-							@if (sizeof($proveedor->documentos)>0)
-							<th>{{$proveedor->documentos[0]->nombre .' - '.$proveedor->documentos[0]->numero}}  </th>
-							@else
-							<th>Sin Documento  </th>
-							@endif
+							<th>{{$proveedor->documento->nombre .' - '.$proveedor->numeroDocumento}}  </th>
 							
-							@if (empty($proveedor->direcciones))
-							<th>{{'Calle: '. $proveedor->direcciones[0]->calle .', Numero: '.$proveedor->direcciones[0]->numero}}  </th>
+							@if ($proveedor->direccion!=null)
+							<th >
+								
+									{{ $proveedor->direccion->calle . ' - '.$proveedor->direccion->numero . ' - '.
+									$proveedor->direccion->localidad . ' - '.$proveedor->direccion->provincia . ' - '
+									.$proveedor->direccion->pais }} 
+							   
+							</th>
 							@else
-							<th>Sin Direccion  </th>
+							<th>Sin Direccion </th>
 							@endif
-							{{-- <th>Imagen Principal</th> --}}
+
 							<th >
 								<button type="button" name="edit" id="{{$proveedor->id}}" class="edit btn btn-outline-primary btn-sm">Editar</button>
 								&nbsp;&nbsp;
@@ -122,7 +122,7 @@
 								
 							</th>
 							
-							
+
 						</tr>
 						@endforeach
 						@endif	
@@ -136,7 +136,6 @@
 							<th>Razon Social</th>
 							<th>Documento </th>
 							<th>Direccion </th>
-							{{-- <th>Imagen Principal</th> --}}
 							<th >&nbsp; </th>
 							
 						</tr>

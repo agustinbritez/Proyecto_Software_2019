@@ -16,6 +16,9 @@ class AddRelationProveedorsTable extends Migration
         Schema::table('proveedors', function (Blueprint $table) {
             $table->unsignedBigInteger('documento_id')->nullable();
             $table->foreign('documento_id')->references('id')->on('documentos');
+
+            $table->unsignedBigInteger('direccion_id')->nullable();
+            $table->foreign('direccion_id')->references('id')->on('direccions');
         });
     }
 
