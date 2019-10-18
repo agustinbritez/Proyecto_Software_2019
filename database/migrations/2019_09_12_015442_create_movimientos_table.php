@@ -17,7 +17,7 @@ class CreateMovimientosTable extends Migration
             $table->bigIncrements('id');
             $table->double('precioUnitario');
             $table->integer('cantidad');
-            $table->date('fecha');
+            $table->dateTime('fecha');
             $table->timestamps();
             $table->softDeletes();
         });

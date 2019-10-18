@@ -26,6 +26,7 @@ Route::get('users','UserController@delete')->name('usuarios.delete')->middleware
 //pdf
 Route::get('pdf/MateriaPrima','PdfController@materiaPrima')->name('pdf.materiaPrima');
 Route::get('pdf/Proveedor','PdfController@proveedor')->name('pdf.proveedor');
+Route::get('pdf/Movimiento','PdfController@movimiento')->name('pdf.movimiento');
 
 //    Route::resource('/usuarios','UserController');
 });

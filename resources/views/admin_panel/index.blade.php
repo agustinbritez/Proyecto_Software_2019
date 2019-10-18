@@ -92,6 +92,7 @@
 
   <!-- OPTIONAL SCRIPTS -->
   <script src="{{asset('admin_panel/plugins/chart.js/Chart.min.js')}}"></script>
+  <script src="{{asset('admin_panel/plugins/moment/moment-with-locales.min.js')}}"></script>
 
   <script src="{{asset('admin_panel/dist/js/demo.js')}}"></script>
 

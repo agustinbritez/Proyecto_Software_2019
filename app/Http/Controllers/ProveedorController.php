@@ -41,46 +41,51 @@ class ProveedorController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->numeroDocumento = strtoupper($request->numeroDocumento);
+        //obtengo la materias primas borradas si elnombre se repite la reuso
+        $proveedorExistente = Proveedor::where('numeroDocumento', $request->numeroDocumento)->where('deleted_at', "<>", null)->withTrashed()->first();
+        //*****************************************************************************************************8 */
+        //si el numeroDocumento esta repetido en una proveedor eliminado
+        //la volvemos a revivir y le actualizamos con los datos del nuevo
+        if ($proveedorExistente != null) {
+            // $proveedorExistente->restore();
+            $request->hidden_id = $proveedorExistente->id;
+            $this->update($request);
+            return redirect()->back()->with('success', 'Proveedor Creado Con Exito!');
+        }
+
         $rules = [
             'nombre'    =>  'required',
-            'email'     =>  'required',
+            'email'     =>  'required|unique:proveedors',
             'razonSocial'     =>  'required',
+            'documento_id'     =>  'required',
+            'numeroDocumento'     =>  'required|unique:proveedors',
             'calle'    =>  'required',
             'numero'    =>  'required|integer',
             'codigoPostal'    =>  'required|integer',
             'localidad'    =>  'required',
             'provincia'    =>  'required',
             'pais'    =>  'required',
-            // 'documento_nombre'     =>  'required',
-            // 'documento_numero'     =>  'required',
-
-            // 'direccion_calle'     =>  'required',
-            // 'direccion_numero'     =>  'required'
-            // 'direccion_postal'     =>  'required',
-            // 'direccion_pais'     =>  'required',
-            // 'direccion_provincia'     =>  'required',
-            // 'direccion_localidad'     =>  'required',
         ];
 
         $messages = [
             'nombre.required' => 'Agrega el nombre del proveedor.',
             'email.required' => 'Agrega el email del proveedor.',
             'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
+            
+            'documento_id.required' => 'Debe seleccionar algun tipo de documento.',
+            'numeroDocumento.required' => 'Debe agregar un numero de documento.',
+            'numeroDocumento.unique' => 'El numero de documento del proveedor debe ser unico.',
+            
             'calle.required' => 'Agregar la calle de la direccion',
             'numero.required' => 'Agregar el numero de la direccion',
+            'numero.integer' => 'El numero debe ser un valor entero',
             'codigoPostal.required' => 'Agregar el codigo postal de la direccion',
+            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
             'localidad.required' => 'Agregar la localidad de la direccion',
             'provincia.required' => 'Agregar la provincia de la direccion',
-            'pais.required' => 'Agregar el pais de la direccion',
-
-            'numero.integer' => 'El numero debe ser un valor entero',
-            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
-
-            // 'documento_nombre.required' => 'Agrega el tipo de documento',
-            // 'documento_numero.required' => 'Agrega el numero del documento',
-
-            // 'direccion_calle'     =>  'Agrega la calle del proveedor',
-            // 'direccion_numero'     =>  'Agrega el numero de la calle del proveedor'
+            'pais.required' => 'Agregar el pais de la direccion'
         ];
 
         $this->validate($request, $rules, $messages);
@@ -161,50 +166,46 @@ class ProveedorController extends Controller
      */
     public function update(Request $request)
     {
-        $rules = [
+        
+       $rules = [
             'nombre'    =>  'required',
-            'email'     =>  'required',
+            'email'     =>  'required|unique:proveedors',
             'razonSocial'     =>  'required',
-
-            // 'documento_nombre'     =>  'required',
-            // 'documento_numero'     =>  'required',
-
-            // 'direccion_calle'     =>  'required',
-            // 'direccion_numero'     =>  'required'
-            // 'direccion_postal'     =>  'required',
-            // 'direccion_pais'     =>  'required',
-            // 'direccion_provincia'     =>  'required',
-            // 'direccion_localidad'     =>  'required',
+            'documento_id'     =>  'required',
+            'numeroDocumento'     =>  'required|unique:proveedors,nombre,' . $request->hidden_id,
+            'calle'    =>  'required',
+            'numero'    =>  'required|integer',
+            'codigoPostal'    =>  'required|integer',
+            'localidad'    =>  'required',
+            'provincia'    =>  'required',
+            'pais'    =>  'required',
         ];
 
         $messages = [
             'nombre.required' => 'Agrega el nombre del proveedor.',
             'email.required' => 'Agrega el email del proveedor.',
             'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
-
-            // 'documento_nombre.required' => 'Agrega el tipo de documento',
-            // 'documento_numero.required' => 'Agrega el numero del documento',
-
-            // 'direccion_calle'     =>  'Agrega la calle del proveedor',
-            // 'direccion_numero'     =>  'Agrega el numero de la calle del proveedor'
+            
+            'documento_id.required' => 'Debe seleccionar algun tipo de documento.',
+            'numeroDocumento.required' => 'Debe agregar un numero de documento.',
+            'numeroDocumento.unique' => 'El numero de documento del proveedor debe ser unico.',
+            
+            'calle.required' => 'Agregar la calle de la direccion',
+            'numero.required' => 'Agregar el numero de la direccion',
+            'numero.integer' => 'El numero debe ser un valor entero',
+            'codigoPostal.required' => 'Agregar el codigo postal de la direccion',
+            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
+            'localidad.required' => 'Agregar la localidad de la direccion',
+            'provincia.required' => 'Agregar la provincia de la direccion',
+            'pais.required' => 'Agregar el pais de la direccion'
         ];
 
+
         $this->validate($request, $rules, $messages);
-        // $documento=Documento::create([
-        //     'nombre'=>$request->documento_nombre,
-        //     'numero'=>$request->documento_numero
-        //     ]);
-
-        //     $direccion=Direccion::create([
-        //         'calle'=>$request->direccion_calle,
-        //         'numero'=>$request->direccion_numero,
-        //         'codigopostal'=>$request->direccion_codigoPostal,
-        //         'pais'=>$request->direccion_pais,
-        //         'provincia'=>$request->direccion_provincia,
-        //         'localidad'=>$request->direccion_localidad
-        //         ]);   
-
+      
         $proveedor = Proveedor::find($request->hidden_id);
+        $direccion=Direccion::find($proveedor->direccion->id);
+        $direccion->update($request->all());
         $proveedor->update($request->all());
         // $proveedor->documentos()->sync($documento);
         // $proveedor->direcciones()->sync($direccion);

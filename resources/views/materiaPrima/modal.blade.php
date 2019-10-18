@@ -145,6 +145,8 @@
     
     
     $(document).ready(function(){
+
+        // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
         //variables globales 
         //indices del data table que uso para el filtro
         var indiceNombre=2;

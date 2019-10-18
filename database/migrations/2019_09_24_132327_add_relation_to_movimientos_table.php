@@ -15,7 +15,7 @@ class AddRelationToMovimientosTable extends Migration
     {
         Schema::table('movimientos', function (Blueprint $table) {
             $table->unsignedBigInteger('proveedor_id');
-            $table->foreign('proveedor_id')->references('id')->on('proveedors');
+            $table->foreign('proveedor_id')->references('id')->on('proveedors')->nullable();
             
             $table->unsignedBigInteger('tipoMovimiento_id');
             $table->foreign('tipoMovimiento_id')->references('id')->on('tipo_movimientos');
