@@ -28,7 +28,7 @@ class PdfController extends Controller
             $filtro = $filtro->union(['filtro_numero_movimiento' => $request->filtro_id]);
         }
 
-        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '')) {
+        if ((($request->filtro_precioUnitarioMin != '')&&($request->filtro_precioUnitarioMin > 0.00)) && (($request->filtro_precioUnitarioMax != '')&&($request->filtro_precioUnitarioMax > 0.00))) {
             $movimientos = $movimientos
                 ->whereBetween('precioUnitario', [$request->filtro_precioUnitarioMin, $request->filtro_precioUnitarioMax]);
 
@@ -44,11 +44,11 @@ class PdfController extends Controller
                     $request->filtro_precioUnitarioMax
                 ]
             );
-        } else if ($request->filtro_precioUnitarioMin != '') {
+        } else if (($request->filtro_precioUnitarioMin != '')&&($request->filtro_precioUnitarioMin > 0.00)) {
             $movimientos = $movimientos
                 ->where('precioUnitario', '>', $request->filtro_precioUnitarioMin);
             $filtro = $filtro->union(['filtro_precio_unitario_minimo' => $request->filtro_precioUnitarioMin]);
-        } else if ($request->filtro_precioUnitarioMax != '') {
+        } else if (($request->filtro_precioUnitarioMax != '')&&($request->filtro_precioUnitarioMax >0.00)) {
             $movimientos = $movimientos
                 ->where('precioUnitario', '<', $request->filtro_precioUnitarioMax);
 

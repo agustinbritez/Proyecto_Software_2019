@@ -37,8 +37,8 @@
                             <input type="checkbox" checked id="operacion" name="operacion">
                             <label for="operacion" id='labelOperacion'>
 
-                            </label>
-                        </div>
+                            </div>
+                        </label>
                     </div>
 
                 </div>

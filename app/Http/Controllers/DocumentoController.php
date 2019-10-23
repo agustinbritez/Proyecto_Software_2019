@@ -138,6 +138,9 @@ class DocumentoController extends Controller
     public function destroy(Request $request)
     {
         $documento = Documento::find($request->boton_delete);
+        if( !$documento->proveedores->isEmpty()||( $documento->user!=null)){
+            return redirect()->back()->withErrors(['message2'=>'No se puede eliminar el documento porque esta relacionado']);
+        }
         $documento->delete();
         return redirect()->back();
     }

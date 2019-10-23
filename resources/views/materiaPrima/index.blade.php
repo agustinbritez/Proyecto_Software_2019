@@ -105,14 +105,14 @@
 						@foreach ($materiaPrimas as $materia)
 						<tr>
 							
-							<th>{{$materia->id}} </th>
+							<td>{{$materia->id}} </td>
 							
-						<th><img src="{{asset("/imagenes/materia_primas/".$materia->imagenPrincipal)}}" alt="" width='70px' height='70px'></th>
-							<th>{{$materia->nombre}} </th>
-							<th>{{$materia->precioUnitario}} </th>
-							<th>{{$materia->cantidad}} </th>
-							<th>{{$materia->medida->nombre}}  </th>
-							<th>
+						<td><img src="{{asset("/imagenes/materia_primas/".$materia->imagenPrincipal)}}" alt="" width='70px' height='70px'></td>
+							<td>{{$materia->nombre}} </td>
+							<td>{{$materia->precioUnitario}} </td>
+							<td>{{$materia->cantidad}} </td>
+							<td>{{$materia->medida->nombre}}  </td>
+							<td>
 								@if (sizeof($materia->modelos)>0)
 								
 								@foreach ($materia->modelos as $modelo)
@@ -121,14 +121,14 @@
 								@endforeach
 								@endif
 								
-							</th>
-							{{-- <th>Imagen Principal</th> --}}
+							</td>
+							{{-- <td>Imagen Principal</td> --}}
 							<th >
 								<button type="button" name="edit" id="{{$materia->id}}" class="edit btn btn-outline-primary btn-sm">Editar</button>
 								&nbsp;&nbsp;
 								<button type="button" name="delete" id="{{$materia->id}}" class="delete btn btn-outline-danger btn-sm">Eliminar</button>
 								
-							</th>
+							</td>
 							
 							
 						</tr>

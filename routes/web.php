@@ -27,6 +27,7 @@ Route::get('users','UserController@delete')->name('usuarios.delete')->middleware
 Route::get('pdf/MateriaPrima','PdfController@materiaPrima')->name('pdf.materiaPrima');
 Route::get('pdf/Proveedor','PdfController@proveedor')->name('pdf.proveedor');
 Route::get('pdf/Movimiento','PdfController@movimiento')->name('pdf.movimiento');
+Route::get('pdf/Modelos','PdfController@modelo')->name('pdf.modelo');
 
 //    Route::resource('/usuarios','UserController');
 });
@@ -49,10 +50,20 @@ Route::get('movimiento/{movimiento}/show','MovimientoController@show')->name('mo
 Route::get('movimiento/create','MovimientoController@create')->name('movimiento.create')->middleware('permission:movimiento_create');
 Route::post('movimiento','MovimientoController@store')->name('movimiento.store')->middleware('permission:movimiento_store');
 Route::get('movimiento/{id}/edit','MovimientoController@edit')->name('movimiento.edit')->middleware('permission:movimiento_edit');
-Route::get('movimiento/parametros','MovimientoController@obtenerParametros')->name('movimiento.parametros')->middleware('permission:movimiento_edit');
 Route::post('movimiento/update','MovimientoController@update')->name('movimiento.update')->middleware('permission:movimiento_update');
 Route::delete('movimiento/destroy','MovimientoController@destroy')->name('movimiento.destroy')->middleware('permission:movimiento_delete');
 //  Route::resource('movimiento','movimientoController');
+
+//Modelos
+Route::get('modelo','modeloController@index')->name('modelo.index')->middleware('permission:modelo_index');
+Route::get('modelo/{modelo}/show','modeloController@show')->name('modelo.show')->middleware('permission:modelo_show');
+Route::get('modelo/create','modeloController@create')->name('modelo.create')->middleware('permission:modelo_create');
+Route::post('modelo','modeloController@store')->name('modelo.store')->middleware('permission:modelo_store');
+Route::get('modelo/{id}/edit','modeloController@edit')->name('modelo.edit')->middleware('permission:modelo_edit');
+Route::post('modelo/update','modeloController@update')->name('modelo.update')->middleware('permission:modelo_update');
+Route::delete('modelo/destroy','modeloController@destroy')->name('modelo.destroy')->middleware('permission:modelo_delete');
+Route::get('modelo/{variable}','modeloController@cargarListaIngrediente')->name('modelo.cargarListaIngrediente');
+//  Route::resource('modelo','modeloController');
 
 //Tipo Movimiento
 Route::get('tipoMovimiento','tipoMovimientoController@index')->name('tipoMovimiento.index')->middleware('permission:tipoMovimiento_index');
@@ -60,7 +71,6 @@ Route::get('tipoMovimiento/{tipoMovimiento}/show','tipoMovimientoController@show
 Route::get('tipoMovimiento/create','tipoMovimientoController@create')->name('tipoMovimiento.create')->middleware('permission:tipoMovimiento_create');
 Route::post('tipoMovimiento','tipoMovimientoController@store')->name('tipoMovimiento.store')->middleware('permission:tipoMovimiento_store');
 Route::get('tipoMovimiento/{id}/edit','tipoMovimientoController@edit')->name('tipoMovimiento.edit')->middleware('permission:tipoMovimiento_edit');
-Route::get('tipoMovimiento/parametros','tipoMovimientoController@obtenerParametros')->name('tipoMovimiento.parametros')->middleware('permission:tipoMovimiento_edit');
 Route::post('tipoMovimiento/update','tipoMovimientoController@update')->name('tipoMovimiento.update')->middleware('permission:tipoMovimiento_update');
 Route::delete('tipoMovimiento/destroy','tipoMovimientoController@destroy')->name('tipoMovimiento.destroy')->middleware('permission:tipoMovimiento_delete');
 //  Route::resource('tipoMovimiento','tipoMovimientoController');
@@ -71,7 +81,6 @@ Route::get('medida/{medida}/show','medidaController@show')->name('medida.show')-
 Route::get('medida/create','medidaController@create')->name('medida.create')->middleware('permission:medida_create');
 Route::post('medida','medidaController@store')->name('medida.store')->middleware('permission:medida_store');
 Route::get('medida/{id}/edit','medidaController@edit')->name('medida.edit')->middleware('permission:medida_edit');
-Route::get('medida/parametros','medidaController@obtenerParametros')->name('medida.parametros')->middleware('permission:medida_edit');
 Route::post('medida/update','medidaController@update')->name('medida.update')->middleware('permission:medida_update');
 Route::delete('medida/destroy','medidaController@destroy')->name('medida.destroy')->middleware('permission:medida_delete');
 //  Route::resource('medida','medidaController');
@@ -82,7 +91,6 @@ Route::get('direccion/{direccion}/show','direccionController@show')->name('direc
 Route::get('direccion/create','direccionController@create')->name('direccion.create')->middleware('permission:direccion_create');
 Route::post('direccion','direccionController@store')->name('direccion.store')->middleware('permission:direccion_store');
 Route::get('direccion/{id}/edit','direccionController@edit')->name('direccion.edit')->middleware('permission:direccion_edit');
-Route::get('direccion/parametros','direccionController@obtenerParametros')->name('direccion.parametros')->middleware('permission:direccion_edit');
 Route::post('direccion/update','direccionController@update')->name('direccion.update')->middleware('permission:direccion_update');
 Route::delete('direccion/destroy','direccionController@destroy')->name('direccion.destroy')->middleware('permission:direccion_delete');
 //  Route::resource('direccion','direccionController');
@@ -93,7 +101,6 @@ Route::get('documento/{documento}/show','documentoController@show')->name('docum
 Route::get('documento/create','documentoController@create')->name('documento.create')->middleware('permission:documento_create');
 Route::post('documento','documentoController@store')->name('documento.store')->middleware('permission:documento_store');
 Route::get('documento/{id}/edit','documentoController@edit')->name('documento.edit')->middleware('permission:documento_edit');
-Route::get('documento/parametros','documentoController@obtenerParametros')->name('documento.parametros')->middleware('permission:documento_edit');
 Route::post('documento/update','documentoController@update')->name('documento.update')->middleware('permission:documento_update');
 Route::delete('documento/destroy','documentoController@destroy')->name('documento.destroy')->middleware('permission:documento_delete');
 //  Route::resource('documento','documentoController');

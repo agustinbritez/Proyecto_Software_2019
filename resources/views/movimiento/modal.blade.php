@@ -116,8 +116,8 @@
                 <form id="formDelete" action="{{route('movimiento.destroy')}}" method="POST">
                     @csrf
                     @method('DELETE')
-                    {{-- Paso el id de la materia  aborrar en materia_delete--}}
-                    <input type="hidden" name="materia_delete" id="materia_delete">
+                    {{-- Paso el id de la materia  aborrar en boton_delete--}}
+                    <input type="hidden" name="boton_delete" id="boton_delete">
                     <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
                 </form>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -340,7 +340,7 @@
             
             $('#form_result').html('');
             $("#sample_form").attr("action","{{route('movimiento.store')}}");
-            $('.modal-title').text("Agregar Nueva Materia Prima");
+            $('.modal-title').text("Agregar Nuevo Modelo");
             $('#action_button').val("Agregar");
             $('#action').val("Add");
             
@@ -432,7 +432,7 @@
                     preview.append(image);
                     
                     
-                    $('.modal-title').text("Editar Materia Prima");
+                    $('.modal-title').text("Editar Modelo");
                     $('#action_button').val("Editar");
                     $('#action').val("Edit");
                     $('#formModal').modal('show');
@@ -445,7 +445,7 @@
         var id;
         $(document).on('click', '.delete', function(){
             id = $(this).attr('id');
-            $('#materia_delete').val(id);
+            $('#boton_delete').val(id);
             $('#ok_button').text('Ok')
             $('.modal-title').text("Confirmacion");
             $('#confirmModal').modal('show');

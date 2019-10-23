@@ -51,6 +51,12 @@
                 <p>Movimientos</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('modelo.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Modelos</p>
+              </a>
+            </li>
 
           </ul>
           {{-- <ul class="nav nav-treeview">
@@ -130,6 +136,8 @@
               <p>Medidas</p>
             </a>
           </li>
+
+
         </ul>
 
 

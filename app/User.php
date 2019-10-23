@@ -41,7 +41,7 @@ class User extends Authenticatable
 
     public function documento()
     {
-        return $this->belongsTo(Documento::class);
+        return $this->hasOne(Documento::class);
     }    
     public function direccions()
     {
