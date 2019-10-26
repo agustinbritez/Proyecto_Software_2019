@@ -58,7 +58,7 @@ class ControllerMateriaPrima extends Controller
         }
         $rules = [
             'nombre'    =>  'required|unique:materia_primas',
-            // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
             'cantidad'     =>  'required|integer',
             'precioUnitario'     =>  'required|numeric',
@@ -73,13 +73,20 @@ class ControllerMateriaPrima extends Controller
         $messages = [
             'nombre.required' => 'Agrega el nombre de la materia prima.',
             'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
-            // 'detalle.required' =>'Agrega el detalle de la materia prima.',
+
             'cantidad.required' => 'Agrega la  cantidad de materias primas.',
             'cantidad.integer' => 'La cantidad debe ser un valor entero',
+
             'precioUnitario.required' => 'Agrege el precio de la materia prima.',
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
+
             'medida_id.required' => 'Debe seleccionar una unidad de medida',
-            'modelos.required' => 'Debe seleccionar un modelo como minimo'
+
+            'modelos.required' => 'Debe seleccionar un modelo como minimo',
+
+            'imagenPrincipal.required'     => 'La imagen es obligatoria',
+            'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+            'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048',
         ];
 
         $this->validate($request, $rules, $messages);
@@ -198,7 +205,7 @@ class ControllerMateriaPrima extends Controller
     {
         $rules = [
             'nombre'    =>  'required|unique:materia_primas,nombre,' . $request->hidden_id,
-            // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagenPrincipal'     =>  'mimes:jpeg,png,jpg,gif,svg|max:2048',
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
             'cantidad'     =>  'required|integer',
             'precioUnitario'     =>  'required|numeric',
@@ -213,23 +220,54 @@ class ControllerMateriaPrima extends Controller
         $request->precioUnitario = $tr;
         $request->nombre = strtoupper($request->nombre);
 
-        $messages = [
+      $messages = [
             'nombre.required' => 'Agrega el nombre de la materia prima.',
             'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
-            // 'detalle.required' =>'Agrega el detalle de la materia prima.',
+
             'cantidad.required' => 'Agrega la  cantidad de materias primas.',
             'cantidad.integer' => 'La cantidad debe ser un valor entero',
+
             'precioUnitario.required' => 'Agrege el precio de la materia prima.',
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
+
             'medida_id.required' => 'Debe seleccionar una unidad de medida',
-            'modelos.required' => 'Debe seleccionar un modelo como minimo'
+
+            'modelos.required' => 'Debe seleccionar un modelo como minimo',
+
+            'imagenPrincipal.required'     => 'La imagen es obligatoria',
+            'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+            'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048',
         ];
         $this->validate($request, $rules, $messages);
+
+        //si el id que crea es uno borrado lo revivimos
+        $materiaPrima = MateriaPrima::withTrashed()->find($request->hidden_id);
+
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
             $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
             $file->move(public_path('/imagenes/materia_primas/'), $imagen);
+            $form_data = array(
+                'nombre'        =>  $request->nombre,
+                'imagenPrincipal'        =>  $imagen,
+                'detalle'         =>  $request->detalle,
+                'precioUnitario'         =>  $request->precioUnitario,
+                'cantidad'         =>  $request->cantidad,
+                'medida_id'         =>  $request->medida_id
+            );
+            //creamos el camino de la imagen vieja
+            $file_path = public_path() . '/imagenes/materia_primas/' . $materiaPrima->imagenPrincipal;
+            //borramos la imagen vieja
+            unlink($file_path);
+        } else {
+            $form_data = array(
+                'nombre'        =>  $request->nombre,
+                'detalle'         =>  $request->detalle,
+                'precioUnitario'         =>  $request->precioUnitario,
+                'cantidad'         =>  $request->cantidad,
+                'medida_id'         =>  $request->medida_id
+            );
         }
 
         // $rules = array(
@@ -243,19 +281,11 @@ class ControllerMateriaPrima extends Controller
         // {
         //     return response()->json(['errors' => $error->errors()->all()]);
         // }
-        $form_data = array(
-            'nombre'        =>  $request->nombre,
-            'imagenPrincipal'        =>  $imagen,
-            'detalle'         =>  $request->detalle,
-            'precioUnitario'         =>  $request->precioUnitario,
-            'cantidad'         =>  $request->cantidad,
-            'medida_id'         =>  $request->medida_id
-        );
+
         //si no crea es porque hay agun atributo que no permite null que esta vacio
 
 
-        //si el id que crea es uno borrado lo revivimos
-        $materiaPrima = MateriaPrima::withTrashed()->find($request->hidden_id);
+
         //revive a la materia prima borrada anteriormente.
         $materiaPrima->restore();
 

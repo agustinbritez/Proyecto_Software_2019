@@ -59,11 +59,11 @@ class TipoMovimientoController extends Controller
 
         $this->validate($request, $rules, $messages);
         
-        //si el check box es verdadero se le asigna '0' 
+        //si el check box es verdadero se le asigna un valor distinto a '0' 
         if ($request->has('operacion')) {
-            $da = 0;
-        } else {
             $da = 1;
+        } else {
+            $da = 0;
         }
 
         $form_data = array(
@@ -126,11 +126,11 @@ class TipoMovimientoController extends Controller
 
         $this->validate($request, $rules, $messages);
 
-        //si el check box es verdadero se le asigna '0' 
+        //si el check box es verdadero se le asigna un valor distinto a '0' 
         if ($request->has('operacion')) {
-            $da = 0;
-        } else {
             $da = 1;
+        } else {
+            $da = 0;
         }
 
         $form_data = array(

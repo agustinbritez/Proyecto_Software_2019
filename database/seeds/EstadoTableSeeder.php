@@ -16,8 +16,8 @@ class EstadoTableSeeder extends Seeder
         $estado->nombre='Inicio';
         $estado->save();
         
-        $estado=new Estado();
-        $estado->nombre='Final';
-        $estado->save();
+        // $estado=new Estado();
+        // $estado->nombre='Final';
+        // $estado->save();
     }
 }

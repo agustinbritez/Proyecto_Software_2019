@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\MateriaPrima;
+use App\Medida;
 use App\Modelo;
+use App\Receta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use File;
+use Illuminate\Database\Eloquent\Model;
 
 class ModeloController extends Controller
 {
@@ -26,9 +31,23 @@ class ModeloController extends Controller
      */
     public function create()
     {
+        $modelo = new Modelo();
         $modelos = Modelo::all();
-        return view('modelo.create', compact('modelos'));
+        $modificar = false;
+        $medidas = Medida::all();
+        return view('modelo.create', compact('modelos', 'modificar', 'modelo', 'medidas'));
     }
+
+
+    public function modificar(Request $request, $id)
+    {
+        $modelo = Modelo::find($id);
+        $modelos = Modelo::all();
+        $modificar = true;
+        $medidas = Medida::all();
+        return view('modelo.create', compact('modelos', 'modificar', 'modelo', 'medidas'));
+    }
+
 
     /**
      * Store a newly created resource in storage.
@@ -38,15 +57,86 @@ class ModeloController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         if (request()->ajax()) {
-            // $data = TipoMovimiento::findOrFail($id);
-            $receta= $this->cargarReceta();
-            return response()->json(['success'=>'Modelo creado correctamente.','receta'=>$receta]);
+
+            $request->nombre = strtoupper($request->nombre);
+            //obtengo la materias primas borradas si elnombre se repite la reuso
+            $modeloExistente = Modelo::where('nombre', $request->nombre)->where('deleted_at', "<>", null)->withTrashed()->first();
+            // return response()->json(['success' => 'Modelo creado con exito!.', 'modelo' => 1]);
+            //*****************************************************************************************************8 */
+            //si el nombre esta repetido en una materia prima eliminada 
+            //la volvemos a revivir y le actualizamos con los datos del nuevo
+            if ($modeloExistente != null) {
+                // $modeloExistente->restore();
+                $request->hidden_id = $modeloExistente->id;
+                $this->update($request);
+
+                // return redirect()->back()->with('success', 'Modelo Creado Con Exito!');
+                return response()->json(['success' => 'Modelo creado con exito!.', 'modelo' => $modeloExistente]);
+            }
+            $rules = [
+                'nombre'    =>  'required|unique:modelos',
+                'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'precioUnitario'     =>  'required|numeric',
+            ];
+            //transformamos la mascara de precio unitario a un valor double normal
+            $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
+            // $tr= str_replace('.',',',$tr);
+
+            $request->precioUnitario = $tr;
+            $messages = [
+                'nombre.required' => 'Agrega el nombre del modelo.',
+                'nombre.unique' => 'El nombre del modelo debe ser unico.',
+
+                'precioUnitario.required' => 'Agrege el precio del modelo.',
+                'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
+
+                'imagenPrincipal.required'     => 'La imagen es obligatoria',
+                'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+                'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048'
+            ];
+
+            $validator = Validator::make($request->all(), $rules, $messages);
+
+            if ($validator->fails()) {
+
+                return response()->json(['errors' => $validator->errors()->all()]);
+            }
+
+
+
+            // return response()->json(['success' => 'Modelo creado con exito!.', 'modelo' => 1]);
+            // $this->validate($request, $rules, $messages);
+
+
+
+            $imagen = null;
+            if ($request->hasFile('imagenPrincipal')) {
+                $file = $request->file('imagenPrincipal');
+                $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+                $file->move(public_path('/imagenes/modelos/'), $imagen);
+            }
+
+            $form_data = array(
+                'nombre'        =>  $request->nombre,
+                'imagenPrincipal'        =>  $imagen,
+                'detalle'         =>  $request->detalle,
+                'precioUnitario'         =>  $request->precioUnitario
+            );
+
+            //si no crea es porque hay agun atributo que no permite null que esta vacio
+            $modelo = Modelo::create($form_data);
+            // if ($request->has('modelos')) {
+            //     $modelo->modelos()->sync($request->input('modelos', []));
+            // }
+            return response()->json(['success' => 'Modelo creado correctamente.', 'modelo' => $modelo]);
+
+            return redirect()->back()->with('success', 'Materia Prima Creada Con Exito!');
         }
     }
 
- 
+
     /**
      * Display the specified resource.
      *
@@ -77,89 +167,107 @@ class ModeloController extends Controller
         return $data;
     }
 
-    public function cargarReceta()
+    public function getMedidaMateriaPrima($id)
     {
-        $receta = '
-        <div class="card text-left">
-        <div class="card-header">
-    
-            <div class="card-tools">
-                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                        class="fas fa-minus"></i></button>
-            </div>
-            <h3>Crear Recetas Para el Modelo</h3>
-        </div>
+        $materia = MateriaPrima::find($id);
+        if ($materia != null) {
+            return $materia->medida;
+        }
+    }
+    public function getMedidaModelo($id)
+    {
+        $modelo = Modelo::find($id);
+        if ($modelo != null) {
+            return $modelo->medida;
+        }
+    }
 
-        <div class="card-body">
-            <div class="form-group">
-                <form action="" name="formCheck" id="formCheck">
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Modelo  $modelo
+     * @return \Illuminate\Http\Response
+     */
 
-                    <div class="form-group clearfix ">
-                        <label for="">Mostrar solo materia prima: </label>
-                        <div class="icheck-success d-inline">
+    public function addRelation(Request $request)
+    {
+        // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $request->has('cambiarIngrediente') ]);
 
-                            <input type="checkbox" id="cambiarIngrediente" name="cambiarIngrediente">
-                            <label for="cambiarIngrediente" id="labelOperacion">
-                        </div>
-                        </label>
-                    </div>
-                </form>
-            </div>
+        if (request()->ajax()) {
+            $agregar = false;
+            //el modelo padre
+            $modelo = Modelo::find($request->hidden_id_modelo);
+            if ($modelo != null) {
+                //validamos
+                $validator = Validator::make(
+                    $request->all(),
+                    ['cantidad' => 'required|integer', 'prioridad' => 'required|integer', 'ingredientes' => 'required' ],
+                    [
+                        'cantidad.required' => 'No ingreso la cantidad', 'cantidad.integer' => 'No ingreso un numero',
+                        'prioridad.required' => 'No ingreso la prioridad', 'prioridad.integer' => 'No ingreso un numero',
+                        'ingredientes' => 'No selecciono un ingrediente'
+                    ]
+                );
 
-            <div class=" row">
+                if ($validator->fails()) {
 
-                <div class="form-group col">
-                    <label id="labelIngrediente">Ingredientes : </label>
-
-                    <select class="select2" name="ingredientes" id="ingredientes"
-                        data-placeholder="Seleccione Un Modelo" style="width: 100%;">';
-
-                        $modelos=Modelo::all();
-                        $options='';
-                        if(!$modelos->isEmpty()){
-                            foreach ($modelos as $key => $modelo) {
-                            $options=$options. '<option value="'.$modelo->id.'">'.$modelo->nombre.'</option>';
-                            }
+                    return response()->json(['errors' => $validator->errors()->all()]);
+                }
+                //si el modelo ya tiene el ingrediente que se desea agregar lo rechaza
+                foreach ($modelo->recetaPadre as $key => $receta) {
+                    if ($receta->materiaPrima != null) {
+                        if ($receta->materiaPrima->id == $request->ingredientes) {
+                            return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
                         }
-                        $receta=$receta.$options;
+                    } elseif ($receta->modeloHijo != null) {
+                        if ($receta->modeloHijo->id == $request->ingredientes) {
+                            return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado']]);
+                        }
+                    }
+                }
+                //si el check esta seleccionado quiere decir que trajo una materia prima
+                if ($request->has('cambiarIngrediente')) {
 
 
-                      $receta=$receta.'
-                        
-                    </select>
-                </div>
+                    $form_data = array(
+                        'modeloPadre_id' => $request->hidden_id_modelo,
+                        'materiaPrima_id' => $request->ingredientes,
+                        'cantidad'        =>  $request->cantidad,
+                        'prioridad' => $request->prioridad
+                    );
 
-                <div class="form-group col">
-                    <label>Cantidad : </label>
-                    <input class="form-control" type="number" name="cantidad" id="cantidad"
-                        style="width: 100%;">
-                </div>
+                    //si no crea es porque hay agun atributo que no permite null que esta vacio
+                    $receta = Receta::create($form_data);
+                    $agregar = true;
+                    return response()->json(['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => null, 'hijoMateriaPrima' => $receta->materiaPrima]);
+                } else {
+                    //si el check no esta seleccionado significa que trajo una relacion de modelo
 
-                <div class="form-group col">
-                    <label>Prioridad : </label>
-                    <input class="form-control" type="number" name="prioridad" id="prioridad"
-                        style="width: 100%;">
-                </div>
-                
-                <div class="form-group col">
-                    <button type="button" name="filtrar" id="agregar_receta"
-                        class="btn btn-success btn-sm">Agregar</button>
+                    //si llego hasta este punto se puede agregar la relacion de modelo a modelo
 
-                </div>
-            </div>
+                    $form_data = array(
+                        'modeloPadre_id' => $request->hidden_id_modelo,
+                        'modeloHijo_id' => $request->ingredientes,
+                        'cantidad'        =>  $request->cantidad,
+                        'prioridad' => $request->prioridad
+                    );
+
+                    // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $form_data]);
+                    //si no crea es porque hay agun atributo que no permite null que esta vacio
+                    $receta = Receta::create($form_data);
+                    $agregar = true;
+
+                    return response()->json(['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => $receta->modeloHijo, 'hijoMateriaPrima' => null]);
+                }
 
 
-            <div class="card-deck  " id="add_receta">
+                // $modelo->$modelo->modelos()->sync($request->input('modelos', []));
 
-            </div>
 
-        </div>
+            }
 
-        <div class="card-footer text-muted">
-        </div>
-    </div>';
-    
-    return $receta;
+            return response()->json(['errors' => ['El modelo que quiere sincronizar no existe']]);
+        }
     }
 
     /**
@@ -180,9 +288,76 @@ class ModeloController extends Controller
      * @param  \App\Modelo  $modelo
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Modelo $modelo)
+    public function update(Request $request)
     {
-        //
+
+        $rules = [
+            'nombre'    =>  'required|unique:modelos,nombre,' . $request->hidden_id,
+            'imagenPrincipal'     =>  'mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'precioUnitario'     =>  'required|numeric'
+        ];
+
+        //transformamos la mascara de precio unitario a un valor double normal
+        $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
+        // $tr= str_replace('.',',',$tr);
+
+        $request->precioUnitario = $tr;
+        $request->nombre = strtoupper($request->nombre);
+
+        $messages = [
+            'nombre.required' => 'Agrega el nombre de la materia prima.',
+            'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
+
+            'precioUnitario.required' => 'Agrege el precio de la materia prima.',
+            'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
+
+            'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+            'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048'
+
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+
+            return response()->json(['errors' => $validator->errors()->all()]);
+        }
+
+        //si el id que crea es uno borrado lo revivimos
+        $modelo = Modelo::withTrashed()->find($request->hidden_id);
+
+
+        $imagen = null;
+        if ($request->hasFile('imagenPrincipal')) {
+            $file = $request->file('imagenPrincipal');
+            $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+            $file->move(public_path('/imagenes/modelos/'), $imagen);
+            $form_data = array(
+                'nombre'        =>  $request->nombre,
+                'imagenPrincipal'        =>  $imagen,
+                'detalle'         =>  $request->detalle,
+                'precioUnitario'         =>  $request->precioUnitario
+            );
+            //creamos el camino de la imagen vieja
+            $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
+            //borramos la imagen vieja
+            unlink($file_path);
+        } else {
+            $form_data = array(
+                'nombre'        =>  $request->nombre,
+                'detalle'         =>  $request->detalle,
+                'precioUnitario'         =>  $request->precioUnitario
+            );
+        }
+
+
+        //revive a la materia prima borrada anteriormente.
+        $modelo->restore();
+        //Actualizamos
+        // $modelo->fill($request->all());
+        $modelo->update($form_data);
+
+        return response()->json(['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => $modelo]);
     }
 
     /**
@@ -191,8 +366,27 @@ class ModeloController extends Controller
      * @param  \App\Modelo  $modelo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Modelo $modelo)
+    public function destroy($id)
     {
-        //
+        $modelo = Modelo::find($id);
+        if (!$modelo->recetaHijo->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo porque es ingrediente de otras recetas']);
+        }
+        if (!$modelo->materiasPrimas->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a materias primas']);
+        }
+        if (!$modelo->componentes->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a componentes']);
+        }
+        if (!$modelo->productosModelos->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a productos']);
+        }
+        //borramos todas sus recetas
+        foreach ($modelo->recetaPadre as $key => $receta) {
+            $receta->delete();
+        }
+
+        $modelo->delete();
+        return redirect()->back()->with('warning', 'Se elimino el modelo de manera correcta');
     }
 }

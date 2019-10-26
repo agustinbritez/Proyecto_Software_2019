@@ -20,7 +20,8 @@ class CreateModelosTable extends Migration
             $table->boolean('venta')->nullable();
             $table->double('precioUnitario')->nullable();
             $table->string('imagenPrincipal')->nullable();
-            
+            $table->softDeletes();
+
            
            
             $table->timestamps();

@@ -1,7 +1,9 @@
 <?php
 
 use App\User;
+use Caffeinated\Shinobi\Models\Role;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class UsersTableSeeder extends Seeder
 {
@@ -16,7 +18,10 @@ class UsersTableSeeder extends Seeder
         $user->nombre='admin';
         $user->apellido='admin';
         $user->email='admin@admin';
-        $user->password=crypt('12345678');
+
+        $user->password=Hash::make('12345678');
+        $rol=Role::where('name','ADMIN')->first()->get();
+        $user->roles()->sync($rol);
         $user->save();
 
         // User::create([

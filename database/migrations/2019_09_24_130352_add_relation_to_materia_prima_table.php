@@ -18,6 +18,7 @@ class AddRelationToMateriaPrimaTable extends Migration
             $table->unsignedBigInteger('medida_id')->nullable();
             $table->foreign('medida_id')->references('id')->on('medidas');
             
+            
             // $table->unsignedBigInteger('imagenPrincipal_id')->nullable();
             // $table->foreign('imagenPrincipal_id')->references('id')->on('imagenIndividuals');
         });

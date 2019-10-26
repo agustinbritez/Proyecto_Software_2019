@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Calle;
 use App\Direccion;
 use App\Documento;
+use App\Localidad;
+use App\Pais;
 use App\Proveedor;
+use App\Provincia;
 use Illuminate\Http\Request;
 use DataTables;
 
@@ -19,8 +23,12 @@ class ProveedorController extends Controller
     {
 
         $proveedores = Proveedor::all();
-        $documentos= Documento::all();
-        return view('proveedor.index', compact('proveedores','documentos'));
+        $documentos = Documento::all();
+        $paises = Pais::all();
+        $provincias = Provincia::all();
+        $localidades = Localidad::all();
+        $calles = Calle::all();
+        return view('proveedor.index', compact('proveedores', 'documentos', 'paises', 'provincias', 'localidades', 'calles'));
     }
 
     /**
@@ -59,58 +67,50 @@ class ProveedorController extends Controller
             'nombre'    =>  'required',
             'email'     =>  'required|unique:proveedors',
             'razonSocial'     =>  'required',
+            'domicilio'     =>  'required|integer',
             'documento_id'     =>  'required',
             'numeroDocumento'     =>  'required|unique:proveedors',
-            'calle'    =>  'required',
-            'numero'    =>  'required|integer',
-            'codigoPostal'    =>  'required|integer',
-            'localidad'    =>  'required',
-            'provincia'    =>  'required',
-            'pais'    =>  'required',
+            'calle_id'    =>  'required',
+            'localidad_id'    =>  'required',
+            'provincia_id'    =>  'required',
+            'pais_id'    =>  'required',
         ];
 
         $messages = [
             'nombre.required' => 'Agrega el nombre del proveedor.',
             'email.required' => 'Agrega el email del proveedor.',
             'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
-            
+
             'documento_id.required' => 'Debe seleccionar algun tipo de documento.',
             'numeroDocumento.required' => 'Debe agregar un numero de documento.',
             'numeroDocumento.unique' => 'El numero de documento del proveedor debe ser unico.',
-            
-            'calle.required' => 'Agregar la calle de la direccion',
-            'numero.required' => 'Agregar el numero de la direccion',
-            'numero.integer' => 'El numero debe ser un valor entero',
-            'codigoPostal.required' => 'Agregar el codigo postal de la direccion',
-            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
-            'localidad.required' => 'Agregar la localidad de la direccion',
-            'provincia.required' => 'Agregar la provincia de la direccion',
-            'pais.required' => 'Agregar el pais de la direccion'
+
+            'domicilio.required' => 'Agregar el numero de la direccion',
+            'domicilio.integer' => 'El domicilio debe ser un valor entero',
+            'calle_id.required' => 'Agregar la calle de la direccion',
+            'localidad_id.required' => 'Agregar la localidad de la direccion',
+            'provincia_id.required' => 'Agregar la provincia de la direccion',
+            'pais_id.required' => 'Agregar el pais de la direccion'
         ];
 
         $this->validate($request, $rules, $messages);
-        // $documento=Documento::create([
-        //     'nombre'=>$request->documento_nombre,
-        //     'numero'=>$request->documento_numero
-        //     ]);
 
-        //     $direccion=Direccion::create([
-        //         'calle'=>$request->direccion_calle,
-        //         'numero'=>$request->direccion_numero,
-        //         'codigopostal'=>$request->direccion_codigoPostal,
-        //         'pais'=>$request->direccion_pais,
-        //         'provincia'=>$request->direccion_provincia,
-        //         'localidad'=>$request->direccion_localidad
-        //         ]);   
-        $direccion = Direccion::create([
-            'calle'    =>  $request->calle,
-            'numero'    =>  $request->numero,
-            'codigoPostal'    =>  $request->codigoPostal,
-            'localidad'    =>  $request->localidad,
-            'provincia'    =>  $request->provincia,
-            'pais'    =>  $request->pais
-        ]);
-        
+        $direccion = Direccion::where('numero', $request->domicilio)->where('calle_id', $request->calle_id)
+            ->where('localidad_id', $request->localidad_id)
+            ->where('provincia_id', $request->provincia_id)
+            ->where('pais_id', $request->pais_id)->first();
+
+
+        if ($direccion == null) {
+            $direccion = Direccion::create([
+                'numero'    =>  $request->domicilio,
+                'calle_id'    =>  $request->calle_id,
+                'localidad_id'    =>  $request->localidad_id,
+                'provincia_id'    =>  $request->provincia_id,
+                'pais_id'    =>  $request->pais_id
+            ]);
+        }
+
 
         $form_data = array(
             'nombre'        =>  $request->nombre,
@@ -149,10 +149,26 @@ class ProveedorController extends Controller
     {
         if (request()->ajax()) {
             $data = Proveedor::findOrFail($id);
-            $totalDocumento= Documento::all();
-            return response()->json(['data' => $data,'totalDocumento'=>$totalDocumento,
-            'documento'=>$data->documento,
-            'direccion'=>$data->direccion
+            $totalDocumento = Documento::all();
+            $totalCalles = Calle::all();
+            $totalLocalidades = Localidad::all();
+            $totalProvincias = Provincia::all();
+            $totalPaises = Pais::all();
+
+            return response()->json([
+                'data' => $data,
+                'totalDocumento' => $totalDocumento,
+                'totalCalles' => $totalCalles,
+                'totalLocalidades' => $totalLocalidades,
+                'totalProvincias' => $totalProvincias,
+                'totalPaises' => $totalPaises,
+
+                'documento' => $data->documento,
+                'direccion' => $data->direccion,
+                'calle' => $data->direccion->calle,
+                'provincia' => $data->direccion->provincia,
+                'pais' => $data->direccion->pais,
+                'localidad' => $data->direccion->localidad,
             ]);
         }
     }
@@ -166,47 +182,95 @@ class ProveedorController extends Controller
      */
     public function update(Request $request)
     {
-        
-       $rules = [
+
+        //    $rules = [
+        //         'nombre'    =>  'required',
+        //         'email'     =>  'required|unique:proveedors',
+        //         'razonSocial'     =>  'required',
+        //         'documento_id'     =>  'required',
+        //         'numeroDocumento'     =>  'required|unique:proveedors,nombre,' . $request->hidden_id,
+        //         'calle'    =>  'required',
+        //         'numero'    =>  'required|integer',
+        //         'codigoPostal'    =>  'required|integer',
+        //         'localidad'    =>  'required',
+        //         'provincia'    =>  'required',
+        //         'pais'    =>  'required',
+        //     ];
+        $rules = [
             'nombre'    =>  'required',
-            'email'     =>  'required|unique:proveedors',
+            'email'     =>  'required|unique:proveedors,email,' . $request->hidden_id,
             'razonSocial'     =>  'required',
+            'domicilio'     =>  'required|integer',
             'documento_id'     =>  'required',
             'numeroDocumento'     =>  'required|unique:proveedors,nombre,' . $request->hidden_id,
-            'calle'    =>  'required',
-            'numero'    =>  'required|integer',
-            'codigoPostal'    =>  'required|integer',
-            'localidad'    =>  'required',
-            'provincia'    =>  'required',
-            'pais'    =>  'required',
+            'calle_id'    =>  'required',
+            'localidad_id'    =>  'required',
+            'provincia_id'    =>  'required',
+            'pais_id'    =>  'required',
         ];
 
         $messages = [
             'nombre.required' => 'Agrega el nombre del proveedor.',
             'email.required' => 'Agrega el email del proveedor.',
             'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
-            
+
             'documento_id.required' => 'Debe seleccionar algun tipo de documento.',
             'numeroDocumento.required' => 'Debe agregar un numero de documento.',
             'numeroDocumento.unique' => 'El numero de documento del proveedor debe ser unico.',
-            
-            'calle.required' => 'Agregar la calle de la direccion',
-            'numero.required' => 'Agregar el numero de la direccion',
-            'numero.integer' => 'El numero debe ser un valor entero',
-            'codigoPostal.required' => 'Agregar el codigo postal de la direccion',
-            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
-            'localidad.required' => 'Agregar la localidad de la direccion',
-            'provincia.required' => 'Agregar la provincia de la direccion',
-            'pais.required' => 'Agregar el pais de la direccion'
+
+            'domicilio.required' => 'Agregar el numero de la direccion',
+            'domicilio.integer' => 'El domicilio debe ser un valor entero',
+            'calle_id.required' => 'Agregar la calle de la direccion',
+            'localidad_id.required' => 'Agregar la localidad de la direccion',
+            'provincia_id.required' => 'Agregar la provincia de la direccion',
+            'pais_id.required' => 'Agregar el pais de la direccion'
         ];
+        // $messages = [
+        //     'nombre.required' => 'Agrega el nombre del proveedor.',
+        //     'email.required' => 'Agrega el email del proveedor.',
+        //     'razonSocial.required' => 'Agrega la  razonSocial del proveedor.',
+
+        //     'documento_id.required' => 'Debe seleccionar algun tipo de documento.',
+        //     'numeroDocumento.required' => 'Debe agregar un numero de documento.',
+        //     'numeroDocumento.unique' => 'El numero de documento del proveedor debe ser unico.',
+
+        //     'calle.required' => 'Agregar la calle de la direccion',
+        //     'numero.required' => 'Agregar el numero de la direccion',
+        //     'numero.integer' => 'El numero debe ser un valor entero',
+        //     'codigoPostal.required' => 'Agregar el codigo postal de la direccion',
+        //     'codigoPostal.integer' => 'El codigo postal debe ser un valor entero',
+        //     'localidad.required' => 'Agregar la localidad de la direccion',
+        //     'provincia.required' => 'Agregar la provincia de la direccion',
+        //     'pais.required' => 'Agregar el pais de la direccion'
+        // ];
 
 
         $this->validate($request, $rules, $messages);
-      
+        $direccion = Direccion::where('numero', $request->domicilio)->where('calle_id', $request->calle_id)
+            ->where('localidad_id', $request->localidad_id)
+            ->where('provincia_id', $request->provincia_id)
+            ->where('pais_id', $request->pais_id)->first();
+
+
+        if ($direccion == null) {
+            $direccion = Direccion::create([
+                'numero'    =>  $request->domicilio,
+                'calle_id'    =>  $request->calle_id,
+                'localidad_id'    =>  $request->localidad_id,
+                'provincia_id'    =>  $request->provincia_id,
+                'pais_id'    =>  $request->pais_id
+            ]);
+        }
         $proveedor = Proveedor::find($request->hidden_id);
-        $direccion=Direccion::find($proveedor->direccion->id);
-        $direccion->update($request->all());
-        $proveedor->update($request->all());
+        $form_data = array(
+            'nombre'        =>  $request->nombre,
+            'email'         =>  $request->email,
+            'razonSocial'         =>  $request->razonSocial,
+            'numeroDocumento' => $request->numeroDocumento,
+            'direccion_id' => $direccion->id,
+            'documento_id' => $request->documento_id
+        );
+        $proveedor->update($form_data);
         // $proveedor->documentos()->sync($documento);
         // $proveedor->direcciones()->sync($direccion);
         // return response()->json(['success' => 'Materia Prima Guardada Con Exito.']);

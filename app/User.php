@@ -6,6 +6,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Caffeinated\Shinobi\Concerns\HasRolesAndPermissions;
+use Caffeinated\Shinobi\Models\Role;
 use PhpParser\Comment\Doc;
 
 class User extends Authenticatable
@@ -54,5 +55,9 @@ class User extends Authenticatable
     public function productos()
     {
         return $this->hasMany(Producto::class);
+    }      
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
     }      
 }

@@ -137,6 +137,34 @@
             </a>
           </li>
 
+          <li class="nav-item">
+            <a href="{{ route('pais.index') }}" class="nav-link">
+              <i class="fas  nav-icon"></i>
+              <p>Paises</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('provincia.index') }}" class="nav-link">
+              <i class="fas  nav-icon"></i>
+              <p>Provincias</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('localidad.index') }}" class="nav-link">
+              <i class="fas  nav-icon"></i>
+              <p>Localidades</p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a href="{{ route('calle.index') }}" class="nav-link">
+              <i class="fas  nav-icon"></i>
+              <p>Calles</p>
+            </a>
+          </li>
+
 
         </ul>
 

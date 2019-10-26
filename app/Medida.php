@@ -15,4 +15,9 @@ class Medida extends Model
     {
         return $this->hasMany(MateriaPrima::class);
     }
+    
+    function modelos()
+    {
+        return $this->hasMany(Modelo::class);
+    }
 }

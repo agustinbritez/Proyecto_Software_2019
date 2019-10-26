@@ -99,22 +99,28 @@ class MovimientoController extends Controller
        
         //si la operacion es positiva osea '0' sumamos al stock de la materia prima
         $materiaPrima->update();
-        $form_data = array(
-            'precioUnitario'        =>  $request->precioUnitario,
-            'fecha'         =>  Carbon::now(),
-            'cantidad'         =>  $request->cantidad,
-            'proveedor_id'         =>  null,
-            'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
-            'materiaPrima_id'         =>  $request->input('materiaPrima_id')
-        );
-        
-        $movimiento = Movimiento::create($form_data);
+       
 
         if ($proveedor != null) {
-            $movimiento->proveedor_id = $proveedor->id;
-            $movimiento->update();
+            $form_data = array(
+                'precioUnitario'        =>  $request->precioUnitario,
+                'fecha'         =>  Carbon::now(),
+                'cantidad'         =>  $request->cantidad,
+                'proveedor_id'         =>  $proveedor->id,
+                'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
+                'materiaPrima_id'         =>  $request->input('materiaPrima_id')
+            );
+        }else{
+            $form_data = array(
+                'precioUnitario'        =>  $request->precioUnitario,
+                'fecha'         =>  Carbon::now(),
+                'cantidad'         =>  $request->cantidad,
+                'proveedor_id'         =>  null,
+                'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
+                'materiaPrima_id'         =>  $request->input('materiaPrima_id')
+            );
         }
-
+        $movimiento = Movimiento::create($form_data);
         //si no crea es porque hay agun atributo que no permite null que esta vacio
 
         return redirect()->back()->with('success', 'Movimiento Creado Con Exito!');

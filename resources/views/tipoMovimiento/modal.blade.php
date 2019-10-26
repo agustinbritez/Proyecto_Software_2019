@@ -247,7 +247,7 @@
                     $('#nombre').val(html.data.nombre);
                     $('#detalle').val(html.data.detalle);
                     
-                    if(html.data.operacion==0){
+                    if(html.data.operacion!=0){
                             $('#labelOperacion').text('(Sumar)');
                             $('#labelOperacion').prop('checked', true);
                         }else{

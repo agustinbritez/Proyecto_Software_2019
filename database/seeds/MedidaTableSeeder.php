@@ -13,23 +13,28 @@ class MedidaTableSeeder extends Seeder
     public function run()
     {
         $medida= new Medida();
-        $medida->nombre='centimetros';
-        $medida->detalle='centimetros';
+        $medida->nombre='CENTIMETROS';
+        $medida->detalle='CENTIMETROS';
         $medida->save();
 
         $medida= new Medida();
-        $medida->nombre='metros';
-        $medida->detalle='metros';
+        $medida->nombre='METROS';
+        $medida->detalle='METROS';
         $medida->save();
         
         $medida= new Medida();
-        $medida->nombre='milimetros';
-        $medida->detalle='milimetros';
+        $medida->nombre='MILIMETROS';
+        $medida->detalle='MILIMETROS';
         $medida->save();
         
         $medida= new Medida();
-        $medida->nombre='gramos';
-        $medida->detalle='gramos';
+        $medida->nombre='GRAMOS';
+        $medida->detalle='GRAMOS';
+        $medida->save();
+
+        $medida= new Medida();
+        $medida->nombre='UNIDAD';
+        $medida->detalle='UNIDAD';
         $medida->save();
         
     }

@@ -95,32 +95,35 @@
 						@foreach ($proveedores as $proveedor)
 						<tr>
 							
-							<th>{{$proveedor->id}} </th>
-							<th>{{$proveedor->nombre}} </th>
-							<th>{{$proveedor->email}} </th>
-							<th>{{$proveedor->razonSocial}} </th>
+							<td>{{$proveedor->id}} </td>
+							<td>{{$proveedor->nombre}} </td>
+							<td>{{$proveedor->email}} </td>
+							<td>{{$proveedor->razonSocial}} </td>
 						
 
-							<th>{{$proveedor->documento->nombre .' - '.$proveedor->numeroDocumento}}  </th>
+							<td>{{$proveedor->documento->nombre .' - '.$proveedor->numeroDocumento}}  </td>
 							
 							@if ($proveedor->direccion!=null)
-							<th >
+							<td >
 								
-									{{ $proveedor->direccion->calle . ' - '.$proveedor->direccion->numero . ' - '.
-									$proveedor->direccion->localidad . ' - '.$proveedor->direccion->provincia . ' - '
-									.$proveedor->direccion->pais }} 
+									{{ $proveedor->direccion->calle->nombre . ' - '.$proveedor->direccion->numero . ' - '.
+									$proveedor->direccion->localidad->nombre . ' - '.$proveedor->direccion->provincia->nombre . ' - '
+									.$proveedor->direccion->pais->nombre }} 
 							   
-							</th>
+							</td>
 							@else
-							<th>Sin Direccion </th>
+							<td>Sin Direccion </td>
 							@endif
 
-							<th >
-								<button type="button" name="edit" id="{{$proveedor->id}}" class="edit btn btn-outline-primary btn-sm">Editar</button>
-								&nbsp;&nbsp;
-								<button type="button" name="delete" id="{{$proveedor->id}}" class="delete btn btn-outline-danger btn-sm">Eliminar</button>
-								
-							</th>
+							<td >
+								<div class="row">
+
+									<button type="button" name="edit" id="{{$proveedor->id}}" class="edit btn btn-outline-primary btn-sm">Editar</button>
+									&nbsp;&nbsp;
+									<button type="button" name="delete" id="{{$proveedor->id}}" class="delete btn btn-outline-danger btn-sm">Eliminar</button>
+									
+								</div>
+							</td>
 							
 
 						</tr>

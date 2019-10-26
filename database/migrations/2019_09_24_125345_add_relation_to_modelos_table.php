@@ -17,6 +17,9 @@ class AddRelationToModelosTable extends Migration
             $table->unsignedBigInteger('flujoTrabajo_id')->nullable();
             $table->foreign('flujoTrabajo_id')->references('id')->on('flujo_trabajos');
             
+            $table->unsignedBigInteger('medida_id')->nullable();
+            $table->foreign('medida_id')->references('id')->on('medidas');
+            
             
         });
     }

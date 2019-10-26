@@ -16,7 +16,7 @@ class TipoMovimientoTableSeeder extends Seeder
         $tipoMov->nombre='Ingreso';
         $tipoMov->detalle='Se compran o se obtienen por donaciones las materia primas';
         //se suman la materia prima
-        $tipoMov->operacion=true;
+        $tipoMov->operacion=1;
         $tipoMov->save();
     }
 }

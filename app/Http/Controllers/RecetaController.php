@@ -78,8 +78,16 @@ class RecetaController extends Controller
      * @param  \App\Receta  $receta
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Receta $receta)
+    public function destroy($id)
     {
-        //
+        
+        
+        // $receta=Receta::find($request->hidden_receta_id);
+        $receta=Receta::find($id);
+        $receta->delete();
+        return redirect()->back()->with('warning', 'Ingrediente Eliminado Correctamente');
+
+
+
     }
 }

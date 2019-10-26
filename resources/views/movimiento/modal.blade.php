@@ -58,7 +58,7 @@
                             <select class="form-control select2 " id="proveedor_id" name="proveedor_id"
                                 style="width: 100%;">
 
-                                <option value="-1">NINGUNO</option>
+                                <option value="-1" selected disabled>NINGUNO</option>
 
                                 @if (sizeof($proveedores)>0)
 

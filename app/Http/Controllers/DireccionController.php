@@ -36,42 +36,43 @@ class DireccionController extends Controller
     */
     public function store(Request $request)
     {
-        
+       
      
         $rules = [
-            'calle'    =>  'required',
-            'numero'    =>  'required|integer',
-            'codigoPostal'    =>  'required|integer',
-            'localidad'    =>  'required',
-            'provincia'    =>  'required',
-            'pais'    =>  'required',
-            
-        ];
+            'domicilio'     =>  'required|integer',
+            'calle_id'    =>  'required',
+            'localidad_id'    =>  'required',
+            'provincia_id'    =>  'required',
+            'pais_id'    =>  'required',
+        ];;
         
         $messages = [
-            'calle.required'=>'Agregar la calle de la direccion',
-            'numero.required'=>'Agregar el numero de la direccion',
-            'codigoPostal.required'=>'Agregar el codigo postal de la direccion',
-            'localidad.required'=>'Agregar la localidad de la direccion',
-            'provincia.required'=>'Agregar la provincia de la direccion',
-            'pais.required'=>'Agregar el pais de la direccion',
             
-            'numero.integer' => 'El numero debe ser un valor entero',
-            'codigoPostal.integer' => 'El codigo postal debe ser un valor entero'
+            'domicilio.required' => 'Agregar el numero de la direccion',
+            'domicilio.integer' => 'El domicilio debe ser un valor entero',
+            'calle_id.required' => 'Agregar la calle de la direccion',
+            'localidad_id.required' => 'Agregar la localidad de la direccion',
+            'provincia_id.required' => 'Agregar la provincia de la direccion',
+            'pais_id.required' => 'Agregar el pais de la direccion'
         ];
-        
         $this->validate($request, $rules, $messages);
+
+        $direccion = Direccion::where('numero',$request->domicilio)->where('calle_id',$request->calle_id)
+        ->where('localidad_id',$request->localidad_id)
+        ->where('provincia_id',$request->provincia_id)
+        ->where('pais_id',$request->pais_id)->first();
+
         
-        $form_data = array(
-            'calle'    =>  $request->calle,
-            'numero'    =>  $request->numero,
-            'codigoPostal'    =>  $request->codigoPostal,
-            'localidad'    =>  $request->localidad,
-            'provincia'    =>  $request->provincia,
-            'pais'    =>  $request->pais
-        );
-    
-        $direccion=Direccion::create($form_data);
+        if($direccion==null){
+            $direccion = Direccion::create([
+                'numero'    =>  $request->domicilio,
+                'calle_id'    =>  $request->calle_id,
+                'localidad_id'    =>  $request->localidad_id,
+                'provincia_id'    =>  $request->provincia_id,
+                'pais_id'    =>  $request->pais_id
+            ]);
+            
+        }
      
         
 return redirect()->back()->with('success','Direccion Creada Con Exito!');

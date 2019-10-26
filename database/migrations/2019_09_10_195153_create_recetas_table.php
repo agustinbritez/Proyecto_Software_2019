@@ -15,7 +15,7 @@ class CreateRecetasTable extends Migration
     {
         Schema::create('recetas', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean('modificable');
+            // $table->boolean('modificable');
             $table->integer('prioridad');
             $table->integer('cantidad');
             $table->timestamps();
