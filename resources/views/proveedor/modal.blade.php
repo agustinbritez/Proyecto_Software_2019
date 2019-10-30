@@ -15,7 +15,10 @@
 
           </div>
           <span id="form_result"></span>
+          <div align="right">
 
+            <button type="button" class="btn  btn-info  btn-flat btn-sm" id="limpiar">Limpiar campos</button>
+          </div>
           <div class="form-group row">
             <div class="col">
               <label class="control-label">Nombre: </label>
@@ -194,7 +197,7 @@
                 </select>
 
                 <div class="input-group-append">
-                  <button class="btn btn-outline-success" type="button" id="boton-agregar-provincia">Agregar</button>
+                  <button class="btn btn-outline-success" type="button" id="boton-agregar-pais">Agregar</button>
                 </div>
               </div>
 
@@ -218,7 +221,7 @@
     </div>
   </div>
 </div>
-</div>
+
 
 <div id="confirmModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
@@ -247,12 +250,15 @@
 <div id="createDireccion" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="post" id="direccion_form" class="form-horizontal" enctype="multipart/form-data">
+
+      <form method="POST" id="direccion_form" class="form-horizontal" enctype="multipart/form-data">
         @csrf
-        <div class="modal-header">
+        <div class="modal-header text-center">
 
           <h4 class="modal-title" id="titulo-direccion"> TITULO</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
 
         <div class="modal-body">
@@ -264,45 +270,67 @@
           <div class="form-group row">
             <div class="col">
               <label class="control-label">Nombre: </label>
-              <input type="text" name="nombre" id="nombre" required placeholder="Ingrese un Nombre"
+              <input type="text" name="nombre" id="nombre_direccion" required placeholder="Ingrese un Nombre"
                 class="form-control" />
             </div>
             <div class="col-1">
 
             </div>
           </div>
-          <div class="form-group row" style="display: none" id="detalle-documento">
-            <div class="col">
-              <label class="control-label">Detalle: </label>
-              <input type="text" name="detale" id="detalle" required class="form-control" />
-            </div>
-            <div class="col-1">
 
+          <div style="display: none" id="detalle-documento">
+            <div class="form-group row">
+              <div class="col">
+                <label class="control-label">Detalle: </label>
+                <input type="text" name="detalle" id="detalle" class="form-control" />
+              </div>
+              <div class="col-1">
+
+              </div>
             </div>
           </div>
 
-          <div>
+          <div style="display: none" id="codigo-calle">
+            <div class="form-group row">
+              <div class="col">
+                <label class="control-label">Codigo Postal: </label>
+                <input type="text" name="codigoPostal" id="codigoPostal" class="form-control" />
+              </div>
+              <div class="col-1">
 
-
-
-            <div class="modal-footer justify-content-around">
-              <input type="hidden" name="action_direccion" id="action_direccion" />
-              <input type="hidden" name="hidden_id_direccion" id="hidden_id_direccion" />
-              <input type="submit" name="action_button_direccion" id="action_button_direccion" class="btn btn-success"
-                value="Crear" />
-              <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+              </div>
             </div>
+          </div>
+
+
+
+
+        </div>
+
+
+
+        <div class="modal-footer justify-content-around">
+
+          <input type="submit" name="action_button_direccion" id="action_button_direccion" class="btn btn-success"
+            value="Crear" />
+          <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+        </div>
 
       </form>
     </div>
   </div>
 </div>
 
-
+@if ($message = Session::get('returnModal'))
+<script>
+  $('#formModal').modal('show');
+</script>
+@endif
 
 <script>
   $(document).ready(function(){
-    
+   
+
     var table=$('#data-table').DataTable({
       "language": {
         "sProcessing":     "Procesando...",
@@ -335,6 +363,20 @@
       }
     });
     
+    $('#limpiar').click(function(){
+      $('#nombre').val('');
+      $('#email').val('');
+      $('#razonSocial').val('');
+      $('#numeroDocumento').val('');
+      $('#calle').val('');
+      $('#numero').val('');
+      $('#codigoPostal').val('');
+      $('#localidad').val('');
+      $('#provincia').val('');
+      $('#pais').val('');
+      $('#domicilio').val('');
+    });
+
     //la siguiente funcion recarga toda la tabla
     $('#reiniciar').click(function(){
       // $("#tipoMovimiento ").prop("selectedIndex", 0) ;
@@ -461,16 +503,7 @@
       $('#action_button').val("Agregar");
       $('#action').val("Add");
       $('#formModal').modal('show');
-      $('#nombre').val('');
-      $('#email').val('');
-      $('#razonSocial').val('');
-      $('#numeroDocumento').val('');
-      $('#calle').val('');
-      $('#numero').val('');
-      $('#codigoPostal').val('');
-      $('#localidad').val('');
-      $('#provincia').val('');
-      $('#pais').val('');
+
       
       $('#hidden_id').val('');
     });
@@ -573,9 +606,12 @@
       $("#direccion_form").attr("action","{{route('calle.store')}}");
       $('#titulo-direccion').text("Agregar Nueva Calle");
       document.getElementById('detalle-documento').style.display='none';
+      document.getElementById('codigo-calle').style.display='none';
+
       $('#formModal').modal('hide');
       $('#createDireccion').modal('show');
-      $('#nombre').val('');
+      $('#nombre_direccion').val('');
+       $('#codigoPostal').val('');
 
     });
     $(document).on('click', '#boton-agregar-localidad', function(){
@@ -584,31 +620,42 @@
       $("#direccion_form").attr("action","{{route('localidad.store')}}");
       $('#titulo-direccion').text("Agregar Nueva Localidad");
       document.getElementById('detalle-documento').style.display='none';
+      document.getElementById('codigo-calle').style.display='block';
+
       $('#formModal').modal('hide');
       $('#createDireccion').modal('show');
-      $('#nombre').val('');
+      $('#nombre_direccion').val('');
+       $('#codigoPostal').val('');
 
     });
+
     $(document).on('click', '#boton-agregar-provincia', function(){
      
       $('#aviso-direccion').html('');
       $("#direccion_form").attr("action","{{route('provincia.store')}}");
       $('#titulo-direccion').text("Agregar Nueva Provincia");
       document.getElementById('detalle-documento').style.display='none';
+      document.getElementById('codigo-calle').style.display='none';
+
       $('#formModal').modal('hide');
       $('#createDireccion').modal('show');
-      $('#nombre').val('');
+      $('#nombre_direccion').val('');
+       $('#codigoPostal').val('');
 
     });
+
     $(document).on('click', '#boton-agregar-pais', function(){
      
       $('#aviso-direccion').html('');
       $("#direccion_form").attr("action","{{route('pais.store')}}");
-      $('#titulo-direccion').text("Agregar Nueva Pais");
+      $('#titulo-direccion').text("Agregar Nuevo Pais");
       document.getElementById('detalle-documento').style.display='none';
+      document.getElementById('codigo-calle').style.display='none';
+
       $('#formModal').modal('hide');
       $('#createDireccion').modal('show');
-      $('#nombre').val('');
+      $('#nombre_direccion').val('');
+       $('#codigoPostal').val('');
 
     });
     $(document).on('click', '#boton-agregar-documento', function(){
@@ -617,9 +664,12 @@
       $("#direccion_form").attr("action","{{route('documento.store')}}");
       $('#titulo-direccion').text("Agregar Nuevo Documento");
       document.getElementById('detalle-documento').style.display='block';
+      document.getElementById('codigo-calle').style.display='none';
       $('#formModal').modal('hide');
       $('#createDireccion').modal('show');
-      $('#nombre').val('');
+      $('#nombre_direccion').val('');
+       $('#codigoPostal').val('');
+      
 
     });
 

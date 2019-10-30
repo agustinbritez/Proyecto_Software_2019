@@ -1,116 +1,121 @@
- 
- <div id="formModal" class="modal fade" role="dialog">
-    
+<div id="formModal" class="modal fade" role="dialog">
+
     <div class="modal-dialog" role="document">
         <div class="modal-content ">
-            
+
             <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="modal-header">
-                    
+
                     <h4 class="modal-title"> TITULO</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger print-error-msg" style="display:none">
-                        
+
                         <ul></ul>
-                        
+
                     </div>
                     <span id="form_result"></span>
                     @csrf
                     <div class="container">
                         <div class="form-group  justify-content-center">
-                            
+
                             <label for="">Subir Imagen</label>
                             <hr>
                             <input type="file" name="imagenPrincipal" id="imagenPrincipal">
-                            <div id="preview" class="row justify-content-center" >
+                            <div id="preview" class="row justify-content-center">
                                 <img src="" alt="" height="200px" width="200px">
                             </div>
                         </div>
                         <div class="form-group  ">
-                            <label class="control-label" >Nombre: </label>
-                            
-                            <input type="text" name="nombre" id="nombre" required placeholder="Ingrese un Nombre" class="form-control" />
+                            <label class="control-label">Nombre: </label>
+
+                            <input type="text" name="nombre" id="nombre" required placeholder="Ingrese un Nombre"
+                                class="form-control" />
                         </div>
-                        
+
                         <div class="form-group  ">
                             <label class="control-label">Detalle : </label>
-                            <textarea type="text" class="form-control" aria-label="With textarea" name="detalle" id="detalle" > </textarea>
+                            <textarea type="text" class="form-control" aria-label="With textarea" name="detalle"
+                                id="detalle"> </textarea>
                         </div>
-                        
+
                         <div class="form-group ">
                             <label class="control-label">Cantidad : </label>
-                            
-                            <input type="text" class="form-control text-left" name="cantidad" id="cantidad" placeholder="Cantidad de materia prima inicial" data-mask data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
-                            
+
+                            <input type="text" class="form-control text-left" name="cantidad" id="cantidad"
+                                placeholder="Cantidad de materia prima inicial" data-mask
+                                data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
+
                         </div>
-                        
+
                         <div class="form-group ">
                             <label class="control-label">Precio Unitario : </label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                <input type="text" class="form-control text-left" id="precioUnitario" name="precioUnitario"  data-mask data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
-                                
+                                <input type="text" class="form-control text-left" id="precioUnitario"
+                                    name="precioUnitario" data-mask
+                                    data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
+
                             </div>
-                            
-                            
+
+
                         </div>
-                        
-                        <div class="form-group" >
-                            <label class="control-label ">Medida Asignada:  : </label>
+
+                        <div class="form-group">
+                            <label class="control-label ">Medida Asignada: : </label>
                             <select class="form-control select2 " id="medida_id" name="medida_id" style="width: 100%;">
                                 @if (sizeof($medidas)>0)
-                                
+
                                 @foreach ($medidas as $medida)
-                                <option value="{{$medida->id}}" >{{$medida->nombre}}</option>  
-                                @endforeach   
+                                <option value="{{$medida->id}}">{{$medida->nombre}}</option>
+                                @endforeach
                                 @endif
                             </select>
-                            
-                        </div>   
-                        
-                        
+
+                        </div>
+
+
                         <div class="form-group">
                             <label>Modelos : </label>
-                            <select class="select2" multiple="multiple" id='modelos' name="modelos[]" data-placeholder="Seleccione Un Modelo"
-                            style="width: 100%;">
-                            
-                            
-                            @if(sizeof($modelos)>0)
-                            @foreach ($modelos as $modelo)
-                            <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>  
-                            @endforeach
-                            
-                            @endif
-                            
-                            
-                        </select>
-                    </div>
-                    
-                    {{-- <div class="form-group row">
+                            <select class="select2" multiple="multiple" id='modelos' name="modelos[]"
+                                data-placeholder="Seleccione Un Modelo" style="width: 100%;">
+
+
+                                @if(sizeof($modelos)>0)
+                                @foreach ($modelos as $modelo)
+                                <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
+                                @endforeach
+
+                                @endif
+
+
+                            </select>
+                        </div>
+
+                        {{-- <div class="form-group row">
                         <label for="exampleFormControlFile1">Subir Una Imagen</label>
                         <input type="file" class="form-control-file" id="imagenPrincipal">
                     </div> --}}
-                    <br />
-                    
+                        <br />
+
+                    </div>
                 </div>
-            </div>
-            <div class="modal-footer justify-content-around" >
-                
-                <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
-                <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>    
-                
-                <input type="hidden" name="action" id="action" />
-                <input type="hidden" name="hidden_id" id="hidden_id" />
-                
-            </div>
-            
-        </form>
+                <div class="modal-footer justify-content-around">
+
+                    <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+
+                    <input type="hidden" name="action" id="action" />
+                    <input type="hidden" name="hidden_id" id="hidden_id" />
+
+                </div>
+
+            </form>
+        </div>
     </div>
-</div>
 </div>
 
 <div id="confirmModal" class="modal fade" role="dialog">
@@ -128,7 +133,7 @@
                     @csrf
                     @method('DELETE')
                     {{-- Paso el id de la materia  aborrar en materia_delete--}}
-                    <input type="hidden" name="materia_delete" id="materia_delete" >
+                    <input type="hidden" name="materia_delete" id="materia_delete">
                     <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
                 </form>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -142,8 +147,6 @@
 
 @push('scripts')
 <script>
-    
-    
     $(document).ready(function(){
 
         // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
@@ -155,6 +158,7 @@
         var medidasGlobal;
         var modelosGlobal;
         const vacio='Cualquiera';
+        // const vacio='-1';
         var table= $('#data-table').DataTable({
             "language": {
                 "sProcessing":     "Procesando...",
@@ -236,8 +240,8 @@
                 //cargar el select
                 $('#filtro_modelo').find('option').remove();
                 $('#filtro_modelo').append($('<option>', {
-                    value: -1,
-                    text: vacio,
+                    value: vacio,
+                    text: 'Cualquiera',
                 }));
                 modelosGlobal.forEach(modelo => {
                     $('#filtro_modelo').append($('<option>', {
@@ -262,7 +266,7 @@
             //****************************************** FILTRO DE LA TABLA**************************************************************
             function filtro_funcion(){
                 var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
-                var filtro_cantidad = $('#filtro_cantidad').val();
+                var filtro_cantidad = $('#filtro_cantidad').val().trim().toUpperCase();
                 // alert(filtro_cant    idad.length);
                 var filtro_modelo = $('#filtro_modelo option:selected').text();
                 //se guardan la cantidad de filtros que se quieren realizar
@@ -299,8 +303,9 @@
                         if(cantidad_filtros==3){
                             var contieneModelo=data[indiceModelos].indexOf(filtro_modelo);
                             //si contieneModelo es -1 no encontro en la cadena 
-                            (contieneModelo>-1)? filtro_completos++ : 0;
-                            (filtro_cantidad==data[indiceCantidad])? filtro_completos++ :0;
+                            (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
+                            // (contieneModelo>-1)? filtro_completos++ : 0;
+                            (filtro_cantidad<=data[indiceCantidad])? filtro_completos++ :0;
                             (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
                             //si cummple con los tres filtro que guarde en la tabla la fila
                             return filtro_completos==cantidad_filtros? true:false;
@@ -313,14 +318,16 @@
                             if((filtro_modelo!=vacio)){
                                 var contieneModelo=data[indiceModelos].indexOf(filtro_modelo);
                                 //si contieneModelo es -1 no encontro en la cadena 
-                                (contieneModelo>-1)? filtro_completos++ : 0;
+                                // (contieneModelo>-1)? filtro_completos++ : 0;
+                                (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
+
                                 if(filtro_completos==cantidad_filtros){
                                     return true;
                                 }
                             }
                             if((filtro_cantidad.length>0)){
                                 
-                                (filtro_cantidad==data[indiceCantidad])? filtro_completos++ :0;
+                                (filtro_cantidad<=data[indiceCantidad])? filtro_completos++ :0;
                                 if(filtro_completos==cantidad_filtros){
                                     return true;
                                 }
@@ -601,8 +608,5 @@
                                                                                                             // });
                                                                                                             
                                                                                                         });
-                                                                                                    </script>
-                                                                                                    @endpush
-                                                                                                    
-                                                                                                    
-                                                                                                    
+</script>
+@endpush

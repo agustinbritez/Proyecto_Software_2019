@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Estado extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
+class Estado extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
+    
     public function productos()
     {
         return $this->hasMany(Producto::class);

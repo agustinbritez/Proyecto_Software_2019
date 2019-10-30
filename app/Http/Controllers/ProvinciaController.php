@@ -67,7 +67,7 @@ class ProvinciaController extends Controller
         );
         $provincia = Provincia::create($form_data);
 
-        return redirect()->back()->with('success', 'Provincia creado con exito!');
+        return redirect()->back()->with('success', 'Provincia creado con exito!')->with('returnModal', 'mostrar modal');
     }
 
     /**
@@ -141,7 +141,7 @@ class ProvinciaController extends Controller
     public function destroy(Request $request)
     {
         $provincia = Provincia::find($request->button_delete);
-        if ($provincia->direcciones->isEmpty()) {
+        if (!$provincia->direcciones->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el provincia por estar relacionado a direcciones']);
         }
         $provincia->delete();

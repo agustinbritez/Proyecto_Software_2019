@@ -19,8 +19,8 @@ class CreateProductosTable extends Migration
             $table->string('imagenPrincipal');
 
         
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

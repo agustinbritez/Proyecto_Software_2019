@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class TipoImagen extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
+class TipoImagen extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
+    
     public function tipoImagenes()
     {
         return $this->hasMany(TipoImagen::class);

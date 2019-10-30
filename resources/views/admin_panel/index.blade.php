@@ -79,8 +79,8 @@
   <!-- jQuery -->
   <script src="{{asset('admin_panel/plugins/jquery/jquery.min.js')}}"></script>
 
-
   <script src="{{asset('admin_panel/plugins/inputmask/jquery.inputmask.bundle.js')}}"></script>
+
   <!-- Bootstrap -->
   <script src="{{asset('admin_panel/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <!-- AdminLTE -->

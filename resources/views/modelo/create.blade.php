@@ -28,84 +28,105 @@
 
 
                     <div class="card-body">
-                        @csrf
-                        <div class="row">
-                            <div class="col">
-                                <div class="form-group  justify-content-center">
+                        @if ($modificar)
 
-                                    <label for="">Subir Imagen</label>
-                                    <br>
-                                    <input type="file" name="imagenPrincipal" id="imagenPrincipal">
-                                    <div id="preview" class="row justify-content-center">
-                                        <img src="{{asset("/imagenes/modelos/".$modelo->imagenPrincipal)??'' }}" alt=""
-                                            height="200px" width="200px">
-                                    </div>
-                                </div>
+                        <div align="right" style="display: block" id="botonComponente">
+                            @else
+                            <div align="right" style="display: none" id="botonComponente">
+
+                                @endif
+
+                                <button type="button" class="btn  btn-primary  btn-flat btn-sm">Ver Componentes
+                                </button>
                             </div>
+                            <div class="row">
 
-                            <div class="col">
-                                <div class="form-group  ">
-                                    <label class="control-label">Nombre: </label>
+                                <div class="col">
+                                    <div class="form-group  justify-content-center">
 
-                                    <input type="text" name="nombre" id="nombre" required
-                                        placeholder="Ingrese un Nombre" class="form-control"
-                                        value="{{$modelo->nombre??''}}" />
-                                </div>
-
-                                <div class="form-group  ">
-                                    <label class="control-label">Detalle : </label>
-                                    <textarea type="text" class="form-control" aria-label="With textarea" name="detalle"
-                                        id="detalle">{{$modelo->detalle??''}} </textarea>
-                                </div>
-
-                                <div class="form-group ">
-                                    <label class="control-label">Precio Unitario : </label>
-                                    <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text">$</span>
+                                        <label for="">Subir Imagen</label>
+                                        <br>
+                                        <input type="file" name="imagenPrincipal" id="imagenPrincipal">
+                                        <div id="preview" class="row justify-content-center">
+                                            <img src="{{asset("/imagenes/modelos/".$modelo->imagenPrincipal)??'' }}"
+                                                alt="" height="200px" width="200px">
                                         </div>
-                                        <input type="text" class="form-control text-left" id="precioUnitario"
-                                            name="precioUnitario" data-mask value="{{$modelo->precioUnitario??''}}"
-                                            data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
+                                    </div>
+                                </div>
 
+                                <div class="col">
+                                    <div class="form-group  ">
+                                        <label class="control-label">Nombre: </label>
+
+                                        <input type="text" name="nombre" id="nombre" required
+                                            placeholder="Ingrese un Nombre" class="form-control"
+                                            value="{{$modelo->nombre??''}}" />
                                     </div>
 
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label ">Unidad de Medida : </label>
-                                    <select class="form-control select2 " id="medida_id" name="medida_id"
-                                        style="width: 100%;">
-                                        @if (sizeof($medidas)>0)
+                                    <div class="form-group  ">
+                                        <label class="control-label">Detalle : </label>
+                                        <textarea type="text" class="form-control" aria-label="With textarea"
+                                            name="detalle" id="detalle">{{$modelo->detalle??''}} </textarea>
+                                    </div>
 
-                                        @foreach ($medidas as $medida)
-                                        <option value="{{$medida->id}}">{{$medida->nombre}}</option>
-                                        @endforeach
-                                        @endif
-                                    </select>
+                                    <div class="form-group ">
+                                        <label class="control-label">Precio Unitario : </label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input type="text" class="form-control text-left" id="precioUnitario"
+                                                name="precioUnitario" data-mask value="{{$modelo->precioUnitario??''}}"
+                                                data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
 
+                                        </div>
+
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="control-label ">Unidad de Medida : </label>
+                                        <select class="form-control select2 " id="medida_id" name="medida_id"
+                                            style="width: 100%;">
+                                            @if (sizeof($medidas)>0)
+
+                                            @foreach ($medidas as $medida)
+                                            <option value="{{$medida->id}}">{{$medida->nombre}}</option>
+                                            @endforeach
+                                            @endif
+                                        </select>
+
+                                    </div>
+                                    <div class="form-group clearfix ">
+                                        <label for="">Disponible para la venta: </label>
+                                        <div class="icheck-success d-inline">
+
+                                            <input type="checkbox" id="venta" name="venta">
+                                            <label for="venta" id='labelOperacion'>
+
+                                        </div>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
+
                         </div>
 
+                        <div class="card-footer text-muted justify-content-center">
+                            @if ($modificar)
+                            <input type="submit" name="action_button" id="action_button" class="btn btn-success"
+                                value="Actualizar" />
+
+
+                            <input type="hidden" name="action" id="action" value="Edit" />
+
+                            @else
+                            <input type="submit" name="action_button" id="action_button" class="btn btn-success"
+                                value="Guardar" />
+                            <input type="hidden" name="action" id="action" value="Add" />
+
+                            @endif
+                            <input type="hidden" name="hidden_id" id="hidden_id" value="{{$modelo->id??''}}" />
+                        </div>
                     </div>
-
-                    <div class="card-footer text-muted justify-content-center">
-                        @if ($modificar)
-                        <input type="submit" name="action_button" id="action_button" class="btn btn-success"
-                            value="Actualizar" />
-
-
-                        <input type="hidden" name="action" id="action" value="Edit" />
-
-                        @else
-                        <input type="submit" name="action_button" id="action_button" class="btn btn-success"
-                            value="Guardar" />
-                        <input type="hidden" name="action" id="action" value="Add" />
-
-                        @endif
-                        <input type="hidden" name="hidden_id" id="hidden_id" value="{{$modelo->id??''}}" />
-                    </div>
-                </div>
             </form>
 
             @if ($modificar)
@@ -162,11 +183,13 @@
                                         <select class="select2" name="ingredientes" id="ingredientes"
                                             data-placeholder="Seleccione Un Modelo" style="width: 100%;">
                                             @if(sizeof($modelos)>0)
+
                                             @foreach ($modelos as $model2)
                                             <option value="{{$model2->id}}">
                                                 {{$model2->nombre.' ('.$model2->medida->nombre.')' }}
                                             </option>
                                             @endforeach
+
                                             @endif
                                         </select>
                                     </div>
@@ -409,6 +432,7 @@
                                 $('#action_button').val('Actualizar') ;
                                 //agregamos los modelos
                                 document.getElementById('recetas').style.display='block';
+                                document.getElementById('botonComponente').style.display='block';
                                 // $('#recetas'). (json.receta);
                                 $('#hidden_id').val(json.modelo.id);
                                 $('#hidden_id_modelo').val(json.modelo.id);
@@ -443,6 +467,7 @@
                                     
                                     //mostramos el mensaje
                                     document.getElementById('recetas').style.display='block';
+                                    document.getElementById('botonComponente').style.display='block';
                                     
                                     $('#hidden_id').val(array.modelo.id);
                                     $('#hidden_id_modelo').val(array.modelo.id);

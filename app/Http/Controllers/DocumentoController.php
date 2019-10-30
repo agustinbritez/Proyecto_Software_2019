@@ -66,7 +66,7 @@ class DocumentoController extends Controller
 
         $documento = Documento::create($form_data);
 
-        return redirect()->back()->with('success', 'Documento Creado Con Exito!');
+        return redirect()->back()->with('success', 'Documento Creado Con Exito!')->with('returnModal', 'mostrar modal');
     }
 
     /**

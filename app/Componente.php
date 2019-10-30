@@ -3,9 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Componente extends Model
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
+class Componente extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
+    
     public function modelo(){
         return $this->belongsTo(Modelo::class);
     } 

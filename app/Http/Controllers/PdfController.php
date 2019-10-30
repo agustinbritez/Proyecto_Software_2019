@@ -28,7 +28,7 @@ class PdfController extends Controller
             $filtro = $filtro->union(['filtro_numero_movimiento' => $request->filtro_id]);
         }
 
-        if ((($request->filtro_precioUnitarioMin != '')&&($request->filtro_precioUnitarioMin > 0.00)) && (($request->filtro_precioUnitarioMax != '')&&($request->filtro_precioUnitarioMax > 0.00))) {
+        if ((($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin > 0.00)) && (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax > 0.00))) {
             $movimientos = $movimientos
                 ->whereBetween('precioUnitario', [$request->filtro_precioUnitarioMin, $request->filtro_precioUnitarioMax]);
 
@@ -44,11 +44,11 @@ class PdfController extends Controller
                     $request->filtro_precioUnitarioMax
                 ]
             );
-        } else if (($request->filtro_precioUnitarioMin != '')&&($request->filtro_precioUnitarioMin > 0.00)) {
+        } else if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin > 0.00)) {
             $movimientos = $movimientos
                 ->where('precioUnitario', '>', $request->filtro_precioUnitarioMin);
             $filtro = $filtro->union(['filtro_precio_unitario_minimo' => $request->filtro_precioUnitarioMin]);
-        } else if (($request->filtro_precioUnitarioMax != '')&&($request->filtro_precioUnitarioMax >0.00)) {
+        } else if (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax > 0.00)) {
             $movimientos = $movimientos
                 ->where('precioUnitario', '<', $request->filtro_precioUnitarioMax);
 
@@ -290,5 +290,62 @@ class PdfController extends Controller
 
         return $pdf->stream();
         // return view('pdf.materiaPrima',compact('proveedores'));
+    }
+    public function modelo(Request $request)
+    {
+        // $movimientos = DB::table('movimientos')
+        $modelos = DB::table('modelos')->where('deleted_at',null);
+        $filtro = collect();
+
+
+        if ($request->filtro_nombre != '') {
+            $modelos = $modelos
+                ->where('nombre','like' ,'%'.$request->filtro_nombre.'%');
+            $filtro = $filtro->union(['filtro_nombre_modelo' => $request->filtro_nombre]);
+        }
+
+        if ((($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin > 0.00)) && (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax > 0.00))) {
+            $modelos = $modelos
+                ->whereBetween('precioUnitario', [$request->filtro_precioUnitarioMin, $request->filtro_precioUnitarioMax]);
+
+            $filtro = $filtro->union(
+                [
+                    'filtro_precio_unitario_minimo' =>
+                    $request->filtro_precioUnitarioMin
+                ]
+            );
+            $filtro = $filtro->union(
+                [
+                    'filtro_precio_unitario_maximo' =>
+                    $request->filtro_precioUnitarioMax
+                ]
+            );
+        } else if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin > 0.00)) {
+            $modelos = $modelos
+                ->where('precioUnitario', '>', $request->filtro_precioUnitarioMin);
+            $filtro = $filtro->union(['filtro_precio_unitario_minimo' => $request->filtro_precioUnitarioMin]);
+        } else if (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax > 0.00)) {
+            $modelos = $modelos
+                ->where('precioUnitario', '<', $request->filtro_precioUnitarioMax);
+
+            $filtro = $filtro->union(['filtro_precio_unitario_maximo' => $request->filtro_precioUnitarioMax]);
+        }
+
+
+        $modelos = $modelos->get();
+        $filtro = $filtro->union(['modelos' => $modelos]);
+
+
+        // return $filtro->all();
+        $pdf = PDF::loadView(
+            'pdf.modelo',
+            $filtro
+        );
+
+        $dom_pdf = $pdf->getDomPDF();
+        $canvas = $dom_pdf->get_canvas();
+        $y = $canvas->get_height() - 35;
+        $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        return $pdf->stream();
     }
 }

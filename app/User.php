@@ -7,10 +7,16 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Caffeinated\Shinobi\Concerns\HasRolesAndPermissions;
 use Caffeinated\Shinobi\Models\Role;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use PhpParser\Comment\Doc;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
+
     use Notifiable;
     use HasRolesAndPermissions;
     /**
@@ -18,7 +24,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $fillable= ['nombre','email','apellido','documento','password'];
+    // protected $fillable= ['nombre','email','apellido','documento','password'];
 
 
     /**

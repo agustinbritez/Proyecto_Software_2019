@@ -4,12 +4,14 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Pais extends Model
+class Pais extends Model implements Auditable
 {
+    use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
-    protected $guarded= [];
-  
+    protected $guarded = [];
+
     public function direcciones()
     {
         return $this->hasMany(Direccion::class);

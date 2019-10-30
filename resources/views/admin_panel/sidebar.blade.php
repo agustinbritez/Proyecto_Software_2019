@@ -25,11 +25,13 @@
                    with font-awesome or any other icon font library -->
 
         <li class="nav-item has-treeview  ">
-          <a href="#" class="nav-link active">
+          {{-- <a href="#" class="nav-link active"> --}}
+          <a href="#" class="nav-link">
             <i class="nav-icon fas fa-warehouse"></i>
             <p>
               Gestion Produccion
               <i class="right fas fa-angle-left"></i>
+              
             </p>
           </a>
           <ul class="nav nav-treeview">
@@ -100,8 +102,9 @@
       </li>
 
       <li class="nav-item has-treeview  ">
-        <a href="#" class="nav-link active">
-          <i class="nav-icon fas fa-warehouse"></i>
+        <a href="#" class="nav-link">
+          <i class="far fa-circle nav-icon"></i>
+
           <p>
             Gestion Parametros
             <i class="right fas fa-angle-left"></i>
@@ -171,6 +174,16 @@
 
 
       </li>
+      <li class="nav-item">
+        <a href="{{ route('auditoria.index') }}" class="nav-link">
+          {{-- <i class="far fa-circle nav-icon"></i> --}}
+          <i class="fad fa-table nav-icon"></i>
+          <p>
+            Auditoria
+            {{-- <span class="right badge badge-danger">New</span> --}}
+          </p>
+        </a>
+      </li>
       @can('usuarios_index')
 
 
@@ -209,6 +222,7 @@
       </li> --}}
       @endcan
       </ul>
+      
     </nav>
     <!-- /.sidebar-menu -->
   </div>

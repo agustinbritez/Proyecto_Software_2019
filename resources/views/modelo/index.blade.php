@@ -191,14 +191,38 @@
 
 @endsection
 
+@section('htmlFinal')
+{{-- <div id="confirmModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmacion</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4 align="center" style="margin:0;">¿Esta seguro que desea borrarlo?</h4>
+            </div>
+            <div class="modal-footer">
+                <form id="formDelete" action="{{route('modelo.destroy')}}" method="POST">
+@csrf
+@method('DELETE')
+{{-- Paso el id de la materia  aborrar en materia_delete--}}
+{{-- <input type="hidden" name="materia_delete" id="materia_delete">
+                    <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
+                </form>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>  --}}
+@endsection
 @push('scripts')
 <script>
     $(document).ready(function(){
         //variables globales 
         //indices del data table que uso para el filtro
-        var indicePrecioUnitario=1;
-        var indiceFecha=3;
-        var indiceId=0;
+        var indicePrecioUnitario=3;
+        var indiceNombre=2;
         
         var table= $('#data-table').DataTable({
             "language": {
@@ -257,17 +281,17 @@
         function filtro_funcion(){
             var filtro_precioUnitarioMax = $('#filtro_precioUnitarioMax').val().trim().toUpperCase() ;
             var filtro_precioUnitarioMin = $('#filtro_precioUnitarioMin').val().trim().toUpperCase() ;
-            var filtro_id= $('#filtro_id').val();
+            var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
             //se guardan la cantidad de filtros que se quieren realizar
             var cantidad_filtros=0;
-            if(filtro_id!=''){
+            if((filtro_nombre!='')){
+                    cantidad_filtros++;
+                }
+                if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMax!='')&&(filtro_precioUnitarioMin!='')){
                 cantidad_filtros++;
-            }
-            if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
+            }else if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMax!='')){
                 cantidad_filtros++;
-            }else if((filtro_precioUnitarioMax!=0.00)){
-                cantidad_filtros++;
-            }else if((filtro_precioUnitarioMin!=0.00)){
+            }else if((filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMin!='')){
                 cantidad_filtros++;
             }
            
@@ -287,23 +311,23 @@
                     
                     //si son todo los filtros que realice todas las acciones directamente
                     filtro_completos=0;
-                    if(cantidad_filtros==4){
+                    if(cantidad_filtros==2){
 
                       
                         //comparamos los filtros del precio maximo y minimo
                         var precio=parseFloat(data[indicePrecioUnitario]);
-                        if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
+                        if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMax!='')&&(filtro_precioUnitarioMin!='')){
                             
                             (parseFloat(filtro_precioUnitarioMax) > precio )&&(precio >parseFloat(filtro_precioUnitarioMin))? filtro_completos++ : 0 ;
                             
-                        }else if((filtro_precioUnitarioMax!=0.00)){
+                        }else if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMax!='')){
                             parseFloat(filtro_precioUnitarioMax) > precio ? filtro_completos++ : 0 ;
                             
-                        }else if((filtro_precioUnitarioMin!=0.00)){
+                        }else if((filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMin!='')){
                             precio > parseFloat(filtro_precioUnitarioMin) ? filtro_completos++ : 0 ;
                         }
                         
-                        filtro_id==data[indiceId]? filtro_completos++ :0;
+                        (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
                         
                         //si cummple con los tres filtro que guarde en la tabla la fila
                         return filtro_completos==cantidad_filtros? true:false;
@@ -313,21 +337,27 @@
                     //filtro fechas **********************************************************************************************
                        
                         //filtro de id ******************************************************************************   
-                        if(filtro_id.length>0){
-                            filtro_id==data[indiceId]? filtro_completos++ :0;
-                        }
+                        if((filtro_nombre!='')){
+                                (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
+                                if(filtro_completos==cantidad_filtros){
+                                    return true;
+                                }
+                            }
                         //filtro de precio unitario maximo y iminimo ****************************************************************
-                        var precio=parseFloat(data[indicePrecioUnitario]);
                        
 
-                        if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
+                          //comparamos los filtros del precio maximo y minimo
+                          var precio=parseFloat(data[indicePrecioUnitario]);
+                          if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMax!='')&&(filtro_precioUnitarioMin!='')){
+                            
                             (parseFloat(filtro_precioUnitarioMax) > precio )&&(precio >parseFloat(filtro_precioUnitarioMin))? filtro_completos++ : 0 ;
                             
-                        }else if((filtro_precioUnitarioMax!=0.00)){
-                            (parseFloat(filtro_precioUnitarioMax) > precio) ? filtro_completos++ : 0 ;
-                        }else if((filtro_precioUnitarioMin!=0.00)){
+                        }else if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMax!='')){
+                            parseFloat(filtro_precioUnitarioMax) > precio ? filtro_completos++ : 0 ;
+                            
+                        }else if((filtro_precioUnitarioMin!=0.00)&&(filtro_precioUnitarioMin!='')){
                             precio > parseFloat(filtro_precioUnitarioMin) ? filtro_completos++ : 0 ;
-                        } 
+                        }
                         
                         return filtro_completos==cantidad_filtros? true:false;
                     }
@@ -342,7 +372,7 @@
         
         
         //********************************Codigo para que busque en tiempo real el nombre********************************************************** 
-        $('#filtro_id').keyup(function (){
+        $('#filtro_nombre').keyup(function (){
             return filtro_funcion();
             
             

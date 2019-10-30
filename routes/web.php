@@ -27,7 +27,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('pdf/MateriaPrima', 'PdfController@materiaPrima')->name('pdf.materiaPrima');
     Route::get('pdf/Proveedor', 'PdfController@proveedor')->name('pdf.proveedor');
     Route::get('pdf/Movimiento', 'PdfController@movimiento')->name('pdf.movimiento');
-    Route::get('pdf/Modelos', 'PdfController@modelo')->name('pdf.modelo');
+    Route::get('pdf/Modelo', 'PdfController@modelo')->name('pdf.modelo');
 
     //    Route::resource('/usuarios','UserController');
 });
@@ -50,6 +50,8 @@ Route::delete('materiaPrima/destroy', 'ControllerMateriaPrima@destroy')->name('m
 
 //auditoria
 Route::get('auditoria', 'AuditoriaController@index')->name('auditoria.index')->middleware('permission:auditoria_index');
+Route::get('auditoria/show/{id}', 'AuditoriaController@show')->name('auditoria.show')->middleware('permission:auditoria_show');
+Route::get('auditoria/historial/{id}', 'AuditoriaController@historial')->name('auditoria.historial')->middleware('permission:auditoria_historial');
 
 //Movimientos
 Route::get('movimiento', 'MovimientoController@index')->name('movimiento.index')->middleware('permission:movimiento_index');

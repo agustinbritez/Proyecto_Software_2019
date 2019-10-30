@@ -71,7 +71,7 @@ class LocalidadController extends Controller
         );
         $localidad = Localidad::create($form_data);
 
-        return redirect()->back()->with('success', 'Localidad creada con exito!');
+        return redirect()->back()->with('success', 'Localidad creada con exito!')->with('returnModal', 'mostrar modal');
     }
 
     /**
@@ -149,10 +149,10 @@ class LocalidadController extends Controller
     public function destroy(Request $request)
     {
         $localidad = Localidad::find($request->button_delete);
-        if ($localidad->direcciones->isEmpty()) {
+        if (!$localidad->direcciones->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
         }
         $localidad->delete();
-        return redirect()->back();
+        return redirect()->back()->with('modalAviso', 'Actualizado Correctamente');
     }
 }

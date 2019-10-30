@@ -3,19 +3,29 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Pedido extends Model
+class Pedido extends Model implements Auditable
 {
-    public function user(){
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function flujoTrabajo(){
+    public function flujoTrabajo()
+    {
         return $this->belongsTo(FlujoTrabajo::class);
     }
-    public function estado(){
+    public function estado()
+    {
         return $this->belongsTo(Estado::class);
     }
-    public function detallePedidos(){
+    public function detallePedidos()
+    {
         return $this->hasMany(DetallePedido::class);
     }
 }

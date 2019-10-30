@@ -42,7 +42,7 @@
 							<div class="form-group col ">
 								<label class="control-label">Cantidad : </label>
 
-								<input type="text" class="form-control text-left" name="cantidad" id="cantidad"
+								<input type="text" class="form-control text-left" name="filtro_cantidad" id="filtro_cantidad"
 									placeholder="Cantidad de materia prima" data-mask
 									data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
 

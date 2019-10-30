@@ -64,12 +64,11 @@ class CalleController extends Controller
 
 
         $form_data = array(
-            'nombre'        =>  $request->nombre,
-            'numero'        =>  $request->numero
+            'nombre'        =>  $request->nombre
         );
         $calle = Calle::create($form_data);
 
-        return redirect()->back()->with('success', 'Calle creada con exito!');
+        return redirect()->back()->with('success', 'Calle creada con exito!')->with('returnModal', 'mostrar modal');
     }
 
     /**
@@ -116,7 +115,7 @@ class CalleController extends Controller
 
         $messages = [
             'nombre.required' => 'Agregar el nombre del calle.',
-            'nombre.unique' => 'El nombre debe ser unico.',
+            'nombre.unique' => 'El nombre debe ser unico.'
 
         ];
         $request->nombre = strtoupper($request->nombre);
@@ -124,8 +123,7 @@ class CalleController extends Controller
         $this->validate($request, $rules, $messages);
 
         $form_data = array(
-            'nombre'        =>  $request->nombre,
-            'numero'        =>  $request->numero
+            'nombre'        =>  $request->nombre
         );
 
         //si el id que crea es uno borrado lo revivimos
@@ -145,7 +143,7 @@ class CalleController extends Controller
     public function destroy(Request $request)
     {
         $calle = Calle::find($request->button_delete);
-        if ($calle->direcciones->isEmpty()) {
+        if (!$calle->direcciones->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
         }
         $calle->delete();

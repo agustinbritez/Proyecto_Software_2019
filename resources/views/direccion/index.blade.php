@@ -47,12 +47,12 @@
                             <tr>
 
                                 <th>{{$direccion->id}} </th>
-                                <th>{{$direccion->calle}}</th>
+                                <th>{{$direccion->calle->nombre}}</th>
                                 <th>{{$direccion->numero}}</th>
-                                <th>{{$direccion->codigoPostal}}</th>
-                                <th>{{$direccion->localidad}}</th>
-                                <th>{{$direccion->provincia}}</th>
-                                <th>{{$direccion->pais}}</th>
+                                <th>{{$direccion->localidad->codigoPostal}}</th>
+                                <th>{{$direccion->localidad->nombre}}</th>
+                                <th>{{$direccion->provincia->nombre}}</th>
+                                <th>{{$direccion->pais->nombre}}</th>
                                 <th>
                                     <button type="button" name="edit" id="{{$direccion->id}}"
                                         class="edit btn btn-outline-primary btn-sm">Editar</button>

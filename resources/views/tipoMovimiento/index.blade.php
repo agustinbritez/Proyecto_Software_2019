@@ -93,7 +93,7 @@
 									<th>{{$movi->id}} </th>
 									<th>{{$movi->nombre}} </th>
 									
-									@if ($movi->operacion==0)
+									@if ($movi->operacion!=0)
 									<th>Sumar</th>
 									@else
 									<th>Restar</th>

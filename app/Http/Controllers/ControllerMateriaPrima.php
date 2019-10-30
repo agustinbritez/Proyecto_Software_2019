@@ -220,7 +220,7 @@ class ControllerMateriaPrima extends Controller
         $request->precioUnitario = $tr;
         $request->nombre = strtoupper($request->nombre);
 
-      $messages = [
+        $messages = [
             'nombre.required' => 'Agrega el nombre de la materia prima.',
             'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
 

@@ -4,10 +4,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
-class Calle extends Model
+use OwenIt\Auditing\Contracts\Auditable;
+class Calle extends Model implements Auditable
 {
-  
+    use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     protected $guarded= [];
   

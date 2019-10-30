@@ -4,25 +4,29 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Proveedor extends Model
+class Proveedor extends Model implements Auditable
 {
-   use SoftDeletes;
-    protected $guarded= [];
-    
+    use \OwenIt\Auditing\Auditable;
+    use SoftDeletes;
+    protected $guarded = [];
 
-    public function direccion (){
+
+    public function direccion()
+    {
         return $this->belongsTo(Direccion::class);
     }
-    public function documento (){
+    public function documento()
+    {
         return $this->belongsTo(Documento::class);
     }
-    public function movimientos (){
+    public function movimientos()
+    {
         return $this->hasMany(Movimiento::class);
     }
     public function materiaPrimas()
     {
-       return $this->belongsToMany(MateriaPrima::class);
+        return $this->belongsToMany(MateriaPrima::class);
     }
-
 }

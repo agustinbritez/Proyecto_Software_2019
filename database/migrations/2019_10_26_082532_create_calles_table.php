@@ -16,7 +16,6 @@ class CreateCallesTable extends Migration
         Schema::create('calles', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre')->unique();
-            $table->string('numero')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

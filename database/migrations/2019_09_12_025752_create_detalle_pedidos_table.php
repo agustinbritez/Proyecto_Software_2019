@@ -25,8 +25,8 @@ class CreateDetallePedidosTable extends Migration
             $table->foreign('pedido_id')->references('id')->on('pedidos');
             
 
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

@@ -67,7 +67,7 @@ class PaisController extends Controller
         );
         $pais = Pais::create($form_data);
 
-        return redirect()->back()->with('success', 'Pais creado con exito!');
+        return redirect()->back()->with('success', 'Pais creado con exito!')->with('returnModal', 'mostrar modal');
     }
 
     /**
@@ -141,7 +141,7 @@ class PaisController extends Controller
     public function destroy(Request $request)
     {
         $pais = Pais::find($request->button_delete);
-        if ($pais->direcciones->isEmpty()) {
+        if (!$pais->direcciones->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
         }
         $pais->delete();

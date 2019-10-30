@@ -23,15 +23,6 @@
                             class="form-control" />
                     </div>
 
-                    <div class="form-group col">
-                        <label>Numero de la calle : </label>
-                        <input class="form-control" type="text" name="numero" id="numero"
-                            data-placeholder="Ingrese el numero de la calle si tiene" style="width: 100%;"
-                            data-mask 
-                        data-inputmask="'alias': 'integer',  'digits': 0, 'digitsOptional': false">
-                            
-                    </div>
-
                 </div>
                 <div class="modal-footer justify-content-around">
                     <input type="hidden" name="action" id="action" />
@@ -126,17 +117,14 @@
         
         //****************************************** FILTRO DE LA TABLA**************************************************************
         function filtro_funcion(){
-            var filtros_maximo=2;
+            var filtros_maximo=1;
             var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
-            var filtro_numero = $('#filtro_numero').val().trim().toUpperCase() ;
             //se guardan la cantidad de filtros que se quieren realizar
             var cantidad_filtros=0;
             if((filtro_nombre!='')){
                 cantidad_filtros++;
             }
-            if((filtro_numero!='')){
-                cantidad_filtros++;
-            }
+           
 
             
             $.fn.dataTable.ext.search.pop(
@@ -154,7 +142,6 @@
                     if(cantidad_filtros==filtros_maximo){
                        
                         (data[1].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
-                        (data[2].toUpperCase().includes(filtro_numero))? filtro_completos++ :0;
                         //si cummple con los tres filtro que guarde en la tabla la fila
                         return filtro_completos==cantidad_filtros? true:false;
                         
@@ -166,13 +153,6 @@
                                 return true;
                             }
                         }
-                        if((filtro_numero!='')&&(filtro_numero!=null)){
-                            (data[2].toUpperCase().includes(filtro_numero))? filtro_completos++ :0;
-                            if(filtro_completos==cantidad_filtros){
-                                return true;
-                            }
-                        }
-                    
                         
                         return false;
                     }
@@ -190,10 +170,7 @@
             return filtro_funcion();
             
         });
-        $('#filtro_numero').keyup(function (){
-            return filtro_funcion();
-            
-        });
+       
         
        
         

@@ -79,6 +79,7 @@ class ModeloController extends Controller
                 'nombre'    =>  'required|unique:modelos',
                 'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
                 'precioUnitario'     =>  'required|numeric',
+                'medida_id' => 'required'
             ];
             //transformamos la mascara de precio unitario a un valor double normal
             $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
@@ -94,7 +95,9 @@ class ModeloController extends Controller
 
                 'imagenPrincipal.required'     => 'La imagen es obligatoria',
                 'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
-                'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048'
+                'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048',
+
+                'medida_id.required' => 'No selecciono una medida'
             ];
 
             $validator = Validator::make($request->all(), $rules, $messages);
@@ -117,12 +120,19 @@ class ModeloController extends Controller
                 $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
                 $file->move(public_path('/imagenes/modelos/'), $imagen);
             }
+            $venta = 0;
+            //El modelo va a estar disponibles para la venta
+            if ($request->has('venta')) {
+                $venta = 1;
+            }
 
             $form_data = array(
                 'nombre'        =>  $request->nombre,
                 'imagenPrincipal'        =>  $imagen,
                 'detalle'         =>  $request->detalle,
-                'precioUnitario'         =>  $request->precioUnitario
+                'precioUnitario'         =>  $request->precioUnitario,
+                'medida_id' => $request->medida_id,
+                'venta' => $venta
             );
 
             //si no crea es porque hay agun atributo que no permite null que esta vacio
@@ -201,7 +211,7 @@ class ModeloController extends Controller
                 //validamos
                 $validator = Validator::make(
                     $request->all(),
-                    ['cantidad' => 'required|integer', 'prioridad' => 'required|integer', 'ingredientes' => 'required' ],
+                    ['cantidad' => 'required|integer', 'prioridad' => 'required|integer', 'ingredientes' => 'required'],
                     [
                         'cantidad.required' => 'No ingreso la cantidad', 'cantidad.integer' => 'No ingreso un numero',
                         'prioridad.required' => 'No ingreso la prioridad', 'prioridad.integer' => 'No ingreso un numero',
@@ -214,17 +224,24 @@ class ModeloController extends Controller
                     return response()->json(['errors' => $validator->errors()->all()]);
                 }
                 //si el modelo ya tiene el ingrediente que se desea agregar lo rechaza
-                foreach ($modelo->recetaPadre as $key => $receta) {
-                    if ($receta->materiaPrima != null) {
-                        if ($receta->materiaPrima->id == $request->ingredientes) {
-                            return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
+                if ($request->has('cambiarIngrediente')) {
+                    foreach ($modelo->recetaPadre as $key => $receta) {
+                        if ($receta->materiaPrima != null) {
+                            if ($receta->materiaPrima->id == $request->ingredientes) {
+                                return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
+                            }
                         }
-                    } elseif ($receta->modeloHijo != null) {
-                        if ($receta->modeloHijo->id == $request->ingredientes) {
-                            return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado']]);
+                    }
+                } else {
+                    foreach ($modelo->recetaPadre as $key => $receta) {
+                        if ($receta->modeloHijo != null) {
+                            if ($receta->modeloHijo->id == $request->ingredientes) {
+                                return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado xx']]);
+                            }
                         }
                     }
                 }
+
                 //si el check esta seleccionado quiere decir que trajo una materia prima
                 if ($request->has('cambiarIngrediente')) {
 
@@ -336,7 +353,8 @@ class ModeloController extends Controller
                 'nombre'        =>  $request->nombre,
                 'imagenPrincipal'        =>  $imagen,
                 'detalle'         =>  $request->detalle,
-                'precioUnitario'         =>  $request->precioUnitario
+                'precioUnitario'         =>  $request->precioUnitario,
+                'medida_id' => $request->medida_id
             );
             //creamos el camino de la imagen vieja
             $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
@@ -346,7 +364,8 @@ class ModeloController extends Controller
             $form_data = array(
                 'nombre'        =>  $request->nombre,
                 'detalle'         =>  $request->detalle,
-                'precioUnitario'         =>  $request->precioUnitario
+                'precioUnitario'         =>  $request->precioUnitario,
+                'medida_id' => $request->medida_id
             );
         }
 
@@ -375,12 +394,12 @@ class ModeloController extends Controller
         if (!$modelo->materiasPrimas->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a materias primas']);
         }
-        if (!$modelo->componentes->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a componentes']);
-        }
-        if (!$modelo->productosModelos->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a productos']);
-        }
+        // if (!$modelo->componentes->isEmpty()) {
+        //     return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a componentes']);
+        // }
+        // if (!$modelo->productosModelos->isEmpty()) {
+        //     return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a productos']);
+        // }
         //borramos todas sus recetas
         foreach ($modelo->recetaPadre as $key => $receta) {
             $receta->delete();

@@ -1,72 +1,71 @@
+<span id="alert-aviso">
 
-	<span id="alert-aviso">
+</span>
+@if ($message = Session::get('success'))
 
-	</span>
-	@if ($message = Session::get('success'))
+<div class="alert alert-success alert-block">
 
-	<div class="alert alert-success alert-block">
+	<button type="button" class="close" data-dismiss="alert">×</button>
 
-		<button type="button" class="close" data-dismiss="alert">×</button>
+	<strong>{{ $message }}</strong>
 
-		<strong>{{ $message }}</strong>
+</div>
 
-	</div>
-
-	@endif
-
-
-	@if ($message = Session::get('error'))
-
-	<div class="alert alert-danger alert-block">
-
-		<button type="button" class="close" data-dismiss="alert">×</button>
-
-		<strong>{{ $message }}</strong>
-
-	</div>
-
-	@endif
+@endif
 
 
-	@if ($message = Session::get('warning'))
+@if ($message = Session::get('error'))
 
-	<div class="alert alert-warning alert-block">
+<div class="alert alert-danger alert-block">
 
-		<button type="button" class="close" data-dismiss="alert">×</button>
+	<button type="button" class="close" data-dismiss="alert">×</button>
 
-		<strong>{{ $message }}</strong>
+	<strong>{{ $message }}</strong>
 
-	</div>
+</div>
 
-	@endif
-
-
-	@if ($message = Session::get('info'))
-
-	<div class="alert alert-info alert-block">
-
-		<button type="button" class="close" data-dismiss="alert">×</button>
-
-		<strong>{{ $message }}</strong>
-
-	</div>
-
-	@endif
+@endif
 
 
-	@if ($errors->any())
+@if ($message = Session::get('warning'))
 
-	<div class="alert alert-danger">
+<div class="alert alert-warning alert-block">
 
-		<button type="button" class="close" data-dismiss="alert">×</button>
+	<button type="button" class="close" data-dismiss="alert">×</button>
 
-		<p>Corrige los siguientes errores:</p>
-		<ul>
-			@foreach ($errors->all() as $message)
-			<li>{{ $message }}</li>
-			@endforeach
-		</ul>
+	<strong>{{ $message }}</strong>
 
-	</div>
+</div>
 
-	@endif
+@endif
+
+
+@if ($message = Session::get('info'))
+
+<div class="alert alert-info alert-block">
+
+	<button type="button" class="close" data-dismiss="alert">×</button>
+
+	<strong>{{ $message }}</strong>
+
+</div>
+
+@endif
+
+
+@if ($errors->any())
+
+<div class="alert alert-danger">
+
+	<button type="button" class="close" data-dismiss="alert">×</button>
+
+	<p>Corrige los siguientes errores:</p>
+	<ul>
+		@foreach ($errors->all() as $message)
+		<li>{{ $message }}</li>
+		@endforeach
+	</ul>
+
+</div>
+
+@endif

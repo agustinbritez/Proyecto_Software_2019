@@ -74,7 +74,6 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
-                                    <th>Numero de calle</th>
                                     <th>&nbsp; </th>
 
                                 </tr>
@@ -87,7 +86,7 @@
 
                                     <td>{{$calle->id}} </td>
                                     <td>{{$calle->nombre}} </td>
-                                    <td>{{$calle->numero??'No Registrado'}} </td>
+                                 
 
                                    
 
@@ -110,7 +109,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
-                                    <th>Numero de calle</th>
+                                  
                                     <th>&nbsp; </th>
 
                                 </tr>

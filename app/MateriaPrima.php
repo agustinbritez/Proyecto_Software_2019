@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class MateriaPrima extends Model
+class MateriaPrima extends Model implements Auditable
 {
+   use \OwenIt\Auditing\Auditable;
    use SoftDeletes;
    // protected $fillable = ['nombre', 'medida_id','tipoMateriaPrima_id','detalle','cantidad','precioUnitario','color'];
    // protected $fillable = ['nombre', 'detalle','cantidad','precioUnitario','color'];

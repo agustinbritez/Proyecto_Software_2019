@@ -86,7 +86,8 @@ class MovimientoController extends Controller
 
         $materiaPrima = MateriaPrima::find($request->materiaPrima_id);
         $tipoMovimiento = TipoMovimiento::find($request->tipoMovimiento_id);
-        if($tipoMovimiento->operacion==0){
+        //si es distitno a 0 es porqu es verdadero osea suar 
+        if($tipoMovimiento->operacion!=0){
             $materiaPrima->cantidad = $materiaPrima->cantidad + $request->cantidad;
             
         }else{
