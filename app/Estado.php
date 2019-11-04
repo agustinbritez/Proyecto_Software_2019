@@ -11,10 +11,7 @@ class Estado extends Model implements Auditable
     use SoftDeletes;
     protected $guarded = [];
     
-    public function productos()
-    {
-        return $this->hasMany(Producto::class);
-    }
+
     public function transicions()
     {
         return $this->hasMany(Transicion::class);

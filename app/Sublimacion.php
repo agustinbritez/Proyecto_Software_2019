@@ -5,19 +5,20 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
+
 class Sublimacion extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     protected $guarded = [];
-    
-    public function productos()
+
+    public function producto()
     {
-        return $this->belongsToMany(Producto::class);
+        return $this->belongsTo(Producto::class);
     }
-    public function componentes()
+    public function componente()
     {
-        return $this->belongsToMany(Componente::class);
+        return $this->belongsTo(Componente::class);
     }
     public function imagen()
     {

@@ -6,6 +6,8 @@ use App\ImagenIndividual;
 use App\MateriaPrima;
 use App\Medida;
 use App\Modelo;
+use App\Receta;
+use Carbon\Carbon;
 use CreateMateriaPrimasModelosTable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Validator;
@@ -44,6 +46,7 @@ class ControllerMateriaPrima extends Controller
      */
     public function store(Request $request)
     {
+
         $request->nombre = strtoupper($request->nombre);
         //obtengo la materias primas borradas si elnombre se repite la reuso
         $materiaPrimaExistente = MateriaPrima::where('nombre', $request->nombre)->where('deleted_at', "<>", null)->withTrashed()->first();
@@ -98,7 +101,8 @@ class ControllerMateriaPrima extends Controller
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
-            $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+            $hoy = Carbon::now();
+            $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
             $file->move(public_path('/imagenes/materia_primas/'), $imagen);
         }
         // $validator = Validator::make($request->all(),$rules);
@@ -146,10 +150,31 @@ class ControllerMateriaPrima extends Controller
         // $materiaPrima->save();
         // return $materiaPrima;
         //si no crea es porque hay agun atributo que no permite null que esta vacio
-        $form_data;
+
         $materiaPrima = MateriaPrima::create($form_data);
+
+
+        //creamos la receta para relacionar la materia prima con el modelo 
+        $modelos = null;
         if ($request->has('modelos')) {
-            $materiaPrima->modelos()->sync($request->input('modelos', []));
+            // $materiaPrima->modelos()->sync($request->input('modelos', []));
+            $modelos = $request->input('modelos', []);
+        }
+        if ($modelos != null) {
+            foreach ($modelos as $key => $modelo) {
+                $modeloEncontrado = Modelo::find($modelo);
+                if ($modeloEncontrado != null) {
+                    $form_data = array(
+                        'modeloPadre_id' => $modeloEncontrado->id,
+                        'materiaPrima_id' => $materiaPrima->id,
+                        'cantidad'        =>  0,
+                        'prioridad' => 0
+                    );
+
+                    //si no crea es porque hay agun atributo que no permite null que esta vacio
+                    $receta = Receta::create($form_data);
+                }
+            }
         }
 
         // return response()->json(['success' => 'Materia Prima Guardada Con Exito.']);
@@ -246,7 +271,9 @@ class ControllerMateriaPrima extends Controller
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
-            $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+            $hoy = Carbon::now();
+            $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+
             $file->move(public_path('/imagenes/materia_primas/'), $imagen);
             $form_data = array(
                 'nombre'        =>  $request->nombre,

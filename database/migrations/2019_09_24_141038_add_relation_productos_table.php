@@ -17,8 +17,6 @@ class AddRelationProductosTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
             
-            $table->unsignedBigInteger('estado_id');
-            $table->foreign('estado_id')->references('id')->on('estados');
             
             $table->unsignedBigInteger('modelo_id');
             $table->foreign('modelo_id')->references('id')->on('modelos');

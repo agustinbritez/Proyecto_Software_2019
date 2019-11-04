@@ -15,9 +15,9 @@ class CreateProductosTable extends Migration
     {
         Schema::create('productos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->boolean('aceptado');
+            //si es verdadero significa que el produto ya se produjo una vez
+            $table->boolean('final');
             $table->string('imagenPrincipal');
-
         
             $table->softDeletes();
             $table->timestamps();

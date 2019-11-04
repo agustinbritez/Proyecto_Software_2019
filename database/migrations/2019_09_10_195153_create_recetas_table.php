@@ -18,8 +18,8 @@ class CreateRecetasTable extends Migration
             // $table->boolean('modificable');
             $table->integer('prioridad');
             $table->integer('cantidad');
-            $table->timestamps();
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 

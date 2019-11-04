@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Componente;
 use App\MateriaPrima;
 use App\Medida;
 use App\Modelo;
 use App\Receta;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use File;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Date;
+
+use DateTime;
 
 class ModeloController extends Controller
 {
@@ -77,7 +82,7 @@ class ModeloController extends Controller
             }
             $rules = [
                 'nombre'    =>  'required|unique:modelos',
-                'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
                 'precioUnitario'     =>  'required|numeric',
                 'medida_id' => 'required'
             ];
@@ -117,7 +122,8 @@ class ModeloController extends Controller
             $imagen = null;
             if ($request->hasFile('imagenPrincipal')) {
                 $file = $request->file('imagenPrincipal');
-                $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+                $hoy = Carbon::now();
+                $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
                 $file->move(public_path('/imagenes/modelos/'), $imagen);
             }
             $venta = 0;
@@ -191,6 +197,60 @@ class ModeloController extends Controller
             return $modelo->medida;
         }
     }
+    public function addComponente(Request $request)
+    {
+        // return $request;
+        // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $request->has('cambiarIngrediente') ]);
+
+        if (request()->ajax()) {
+
+            //el modelo padre
+            $modelo = Modelo::find($request->hidden_id_modelo_componente);
+            if ($modelo != null) {
+                //validamos
+                $validator = Validator::make(
+                    $request->all(),
+                    ['nombreComponente' => 'required', 'imagenComponente'     =>  'required|mimes:jpeg,png,jpg,gif,svg,webp|max:2048'],
+                    [
+                        'nombreComponente.required' => 'Agrega el nombre del componente.',
+                        'imagenComponente.required'     => 'La imagen es obligatoria',
+                        'imagenComponente.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+                        'imagenComponente.max'     => 'La resolucion maxima de la imagen es 2048',
+                    ]
+                );
+
+                if ($validator->fails()) {
+
+                    return response()->json(['errors' => $validator->errors()->all()]);
+                }
+
+                $imagen = null;
+                if ($request->hasFile('imagenComponente')) {
+                    $file = $request->file('imagenComponente');
+                    $hoy = Carbon::now();
+                    $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenComponente')->getClientOriginalExtension();
+
+
+
+                    $file->move(public_path('/imagenes/componentes/'), $imagen);
+                }
+
+
+                $form_data = array(
+                    'nombre' => $request->nombreComponente,
+                    'imagenPrincipal' => $imagen,
+                    'modelo_id' => $modelo->id
+                );
+
+                //si no crea es porque hay agun atributo que no permite null que esta vacio
+                $componente = Componente::create($form_data);
+
+                return response()->json(['success' => 'Componente creado correctamente.', 'componente' => $componente]);
+            }
+
+            return response()->json(['errors' => ['El modelo no existe por lo tanto no se pueden crear los componentes']]);
+        }
+    }
 
     /**
      * Display the specified resource.
@@ -236,9 +296,18 @@ class ModeloController extends Controller
                     foreach ($modelo->recetaPadre as $key => $receta) {
                         if ($receta->modeloHijo != null) {
                             if ($receta->modeloHijo->id == $request->ingredientes) {
-                                return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado xx']]);
+                                return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado ']]);
                             }
                         }
+                    }
+                    //verificarmos si el modelo a agregar no esta relacionado de manera profunda
+                    $modeloPadre = Modelo::find($request->hidden_id_modelo);
+                    $modeloHijo = Modelo::find($request->ingredientes);
+                    if (($modeloPadre->id == $modeloHijo->id)) {
+                        return response()->json(['errors' => ['No puede seleccionar el mismo modelo como ingrediente ']]);
+                    }
+                    if ($this->verificarSiEsRecursivo($modeloPadre, $modeloHijo)) {
+                        return response()->json(['errors' => ['El modelo seleccionado no esta permitido  para recursion ']]);
                     }
                 }
 
@@ -287,6 +356,29 @@ class ModeloController extends Controller
         }
     }
 
+    //los modelos no pueden contener recetas que se autoreferencien en todos sus recectas hijos
+    private function verificarSiEsRecursivo($modeloPadre, $modelo_para_agregar)
+    {
+        if ($modelo_para_agregar->hijosModelos->isEmpty()) {
+            //si entra es imposible que sea recursivo si no tiene hijos  a que referenciar
+            return false;
+        }
+
+        foreach ($modelo_para_agregar->hijosModelos as $key => $hijoModelo) {
+            if ($hijoModelo->id == $modeloPadre->id) {
+                return true;
+            }
+        }
+        foreach ($modelo_para_agregar->hijosModelos as $key => $hijoModelo) {
+            if ($this->verificarSiEsRecursivo($modeloPadre, $hijoModelo)) {
+                return true;
+            }
+        }
+        //si no tiene hijos pero ninguno de ellos contienen al modelo padre que le quiere agregar, entonces no es recursivo
+        return false;
+    }
+
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -308,9 +400,10 @@ class ModeloController extends Controller
     public function update(Request $request)
     {
 
+
         $rules = [
             'nombre'    =>  'required|unique:modelos,nombre,' . $request->hidden_id,
-            'imagenPrincipal'     =>  'mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'imagenPrincipal'     =>  'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'precioUnitario'     =>  'required|numeric'
         ];
 
@@ -343,11 +436,13 @@ class ModeloController extends Controller
         //si el id que crea es uno borrado lo revivimos
         $modelo = Modelo::withTrashed()->find($request->hidden_id);
 
+        // return response()->json(['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => new Modelo()]);
 
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
-            $imagen = time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
+            $hoy = Carbon::now();
+            $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
             $file->move(public_path('/imagenes/modelos/'), $imagen);
             $form_data = array(
                 'nombre'        =>  $request->nombre,
@@ -358,8 +453,10 @@ class ModeloController extends Controller
             );
             //creamos el camino de la imagen vieja
             $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
-            //borramos la imagen vieja
-            unlink($file_path);
+            if (file_exists($file_path)) {
+                //borramos la imagen vieja
+                unlink($file_path);
+            }
         } else {
             $form_data = array(
                 'nombre'        =>  $request->nombre,

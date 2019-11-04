@@ -16,8 +16,8 @@ class CreateTipoImagensTable extends Migration
         Schema::create('tipo_imagens', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
+            $table->softDeletes();
             $table->timestamps();
-            
         });
     }
 

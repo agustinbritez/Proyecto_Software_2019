@@ -14,22 +14,23 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        $user=new User();
-        $user->nombre='admin';
-        $user->apellido='admin';
-        $user->email='admin@admin';
+        $user = new User();
+        $user->name = 'ADMIN';
+        $user->apellido = 'ADMIN';
+        $user->email = 'admin@admin.com';
 
-        $user->password=Hash::make('12345678');
-        $rol=Role::where('name','ADMIN')->first()->get();
-        $user->roles()->sync($rol);
+        $user->password = Hash::make('12345678');
         $user->save();
-
+        $rol = Role::where('name', 'ADMIN')->first()->get();
+        DB::table('role_user')->insert(
+            ['user_id' => $user->id, 'role_id' => 1]
+        );
         // User::create([
         //     'nombre' => 'admin',
         //     'email' => 'admin@admin.com',
         //     'password' => '12345678',
         // ]);
 
-        
+
     }
 }

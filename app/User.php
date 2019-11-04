@@ -49,21 +49,21 @@ class User extends Authenticatable implements Auditable
     public function documento()
     {
         return $this->hasOne(Documento::class);
-    }    
+    }
     public function direccions()
     {
         return $this->belongsToMany(Direccion::class);
-    }    
+    }
     public function pedidos()
     {
         return $this->hasMany(Pedido::class);
-    }   
+    }
     public function productos()
     {
         return $this->hasMany(Producto::class);
-    }      
+    }
     public function roles()
     {
         return $this->belongsToMany(Role::class);
-    }      
+    }
 }

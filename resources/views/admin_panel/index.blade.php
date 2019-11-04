@@ -25,8 +25,7 @@
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 
-
-
+  @yield('style')
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -77,6 +76,8 @@
 
   <script src="{{ asset('js/app.js') }}"></script>
   <!-- jQuery -->
+  {{-- <script src="{{ asset('js/interactjs.js') }}"></script> --}}
+  {{--intercatsjs para intercatuar con las imagenes  --}}
   <script src="{{asset('admin_panel/plugins/jquery/jquery.min.js')}}"></script>
 
   <script src="{{asset('admin_panel/plugins/inputmask/jquery.inputmask.bundle.js')}}"></script>
@@ -95,7 +96,8 @@
   <script src="{{asset('admin_panel/plugins/moment/moment-with-locales.min.js')}}"></script>
 
   <script src="{{asset('admin_panel/dist/js/demo.js')}}"></script>
-
+  {{-- java script interact --}}
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 
   <script>
     $(document).ready(function(){

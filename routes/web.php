@@ -13,6 +13,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+Route::get('/prueba', function () {
+    return view('producto.pruebaInteraccion');
+});
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', function () {
         return view('admin_panel.index');
@@ -35,6 +38,9 @@ Route::resource('/usuarios', 'UserController');
 
 //receta
 Route::delete('receta/destroy/{id}', 'RecetaController@destroy')->name('receta.destroy')->middleware('permission:receta_delete');
+
+//componente
+Route::delete('componente/destroy/{id}', 'ComponenteController@destroy')->name('componente.destroy')->middleware('permission:componente_delete');
 
 
 //materia Prima
@@ -74,9 +80,21 @@ Route::delete('modelo/destroy/{id}', 'ModeloController@destroy')->name('modelo.d
 Route::get('modelo/{variable}', 'ModeloController@cargarListaIngrediente')->name('modelo.cargarListaIngrediente');
 Route::post('modelo/relation', 'ModeloController@addRelation')->name('modelo.addRelation')->middleware('permission:modelo_addRelation');
 Route::get('modelo/modificar/{id}', 'ModeloController@modificar')->name('modelo.modificar')->middleware('permission:modelo_modificar');
+Route::post('modelo/componente', 'ModeloController@addComponente')->name('modelo.addComponente')->middleware('permission:modelo_addComponente');
 Route::get('modelo/getMedidaMateriaPrima/{id}', 'ModeloController@getMedidaMateriaPrima')->name('modelo.getMedidaMateriaPrima')->middleware('permission:modelo_getMedidaMateriaPrima');
 Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->name('modelo.getMedidaModelo')->middleware('permission:modelo_getMedidaModelo');
 //  Route::resource('modelo','modeloController');
+// Productos
+Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
+Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
+Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow')->middleware('permission:producto_preshow');
+Route::get('producto/create', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
+Route::post('producto', 'ProductoController@store')->name('producto.store')->middleware('permission:producto_store');
+Route::get('producto/{id}/edit', 'ProductoController@edit')->name('producto.edit')->middleware('permission:producto_edit');
+Route::post('producto/update', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
+Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('producto.destroy')->middleware('permission:producto_delete');
+
+
 
 //Tipo Movimiento
 Route::get('tipoMovimiento', 'tipoMovimientoController@index')->name('tipoMovimiento.index')->middleware('permission:tipoMovimiento_index');

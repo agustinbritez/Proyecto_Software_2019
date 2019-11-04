@@ -15,14 +15,14 @@ class CreateMateriaPrimaProductoTable extends Migration
     {
         Schema::create('materia_prima_producto', function (Blueprint $table) {
             $table->bigIncrements('id');
+            
             $table->unsignedBigInteger('materiaPrima_id')->nullable();
             $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
-            
 
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->foreign('producto_id')->references('id')->on('productos');
-            
-          
+
+
             $table->timestamps();
         });
     }

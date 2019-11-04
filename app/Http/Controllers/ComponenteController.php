@@ -78,8 +78,17 @@ class ComponenteController extends Controller
      * @param  \App\Componente  $componente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Componente $componente)
+    public function destroy($id)
     {
-        //
+        // $receta=Receta::find($request->hidden_receta_id);
+        $componente = Componente::find($id);
+        if ($componente != null) {
+            if (!$componente->sublimaciones->isEmpty()) {
+                return redirect()->back()->with('errors', 'No se elimino el componente, tiene sublimaciones asociadas')->with('returnModal', 'mostrar modal');
+            }
+            $componente->delete();
+            return redirect()->back()->with('warning', 'Componente Eliminado Correctamente')->with('returnModal', 'mostrar modal');
+        }
+        return redirect()->back()->with('errors', 'No se encontro el componente que se desea quitar')->with('returnModal', 'mostrar modal');
     }
 }

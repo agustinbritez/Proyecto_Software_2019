@@ -30,13 +30,14 @@
                     <div class="card-body">
                         @if ($modificar)
 
-                        <div align="right" style="display: block" id="botonComponente">
+                        <div align="right" style="display: block" id="mostrarComponente">
                             @else
-                            <div align="right" style="display: none" id="botonComponente">
+                            <div align="right" style="display: none" id="mostrarComponente">
 
                                 @endif
 
-                                <button type="button" class="btn  btn-primary  btn-flat btn-sm">Ver Componentes
+                                <button type="button" class="btn  btn-primary  btn-flat btn-sm" id="botonComponente">Ver
+                                    Componentes
                                 </button>
                             </div>
                             <div class="row">
@@ -122,7 +123,6 @@
                             <input type="submit" name="action_button" id="action_button" class="btn btn-success"
                                 value="Guardar" />
                             <input type="hidden" name="action" id="action" value="Add" />
-
                             @endif
                             <input type="hidden" name="hidden_id" id="hidden_id" value="{{$modelo->id??''}}" />
                         </div>
@@ -224,8 +224,8 @@
                                         <div class="card-header">
                                             <div class="card-tools">
                                                 {{-- <button id="array.receta.id" type="button"
-                                            class="delete btn btn-tool" data-card-widget="remove"><i
-                                            class="fal fa-times-circle"></i></button> --}}
+                                                class="delete btn btn-tool" data-card-widget="remove"><i
+                                                class="fal fa-times-circle"></i></button> --}}
                                             </div>
                                             @if ($receta->modeloHijo!=null)
                                             <h3 class="text-center">{{$receta->modeloHijo->nombre}}</h3>
@@ -258,8 +258,8 @@
                                         <div class="card-footer text-center">
 
                                             {{-- <button id="array.receta.id" type="button"
-                                        class="delete btn btn-tool" data-card-widget="remove"><i
-                                        class="fal fa-times-circle"></i></button> --}}
+                                            class="delete btn btn-tool" data-card-widget="remove"><i
+                                            class="fal fa-times-circle"></i></button> --}}
                                             <button type="button" name="delete" id="{{$receta->id}}"
                                                 {{-- data-card-widget="remove" --}}
                                                 class="delete btn btn-outline-danger btn-sm">Quitar</button>
@@ -293,227 +293,240 @@
     @endsection
 
     @section('htmlFinal')
-    <div id="confirmModal" class="modal fade" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2 class="modal-title">Confirmacion</h2>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <h4 align="center" style="margin:0;">¿Esta seguro que desea borrarlo?</h4>
-                </div>
-                <div class="modal-footer">
-                    <form id="formDelete" action="" method="POST">
-                        @csrf
-                        @method('DELETE')
-                        {{-- Paso el id de la materia  aborrar en receta_delete--}}
-                        <input type="hidden" name="receta_delete" id="receta_delete">
-                        <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
-                    </form>
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('modelo.componente')
     @endsection
 
     @push('scripts')
+
     <script>
         $(document).ready(function(){
-            
-            $('#ingredientes').index(0);
-            //cargar imagen local de forma dinamica
-            document.getElementById("imagenPrincipal").onchange = function(e) {
-                // Creamos el objeto de la clase FileReader
-                let reader = new FileReader();
                 
-                // Leemos el archivo subido y se lo pasamos a nuestro fileReader
-                reader.readAsDataURL(e.target.files[0]);
-                
-                // Le decimos que cuando este listo ejecute el código interno
-                reader.onload = function(){
-                    let preview = document.getElementById('preview'),
-                    image = document.createElement('img');
-                    image.src = reader.result;
-                    image.height='200';
-                    image.width='200';
-                    preview.innerHTML = '';
-                    preview.append(image);
-                };
-            }
-            //mascaras******************************************************************************
-            
-            $('[data-mask]').inputmask();
-            
-        });
-        
-        
-        
-        
-        //**************************************** cambiar a materia primas los ingredientes ********************************************
-        $('body').on('change', '#cambiarIngrediente', function () {
-            var check=this.checked? 1:0;
-            //   console.log(check);
-            
-            
-            
-            var url="{{route('modelo.cargarListaIngrediente',":id")}}";
-            url=url.replace(':id',check);
-            //*********************************Ajax cargar combobox desde un checkbox***********************************************************8
-            //recibe un array de materia prima o de modelos depende del checkbox
-            
-            $.get(url,function(data){
-                // console.log(data);
-                
-                if(check){
-                    $('#labelIngrediente').text('Ingredientes (materia primas)');
-                }else{
-                    $('#labelIngrediente').text('Ingredientes (modelos)');
+                $('#ingredientes').index(0);
+                //cargar imagen local de forma dinamica
+                document.getElementById("imagenPrincipal").onchange = function(e) {
+                    // Creamos el objeto de la clase FileReader
+                    let reader = new FileReader();
+                    
+                    // Leemos el archivo subido y se lo pasamos a nuestro fileReader
+                    reader.readAsDataURL(e.target.files[0]);
+                    
+                    // Le decimos que cuando este listo ejecute el código interno
+                    reader.onload = function(){
+                        let preview = document.getElementById('preview'),
+                        image = document.createElement('img');
+                        image.src = reader.result;
+                        image.height='200';
+                        image.width='200';
+                        preview.innerHTML = '';
+                        preview.append(image);
+                    };
                 }
-                //*******************************Cargar el selected de modelos SELECT SIMPLE********************************************
-                $('#ingredientes').find('option').remove();
-                data.forEach(carga => {
-                    var idCarga=carga.id;
-                    var url2='';
-                    if(check){
-                        url2="{{route('modelo.getMedidaMateriaPrima',":id")}}";
-                    }else{
-                        url2="{{route('modelo.getMedidaModelo',":id")}}";
-                    }
-                    url2=url2.replace(':id',idCarga);
-                    $.get(url2,function(medida){
+                document.getElementById("imagenComponente").onchange = function(e) {
+                    // Creamos el objeto de la clase FileReader
+                    let reader = new FileReader();
+                    
+                    // Leemos el archivo subido y se lo pasamos a nuestro fileReader
+                    reader.readAsDataURL(e.target.files[0]);
+                    
+                    // Le decimos que cuando este listo ejecute el código interno
+                    reader.onload = function(){
+                        let preview = document.getElementById('previewComponente'),
+                        image = document.createElement('img');
+                        image.src = reader.result;
+                        image.height='200';
+                        image.width='200';
+                        preview.innerHTML = '';
+                        preview.append(image);
+                    };
+                }
+                //mascaras******************************************************************************
+                
+                $('[data-mask]').inputmask();
+                  //********************************************************************************* Componentes *************************************8
+                  $('#componente_form').on('submit', function(event){
+                                                        event.preventDefault();
+                                                        if(($('#nombreComponente').val()!='' )){
+                                                            // console.log(this);
+                                                            $.ajax({
+                                                                url:"{{ route('modelo.addComponente') }}",
+                                                                method:"POST",
+                                                                data: new FormData(this),
+                                                                contentType: false,
+                                                                cache:false,
+                                                                processData: false,
+                                                                dataType:"json",
+                                                                success: function(array) {
+                                                                    var html='';
+                                                                    console.log(array);
+                                                                    if(array.errors)
+                                                                    {
+                                                                        html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                                                            array.errors.forEach(error => {
+                                                                                html+= '<li>'+error + '</li>';
+                                                                            });
+                                                                            html+='</ul></div>';
+                                                                        }else{
+                                                                            html='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
+                                                                        
+                                                                                var nuevoComponente=
+                                                                                '<div class="form-group">'
+                                                                                    +'<div class="card" style="width: 15rem;">'
+                                                                                            var ruta='';
+                                                                                            
+                                                                                            if(array.componente!=null){
+                                                                                                if(array.componente.imagenPrincipal!=null){
+                                                                                                    // ruta=dirname('/imagenes/modelos')+''+array.componente.imagenPrincipal;
+                                                                                                    ruta='{{asset("/imagenes/componentes")}}'+'/'+array.componente.imagenPrincipal;
+                                                                                                    
+                                                                                                }
+                                                                                            }
+                                                                                     nuevoComponente+='<img src="'+ruta+'" class="card-img-top" alt="...">'
+                                                                                       +'<div class="card-body ">'
+                                                                                          +'<h4 class="text-center">'+array.componente.nombre+'</h4>'
+                                                                                      +'</div>'
+                                                                                      +'<div class="card-footer text-center">'
+                                                                                        +'<button type="button" name="deleteComponente" id="'+array.componente.id+'"'
+                                                                                        +'class="deleteComponente btn btn-outline-danger btn-sm">Quitar</button>'
+                                                                                      +'</div>'
+                                                                                    +'</div>'
+                                                                                  +'</div>';
+                                                                                      
+                                                                                  $('#componentes').append(nuevoComponente);  
+                                                                                  $('#nombreComponente').val('');
+                                                                                  }
+                                                                                  $('#avisosModalComponente').html(html);
+                                                                                  }
+                                                                                        // error:function(){
+                                                                                        //         alert('error');
+                                                                                        //     }
+                                                                                        });
+                                                                                        
+                                                                                    }                
+                                                                                });  
+                         $(document).on('click', '.deleteComponente', function(){
                         
-                        $('#ingredientes').append($('<option>', {
-                            value: carga.id,
-                            text: carga.nombre +' ('+medida.nombre+') ',
-                        }));
+                        var componente_id = $(this).attr('id');
+                        $('#receta_delete').val(componente_id);
+                        $('#formDelete').attr('action','/componente/destroy/'+componente_id+'');
+                        $('#ok_button').text('Ok');
+                        $('.modal-title').text("Confirmacion");
+                        $('#confirmModal').modal('show');
                     });
                     
-                });
-                $('#ingredientes').index(0);
-                
+                    $('#formDelete').on('submit',function(){
+                        $('#ok_button').text('Eliminando...');
+                    });
             });
             
-        });  
-        
-        
-        $('#sample_form').on('submit', function(event){
-            event.preventDefault();
-            // var file = $("#imagenPrincipal")[0].files[0];
-            // formData.append("file", file, file.name);
             
-            $('#alert-aviso').html('');
             
-            if($('#action').val() == 'Add')
-            {
+            
+            //**************************************** cambiar a materia primas los ingredientes ********************************************
+            $('body').on('change', '#cambiarIngrediente', function () {
+                var check=this.checked? 1:0;
+                //   console.log(check);
                 
-                var html='';
-                $.ajax({
-                    url:"{{ route('modelo.store') }}",
-                    method:"POST",
-                    data: new FormData(this),
-                    contentType: false,
-                    cache:false,
-                    processData: false,
-                    dataType:"json",
-                    success: function(json) {
-                        if(json.errors)
-                        {
-                            html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
-                                json.errors.forEach(error => {
-                                    html+= '<li>'+error + '</li>';
-                                });
-                                html+='</ul></div>';
-                            }else{
-                                html='<div class="alert alert-success alert-block"><button type="button" class="close" data-dismiss="alert">×</button><strong>'+json.success+'</strong></div>';
-                                
-                                $('#action').val('Edit') ;
-                                $('#action_button').val('Actualizar') ;
-                                //agregamos los modelos
-                                document.getElementById('recetas').style.display='block';
-                                document.getElementById('botonComponente').style.display='block';
-                                // $('#recetas'). (json.receta);
-                                $('#hidden_id').val(json.modelo.id);
-                                $('#hidden_id_modelo').val(json.modelo.id);
-                            }
-                            $('#alert-aviso').html(html);
+                
+                
+                var url="{{route('modelo.cargarListaIngrediente',":id")}}";
+                url=url.replace(':id',check);
+                //*********************************Ajax cargar combobox desde un checkbox***********************************************************8
+                //recibe un array de materia prima o de modelos depende del checkbox
+                
+                $.get(url,function(data){
+                    // console.log(data);
+                    
+                    if(check){
+                        $('#labelIngrediente').text('Ingredientes (materia primas)');
+                    }else{
+                        $('#labelIngrediente').text('Ingredientes (modelos)');
+                    }
+                    //*******************************Cargar el selected de modelos SELECT SIMPLE********************************************
+                    $('#ingredientes').find('option').remove();
+                    data.forEach(carga => {
+                        var idCarga=carga.id;
+                        var url2='';
+                        if(check){
+                            url2="{{route('modelo.getMedidaMateriaPrima',":id")}}";
+                        }else{
+                            url2="{{route('modelo.getMedidaModelo',":id")}}";
                         }
+                        url2=url2.replace(':id',idCarga);
+                        $.get(url2,function(medida){
+                            
+                            $('#ingredientes').append($('<option>', {
+                                value: carga.id,
+                                text: carga.nombre +' ('+medida.nombre+') ',
+                            }));
+                        });
+                        
                     });
-                }else
-                //boton action dentro del modal osea guardar se activa la actualizacion
-                if($('#action').val() == "Edit")
+                    $('#ingredientes').index(0);
+                    
+                });
+                
+            });  
+            
+            
+            $('#sample_form').on('submit', function(event){
+                event.preventDefault();
+                // var file = $("#imagenPrincipal")[0].files[0];
+                // formData.append("file", file, file.name);
+                
+                $('#alert-aviso').html('');
+                
+                if($('#action').val() == 'Add')
                 {
-                    var html = '';
+                    
+                    var html='';
                     $.ajax({
-                        url:"{{ route('modelo.update') }}",
+                        url:"{{ route('modelo.store') }}",
                         method:"POST",
-                        data:new FormData(this),
+                        data: new FormData(this),
                         contentType: false,
-                        cache: false,
+                        cache:false,
                         processData: false,
                         dataType:"json",
-                        success:function(array)
-                        {
-                            if(array.errors)
+                        success: function(json) {
+                            if(json.errors)
                             {
-                                html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
-                                    array.errors.forEach(error => {
+                                html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                    json.errors.forEach(error => {
                                         html+= '<li>'+error + '</li>';
                                     });
                                     html+='</ul></div>';
                                 }else{
-                                    html='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
+                                    html='<div class="alert alert-success alert-block"><button type="button" class="close" data-dismiss="alert">×</button><strong>'+json.success+'</strong></div>';
                                     
-                                    //mostramos el mensaje
+                                    $('#action').val('Edit') ;
+                                    $('#action_button').val('Actualizar') ;
+                                    //agregamos los modelos
                                     document.getElementById('recetas').style.display='block';
-                                    document.getElementById('botonComponente').style.display='block';
-                                    
-                                    $('#hidden_id').val(array.modelo.id);
-                                    $('#hidden_id_modelo').val(array.modelo.id);
+                                    document.getElementById('mostrarComponente').style.display='block';
+                                    // $('#recetas'). (json.receta);
+                                    $('#hidden_id').val(json.modelo.id);
+                                    $('#hidden_id_modelo').val(json.modelo.id);
+                                    $('#hidden_id_modelo_componente').val(json.modelo.id);
                                 }
                                 $('#alert-aviso').html(html);
-                                
                             }
                         });
-                    }
-                }); 
-                
-                
-                
-                
-                $(document).on('click', '.delete', function(){
-                    
-                    var receta_id = $(this).attr('id');
-                    $('#receta_delete').val(receta_id);
-                    $('#formDelete').attr('action','/receta/destroy/'+receta_id+'');
-                    $('#ok_button').text('Ok');
-                    $('.modal-title').text("Confirmacion");
-                    $('#confirmModal').modal('show');
-                });
-                
-                $('#formDelete').on('submit',function(){
-                    $('#ok_button').text('Eliminando...');
-                });
-                
-                
-                
-                
-                //********************************************************************************* RECETAS*************************************8
-                $('#form_recetas').on('submit', function(event){
-                    event.preventDefault();
-                    if(($('#cantidad').val()!='' )&& ($('#prioridad').val()!='') &&($('#ingredientes option').length>0)){
-                        // console.log(this);
+                    }else
+                    //boton action dentro del modal osea guardar se activa la actualizacion
+                    if($('#action').val() == "Edit")
+                    {
+                        var html = '';
                         $.ajax({
-                            url:"{{ route('modelo.addRelation') }}",
+                            url:"{{ route('modelo.update') }}",
                             method:"POST",
-                            data: new FormData(this),
+                            data:new FormData(this),
                             contentType: false,
-                            cache:false,
+                            cache: false,
                             processData: false,
                             dataType:"json",
-                            success: function(array) {
-                                var html='';
+                            success:function(array)
+                            {
+                                console.log('adas');
                                 if(array.errors)
                                 {
                                     html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
@@ -523,103 +536,180 @@
                                         html+='</ul></div>';
                                     }else{
                                         html='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
-                                        //si es verdadero
-                                        if(array.agregar){
-                                            
-                                            
-                                            var nuevaReceta='<div class="form-group ">'
-                                                +'<div class="card border-secondary " style="max-width: 18rem; ">'
-                                                    +'<div class="card-header">';
-                                                        if(array.hijoModelo!=null){
-                                                            nuevaReceta+= '<h3 class="text-center">'+array.hijoModelo.nombre+'</h3>';     
-                                                        }else if(array.hijoMateriaPrima!=null){
-                                                            nuevaReceta+= '<h3 class="text-center">'+array.hijoMateriaPrima.nombre+'</h3>';     
-                                                        }
-                                                        nuevaReceta+= '</div>';
-                                                        var ruta='';
-                                                        var url2='';
-                                                        var idCarga;
-                                                        if(array.hijoModelo!=null){
-                                                            if(array.hijoModelo.imagenPrincipal!=null){
-                                                                // ruta=dirname('/imagenes/modelos')+''+array.hijoModelo.imagenPrincipal;
-                                                                ruta='{{asset("/imagenes/modelos")}}'+'/'+array.hijoModelo.imagenPrincipal;
-                                                                
+                                        
+                                        //mostramos el mensaje
+                                        document.getElementById('recetas').style.display='block';
+                                        document.getElementById('mostrarComponente').style.display='block';
+                                        
+                                        $('#hidden_id').val(array.modelo.id);
+                                        $('#hidden_id_modelo').val(array.modelo.id);
+                                        $('#hidden_id_modelo_componente').val(array.modelo.id);
+                                    }
+                                    $('#alert-aviso').html(html);
+                                    
+                                },
+                            // error: function(){
+                            //     alert('errors');
+                            // }
+                            });
+                        }
+                    }); 
+                    
+                    
+                    
+                    
+                    $(document).on('click', '.delete', function(){
+                        
+                        var receta_id = $(this).attr('id');
+                        $('#receta_delete').val(receta_id);
+                        $('#formDelete').attr('action','/receta/destroy/'+receta_id+'');
+                        $('#ok_button').text('Ok');
+                        $('.modal-title').text("Confirmacion");
+                        $('#confirmModal').modal('show');
+                    });
+                    
+                    $('#formDelete').on('submit',function(){
+                        $('#ok_button').text('Eliminando...');
+                    });
+                    
+                    
+                    
+                    
+                    //********************************************************************************* RECETAS*************************************8
+                    $('#form_recetas').on('submit', function(event){
+                        event.preventDefault();
+                        if(($('#cantidad').val()!='' )&& ($('#prioridad').val()!='') &&($('#ingredientes option').length>0)){
+                            // console.log(this);
+                            $.ajax({
+                                url:"{{ route('modelo.addRelation') }}",
+                                method:"POST",
+                                data: new FormData(this),
+                                contentType: false,
+                                cache:false,
+                                processData: false,
+                                dataType:"json",
+                                success: function(array) {
+                                    var html='';
+                                    if(array.errors)
+                                    {
+                                        html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                            array.errors.forEach(error => {
+                                                html+= '<li>'+error + '</li>';
+                                            });
+                                            html+='</ul></div>';
+                                        }else{
+                                            html='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
+                                            //si es verdadero
+                                            if(array.agregar){
+                                                
+                                                
+                                                var nuevaReceta='<div class="form-group ">'
+                                                    +'<div class="card border-secondary " style="max-width: 18rem; ">'
+                                                        +'<div class="card-header">';
+                                                            if(array.hijoModelo!=null){
+                                                                nuevaReceta+= '<h3 class="text-center">'+array.hijoModelo.nombre+'</h3>';     
+                                                            }else if(array.hijoMateriaPrima!=null){
+                                                                nuevaReceta+= '<h3 class="text-center">'+array.hijoMateriaPrima.nombre+'</h3>';     
                                                             }
-                                                            idCarga=array.hijoModelo.id;
-                                                            console.log('hijo modelo '+array.hijoModelo.id);
-                                                            url2="{{route('modelo.getMedidaModelo',":id")}}";
-                                                        }else if(array.hijoMateriaPrima!=null){
-                                                            if(array.hijoMateriaPrima.imagenPrincipal!=null){
-                                                                // ruta=dirname('/imagenes/modelos/')+''+array.hijoMateriaPrima.imagenPrincipal;
-                                                                
-                                                                ruta='{{asset("/imagenes/materia_primas")}}'+'/'+array.hijoMateriaPrima.imagenPrincipal;
+                                                            nuevaReceta+= '</div>';
+                                                            var ruta='';
+                                                            var url2='';
+                                                            var idCarga;
+                                                            if(array.hijoModelo!=null){
+                                                                if(array.hijoModelo.imagenPrincipal!=null){
+                                                                    // ruta=dirname('/imagenes/modelos')+''+array.hijoModelo.imagenPrincipal;
+                                                                    ruta='{{asset("/imagenes/modelos")}}'+'/'+array.hijoModelo.imagenPrincipal;
+                                                                    
+                                                                }
+                                                                idCarga=array.hijoModelo.id;
+                                                                console.log('hijo modelo '+array.hijoModelo.id);
+                                                                url2="{{route('modelo.getMedidaModelo',":id")}}";
+                                                            }else if(array.hijoMateriaPrima!=null){
+                                                                if(array.hijoMateriaPrima.imagenPrincipal!=null){
+                                                                    // ruta=dirname('/imagenes/modelos/')+''+array.hijoMateriaPrima.imagenPrincipal;
+                                                                    
+                                                                    ruta='{{asset("/imagenes/materia_primas")}}'+'/'+array.hijoMateriaPrima.imagenPrincipal;
+                                                                }
+                                                                idCarga=array.hijoMateriaPrima.id;
+                                                                console.log('hijo materia prima '+array.hijoMateriaPrima.id);
+                                                                url2="{{route('modelo.getMedidaMateriaPrima',":id")}}";
                                                             }
-                                                            idCarga=array.hijoMateriaPrima.id;
-                                                            console.log('hijo materia prima '+array.hijoMateriaPrima.id);
-                                                            url2="{{route('modelo.getMedidaMateriaPrima',":id")}}";
-                                                        }
-                                                        url2=url2.replace(':id',idCarga);
-                                                        
-                                                        
-                                                        
-                                                        nuevaReceta +='  <img src="'+ruta+'"class="card-img-top" alt="" height="200px" width="200px">'
-                                                        
-                                                        +'<div class="card-body">'
-                                                            +'<p>Cantidad: '+array.receta.cantidad+' </p>';
-                                                            var medidaNombre='Sin Medida';
-                                                            //obtener la medida del ingrediente que se ingreso async ayuda a que espere por la medida
-                                                            $.ajax({
-                                                                async:false,
-                                                                type: 'GET',
-                                                                url: url2,
-                                                                success: function(medida) {
-                                                                   
-                                                                    if(medida!=null){
-                                                                    medidaNombre=medida.nombre;
+                                                            url2=url2.replace(':id',idCarga);
+                                                            
+                                                            
+                                                            
+                                                            nuevaReceta +='  <img src="'+ruta+'"class="card-img-top" alt="" height="200px" width="200px">'
+                                                            
+                                                            +'<div class="card-body">'
+                                                                +'<p>Cantidad: '+array.receta.cantidad+' </p>';
+                                                                var medidaNombre='Sin Medida';
+                                                                //obtener la medida del ingrediente que se ingreso async ayuda a que espere por la medida
+                                                                $.ajax({
+                                                                    async:false,
+                                                                    type: 'GET',
+                                                                    url: url2,
+                                                                    success: function(medida) {
+                                                                        
+                                                                        if(medida!=null){
+                                                                            medidaNombre=medida.nombre;
+                                                                        }
+                                                                    }
+                                                                });
+                                                                
+                                                                // $.get(url2,function(medida){
+                                                                    //     medidaNombre=medida.nombre;
+                                                                    //     console.log(medida);
+                                                                    // });
+                                                                    
+                                                                    nuevaReceta +='<p> Unidad de medida : '+medidaNombre+' </p>';
+                                                                    nuevaReceta +='<p> Prioridad : '+array.receta.prioridad+' </p>'
+                                                                    +'</div>'
+                                                                    +' <div class="card-footer text-center">'
+                                                                        
+                                                                        +'<button type="button" name="delete" id="'+array.receta.id+'"class="delete btn btn-outline-danger btn-sm">Quitar</button>'
+                                                                        +'</div>'
+                                                                        +'</div>'
+                                                                        +'</div>';
+                                                                        
+                                                                        $('#add_receta').append(nuevaReceta);  
+                                                                        
+                                                                        $('#cantidad').val('');
+                                                                        $('#prioridad').val('');
                                                                     }
                                                                 }
-                                                            });
-
-                                                            // $.get(url2,function(medida){
-                                                            //     medidaNombre=medida.nombre;
-                                                            //     console.log(medida);
-                                                            // });
-                                                          
-                                                            nuevaReceta +='<p> Unidad de medida : '+medidaNombre+' </p>';
-                                                            nuevaReceta +='<p> Prioridad : '+array.receta.prioridad+' </p>'
-                                                            +'</div>'
-                                                            +' <div class="card-footer text-center">'
+                                                                $('#avisos').html(html);
+                                                                console.log(array);
                                                                 
-                                                                +'<button type="button" name="delete" id="'+array.receta.id+'"class="delete btn btn-outline-danger btn-sm">Quitar</button>'
-                                                                +'</div>'
-                                                                +'</div>'
-                                                                +'</div>';
                                                                 
-                                                                $('#add_receta').append(nuevaReceta);  
-                                                                
-                                                                $('#cantidad').val('');
-                                                                $('#prioridad').val('');
                                                             }
-                                                        }
-                                                        $('#avisos').html(html);
-                                                        console.log(array);
-                                                        
-                                                        
-                                                    }
-                                                    // error:function(){
-                                                        //     alert('error');
-                                                        // }
-                                                    });
-                                                    
-                                                }                
-                                            });    
-                                            
-                                            
-                                            $(document).on('click', '.close', function(){
-                                                
-                                                $('#avisos').html('');
-                                                $('#alert-aviso').html('');
-                                            });  
-                                            
+                                                            // error:function(){
+                                                                //     alert('error');
+                                                                // }
+                                                            });
+                                                            
+                                                        }                
+                                                    });    
+                                                   
+                                                                                
+                                                                                $(document).on('click', '.close', function(){
+                                                                                    
+                                                                                    $('#avisos').html('');
+                                                                                    $('#alert-aviso').html('');
+                                                                                }); 
+                                                                                
+                                                                                $('#botonComponente').click(function(){
+                                                                                    
+                                                                                    $('#formModal').modal('show');
+
+                                                                                });
+                                                                                
     </script>
+    @if ($message = Session::get('returnModal'))
+    <script>
+        $(document).ready(function(){
+        $('#formModal').modal('show');
+
+         });
+    </script>
+    @endif
     @endpush

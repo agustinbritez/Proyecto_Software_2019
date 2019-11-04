@@ -6,35 +6,39 @@ use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
+
 class Producto extends Model implements Auditable
 {
     use \OwenIt\Auditing\Auditable;
     use SoftDeletes;
     protected $guarded = [];
 
-    public function user (){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function estado (){
-        return $this->belongsTo(Estado::class);
-    }
+
     //las materias primas que se utilizan para un producto
-    public function materiaPrimas (){
-        return $this->belongsTo(MateriaPrima::class);
+    public function materiasPrimas()
+    {
+        return $this->belongsToMany(MateriaPrima::class, 'materia_prima_producto', 'producto_id', 'materiaPrima_id');
     }
 
-    public function sublimacions (){
-        return $this->belongsToMany(Sublimacion::class);
+    public function sublimaciones()
+    {
+        return $this->hasMany(Sublimacion::class);
     }
-    public function modelo (){
+    public function modelo()
+    {
         return $this->belongsTo(Modelo::class);
     }
-    public function detallePedido (){
+    public function detallePedido()
+    {
         return $this->hasMany(DetallePedido::class);
     }
     public function imagenes()
-   {
+    {
 
-      return $this->belongsToMany(ImagenIndividual::class);
-   }
+        return $this->belongsToMany(ImagenIndividual::class);
+    }
 }

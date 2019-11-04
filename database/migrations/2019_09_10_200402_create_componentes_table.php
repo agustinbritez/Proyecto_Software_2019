@@ -16,7 +16,8 @@ class CreateComponentesTable extends Migration
         Schema::create('componentes', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
-
+            $table->string('imagenPrincipal');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

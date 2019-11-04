@@ -15,8 +15,14 @@ class CreateSublimacionsTable extends Migration
     {
         Schema::create('sublimacions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('imagen_id');
-            $table->foreign('imagen_id')->references('id')->on('imagens');
+            $table->string('posX');
+            $table->string('posY');
+            $table->string('alto');
+            $table->string('ancho');
+            //cuando carga una imagen nueva que no es del sistema  el siguiente atributo estara cargado
+            //cuando se procesa la imagen, el atributo nuevaImagen debera ser null y se debe referenciar a la imagen procesada
+            $table->string('nuevaImagen');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

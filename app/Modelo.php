@@ -23,10 +23,22 @@ class Modelo extends Model implements Auditable
     {
         return $this->hasMany(Receta::class, 'modeloHijo_id');
     }
-
+    //obtener todos los hijos directo del modelo osea los modelo que le referencian en su receta donde este es el padre.
+    public function hijosModelos()
+    {
+        //primero va el id del objeto este objeto segundo los id de los objetos que quiero traer
+        return $this->belongsToMany(Modelo::class, 'recetas', 'modeloPadre_id', 'modeloHijo_id')->where('recetas.deleted_at', null);
+    }
+    //obtiene todos los modelos que son sus madres osea los padres de diferentes recetas
+    public function padresModelos()
+    {
+        //primero va el id del objeto este objeto segundo los id de los objetos que quiero traer
+        return $this->belongsToMany(Modelo::class, 'recetas',  'modeloHijo_id', 'modeloPadre_id')->where('recetas.deleted_at', null);
+    }
+    //obtiene las materias primas hijas en las receta osea las materias primas que son ingredientes
     public function materiasPrimas()
     {
-        return $this->belongsToMany(MateriaPrima::class, 'materia_primas_modelos', 'modelo_id', 'materiaPrima_id');
+        return $this->belongsToMany(MateriaPrima::class, 'recetas', 'modeloPadre_id', 'materiaPrima_id')->where('recetas.deleted_at', null);
     }
 
     public function componentes()

@@ -14,7 +14,6 @@ class CalleTableSeeder extends Seeder
     {
         $calle=new Calle();
         $calle->nombre='MAGALDI';
-        $calle->numero='132';
         $calle->save();
     }
 }

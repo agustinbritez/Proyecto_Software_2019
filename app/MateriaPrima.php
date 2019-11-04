@@ -18,7 +18,7 @@ class MateriaPrima extends Model implements Auditable
    {
       $this->attributes['nombre'] = strtoupper($value);
    }
-   
+
    public function proveedors()
    {
 
@@ -31,7 +31,7 @@ class MateriaPrima extends Model implements Auditable
 
       return $this->hasMany(Movimiento::class);
    }
-   
+
    public function recetas()
    {
       return $this->hasMany(Receta::class);
@@ -49,12 +49,11 @@ class MateriaPrima extends Model implements Auditable
    }
    public function productos()
    {
-
-      return $this->belongsToMany(Producto::class);
+      return $this->belongsToMany(Producto::class, 'materia_prima_producto', 'materiaPrima_id', 'producto_id');
    }
    public function modelos()
    {
-      return $this->belongsToMany(Modelo::class, 'materia_primas_modelos', 'materiaPrima_id', 'modelo_id');
+      return $this->belongsToMany(Modelo::class, 'recetas', 'materiaPrima_id', 'modeloPadre_id');
    }
    public function imagenes()
    {
