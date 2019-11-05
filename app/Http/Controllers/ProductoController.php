@@ -125,6 +125,7 @@ class ProductoController extends Controller
 
 
         $imagen = null;
+        $sublimaciones = collect();
         for ($i = 1; $i < $request->cantidadImagenes; $i++) {
 
             if ($request->hasFile('file_' . $i)) {
@@ -132,6 +133,8 @@ class ProductoController extends Controller
                 $hoy = Carbon::now();
                 $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('file_' . $i)->getClientOriginalExtension();
                 $file->move(public_path('/imagenes/sublimaciones/'), $imagen);
+            } else {
+                return redirect()->back()->with('errors', ['Un archivo no tenia imagen, todos deben estar cargados']);
             }
         }
 
