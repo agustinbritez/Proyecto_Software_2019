@@ -28,39 +28,43 @@ class ProductoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
         $tipoImagenes = TipoImagen::all();
-        $modelo = Modelo::find(1);
+        $modelo = Modelo::find($id);
 
         $array = collect();
         $hijoModelosConMateriaPrimas = $this->obtenerTodoslosModelosConMateriaPrimas($modelo, $array);
+
         $cantidadModelos = 0;
         return view('producto.create', compact('modelo', 'tipoImagenes', 'hijoModelosConMateriaPrimas', 'cantidadModelos'));
     }
 
     public function obtenerTodoslosModelosConMateriaPrimas($modelo, $array)
     {
+        if ($modelo != null) {
 
-        //codicion de corte
-        if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
+            //codicion de corte
+            if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
+                return $array;
+            }
+            //coleccionar modelos con materias primas en sus recetas
+            if (!$modelo->materiasPrimas->isEmpty()) {
+                $array->add($modelo);
+            }
+
+
+            foreach ($modelo->hijosModelos as $key => $modeloHijo) {
+                $array2 = $this->obtenerTodoslosModelosConMateriaPrimas($modeloHijo, $array);
+                if ($array2->isNotEmpty()) {
+                    $array->merge($array2);
+                }
+            }
+
             return $array;
         }
-        //coleccionar modelos con materias primas en sus recetas
-        if (!$modelo->materiasPrimas->isEmpty()) {
-            $array->add($modelo);
-        }
-
-
-        foreach ($modelo->hijosModelos as $key => $modeloHijo) {
-            $array2 = $this->obtenerTodoslosModelosConMateriaPrimas($modeloHijo, $array);
-            if ($array2->isNotEmpty()) {
-                $array->merge($array2);
-            }
-        }
-
-        return $array;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -70,35 +74,50 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
-        return $request;
-        $modelosSeleccionados = collect();
+        // return $request;
+        $materiaPrimaSeleccionada = collect();
         $imagenesSeleccionadas = collect();
         $rule2 = [];
         $mensaje2 = [];
 
-        for ($i = 1; $i < $request->cantidadImagenes; $i++) {
-
-            $imagenesSeleccionadas = $imagenesSeleccionadas->add($request->input('file_' . $i));
-            $rule2 = array_merge($rule2, ['file_' . $i => 'required|mimes:jpeg,png,jpg,gif,svg,webp|max:2048']);
-            $mensaje2 = array_merge($mensaje2, [
-                'file_' . $i . '.required'     => 'La imagen es obligatoria',
-                'file_' . $i . '.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
-                'file_' . $i . '.max'     => 'La resolucion maxima de la imagen es 2048',
-            ]);
+        $modelo = Modelo::find($request->modelo_id);
+        // dd($modelo->componentes);
+        if ($modelo == null) {
+            return redirect()->back()->with('errors', ['El modelo para crear el producto no existe']);
         }
+        //cargar por cada componente sus imagenes y verificar si cumplen con los requerimiento de imagenes
+        foreach ($modelo->componentes as $key => $componente) {
+            $cantidadImagenes = $request->input('cantidadImagenes_' . $componente->id);
+
+            for ($i = 1; $i <= $cantidadImagenes; $i++) {
+
+                $imagenesSeleccionadas = $imagenesSeleccionadas->add($request->input('file_' . $i));
+                $rule2 = array_merge($rule2, [
+                    'file_' . $i . '_componente_' . $componente->id => 'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+
+                ]);
+                $mensaje2 = array_merge($mensaje2, [
+                    'file_' . $i . '_componente_' . $componente->id . '.required'     => 'La imagen es obligatoria',
+                    'file_' . $i . '_componente_' . $componente->id . '.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
+                    'file_' . $i . '_componente_' . $componente->id . '.max'     => 'La resolucion maxima de la imagen es 2048',
+                ]);
+            }
+        }
+
         //creamos el array para el sync de productos a materias primas
         for ($i = 0; $i < $request->cantidadModelos; $i++) {
-
-            $modelosSeleccionados = $modelosSeleccionados->add($request->input('modelo_' . $i));
+            //guardamos el id de las materia prima seleccionada del modelo
+            $materiaPrimaSeleccionada = $materiaPrimaSeleccionada->add($request->input('modelo_' . $i));
             $rule2 = array_merge($rule2, ['modelo_' . $i => 'required']);
             $mensaje2 = array_merge($mensaje2, ['modelo_' . $i . '.required' => 'El modelo no fue seleccionado']);
         }
+
         $rules = [
-            'imagenNueva'     =>  'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
+            // 'imagenNueva'     =>  'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
-            'posX'     =>  'required|numeric',
-            'posY'     =>  'required|numeric',
-            'modelo_id' => 'required'
+            // 'posX'     =>  'required|numeric',
+            // 'posY'     =>  'required|numeric',
+            // 'modelo_id' => 'required'
         ];
         //transformamos la mascara de precio unitario a un valor double normal
         // $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
@@ -113,34 +132,20 @@ class ProductoController extends Controller
             // 'posX.numeric' => 'La posicion x debe ser un numero',
             // 'posY.numeric' => 'La posicion x debe ser un numero',
 
-            'modelo_id.required' => 'El modelo no esta seleccionado',
-            'modelo_id.integer' => 'El id del modelo debe ser un numero entero',
+            // 'modelo_id.required' => 'El modelo no esta seleccionado',
+            // 'modelo_id.integer' => 'El id del modelo debe ser un numero entero',
 
         ];
 
-        // return $modelosSeleccionados;
+        // return $materiaPrimaSeleccionada;
         $messages = array_merge($messages, $mensaje2);
         $rules = array_merge($rules, $rule2);
         $this->validate($request, $rules, $messages);
 
-
-        $imagen = null;
-        $sublimaciones = collect();
-        for ($i = 1; $i < $request->cantidadImagenes; $i++) {
-
-            if ($request->hasFile('file_' . $i)) {
-                $file = $request->file('file_' . $i);
-                $hoy = Carbon::now();
-                $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('file_' . $i)->getClientOriginalExtension();
-                $file->move(public_path('/imagenes/sublimaciones/'), $imagen);
-            } else {
-                return redirect()->back()->with('errors', ['Un archivo no tenia imagen, todos deben estar cargados']);
-            }
-        }
-
+        //creamos el producto
         $form_data = array(
             'final'        =>  0,
-            'imagenPrincipal'        =>  $imagen,
+            'imagenPrincipal'        =>  null,
             'modelo_id'         =>  $request->modelo_id,
             'user_id' => auth()->user()->id
         );
@@ -149,25 +154,49 @@ class ProductoController extends Controller
 
         $producto = Producto::create($form_data);
 
-        $sublimacion = Sublimacion::create([
-            'nuevaImagen' => $imagen,
-            'posX' => $request->posX,
-            'posY' => $request->posY,
-            'alto' => $request->alto,
-            'ancho' => $request->ancho,
-            'componente_id' => null,
-            'producto_id' => $producto->id,
-            'imagen_id' => null
+        foreach ($modelo->componentes as $key => $componente) {
+            # code...
 
-        ]);
-        $modelo = Modelo::find($request->modelo_id);
+            $imagen = null;
+            $sublimaciones = collect();
+            $cantidadImagenes = $request->input('cantidadImagenes_' . $componente->id);
+            $sublimacion = null;
+            for ($i = 1; $i <= $cantidadImagenes; $i++) {
 
-        if ($modelo != null) {
-            foreach ($modelo->materiasPrimas as $key => $mate) {
-                $modelosSeleccionados->add($mate->id);
+                $nombreArchivo = 'file_' . $i . '_componente_' . $componente->id;
+                if ($request->hasFile($nombreArchivo)) {
+                    $file = $request->file($nombreArchivo);
+                    $hoy = Carbon::now();
+                    $imagen =  $hoy->format('YmdHi') . '' . time() . '.' . $request->file($nombreArchivo)->getClientOriginalExtension();
+                    //si existe el archivo creo la sublimacion 
+
+                    //asd
+                    $sublimacion = Sublimacion::create([
+                        'nuevaImagen' =>  $imagen,
+
+                        'posX' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_posX'),
+                        'posY' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_posY'),
+                        'alto' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_alto'),
+                        'ancho' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_ancho'),
+                        'componente_id' => $componente->id,
+                        'producto_id' => $producto->id,
+                        'imagen_id' => null
+
+                    ]);
+                    $imagen = $sublimacion->id . $imagen;
+                    $sublimacion->update(['nuevaImagen' =>  $imagen]);
+                    $file->move(public_path('/imagenes/sublimaciones/'), $imagen);
+                }
             }
         }
-        $producto->materiasPrimas()->sync($modelosSeleccionados);
+
+
+        //Agregamos la materias primas del modelo
+        foreach ($modelo->materiasPrimas as $key => $mate) {
+            $materiaPrimaSeleccionada->add($mate->id);
+        }
+
+        $producto->materiasPrimas()->sync($materiaPrimaSeleccionada);
 
         return redirect()->back()->with('success', 'Producto Creado Con Exito!');
     }

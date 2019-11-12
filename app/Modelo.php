@@ -59,4 +59,8 @@ class Modelo extends Model implements Auditable
     {
         return $this->belongsTo(Medida::class, 'medida_id');
     }
+    public function flujoTrabajo()
+    {
+        return $this->belongsTo(FlujoTrabajo::class, 'flujoTrabajo_id');
+    }
 }

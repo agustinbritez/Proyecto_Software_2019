@@ -60,4 +60,8 @@ class MateriaPrima extends Model implements Auditable
 
       return $this->belongsToMany(ImagenIndividual::class);
    }
+   public function aumentarMateriaPrima()
+   {
+      $this->cantidad; 
+   }
 }

@@ -88,11 +88,31 @@ Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->n
 Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
 Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
 Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow')->middleware('permission:producto_preshow');
-Route::get('producto/create', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
+Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
 Route::post('producto', 'ProductoController@store')->name('producto.store')->middleware('permission:producto_store');
 Route::get('producto/{id}/edit', 'ProductoController@edit')->name('producto.edit')->middleware('permission:producto_edit');
 Route::post('producto/update', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
 Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('producto.destroy')->middleware('permission:producto_delete');
+
+// Flujo de trabajos
+Route::get('flujoTrabajo', 'flujoTrabajoController@index')->name('flujoTrabajo.index')->middleware('permission:flujoTrabajo_index');
+Route::get('flujoTrabajo/{flujoTrabajo}/show', 'flujoTrabajoController@show')->name('flujoTrabajo.show')->middleware('permission:flujoTrabajo_show');
+Route::get('flujoTrabajo/create/{id}', 'flujoTrabajoController@create')->name('flujoTrabajo.create')->middleware('permission:flujoTrabajo_create');
+Route::post('flujoTrabajo', 'flujoTrabajoController@store')->name('flujoTrabajo.store')->middleware('permission:flujoTrabajo_store');
+Route::get('flujoTrabajo/{id}/edit', 'flujoTrabajoController@edit')->name('flujoTrabajo.edit')->middleware('permission:flujoTrabajo_edit');
+Route::get('flujoTrabajo/agregarEstado/{idFlujo}-{idEstado}', 'flujoTrabajoController@agregarEstado')->name('flujoTrabajo.agregarEstado')->middleware('permission:flujoTrabajo_agregarEstado');
+Route::get('flujoTrabajo/quitarEstado/{id}', 'flujoTrabajoController@quitarEstado')->name('flujoTrabajo.quitarEstado')->middleware('permission:flujoTrabajo_quitarEstado');
+Route::post('flujoTrabajo/update/{id}', 'flujoTrabajoController@update')->name('flujoTrabajo.update')->middleware('permission:flujoTrabajo_update');
+Route::delete('flujoTrabajo/destroy/{id}', 'flujoTrabajoController@destroy')->name('flujoTrabajo.destroy')->middleware('permission:flujoTrabajo_delete');
+
+// Estados
+Route::get('estado', 'estadoController@index')->name('estado.index')->middleware('permission:estado_index');
+Route::get('estado/{estado}/show', 'estadoController@show')->name('estado.show')->middleware('permission:estado_show');
+Route::get('estado/create/{id}', 'estadoController@create')->name('estado.create')->middleware('permission:estado_create');
+Route::post('estado', 'estadoController@store')->name('estado.store')->middleware('permission:estado_store');
+Route::get('estado/{id}/edit', 'estadoController@edit')->name('estado.edit')->middleware('permission:estado_edit');
+Route::post('estado/update/{id}', 'estadoController@update')->name('estado.update')->middleware('permission:estado_update');
+Route::delete('estado/destroy/{id}', 'estadoController@destroy')->name('estado.destroy')->middleware('permission:estado_delete');
 
 
 

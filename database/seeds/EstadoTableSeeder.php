@@ -12,10 +12,13 @@ class EstadoTableSeeder extends Seeder
      */
     public function run()
     {
-        $estado=new Estado();
-        $estado->nombre='Inicio';
+        $estado = new Estado();
+        $estado->nombre = 'INICIADO';
         $estado->save();
-        
+        $estado = new Estado();
+        $estado->nombre = 'FINALIZADO';
+        $estado->save();
+
         // $estado=new Estado();
         // $estado->nombre='Final';
         // $estado->save();

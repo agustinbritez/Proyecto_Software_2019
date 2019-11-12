@@ -31,7 +31,7 @@
             <p>
               Gestion Produccion
               <i class="right fas fa-angle-left"></i>
-              
+
             </p>
           </a>
           <ul class="nav nav-treeview">
@@ -61,12 +61,61 @@
             </li>
 
           </ul>
-          {{-- <ul class="nav nav-treeview">
+        </li>
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Productos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('calle.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Ver Productos</p>
+              </a>
+            </li>
+          </ul>
+
+
+
+        </li>
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Gestion de flujos de trabajos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('flujoTrabajo.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Ver flujos</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('estado.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Ver estados</p>
+              </a>
+            </li>
+          </ul>
+
+        </li>
+        {{-- <ul class="nav nav-treeview">
                       <li class="nav-item">
                           <a href="{{ route('item.index') }}" class="nav-link">
-          <i class="fas fa-cube nav-icon"></i>
-          <p>Item</p>
-          </a>
+        <i class="fas fa-cube nav-icon"></i>
+        <p>Item</p>
+        </a>
         </li>
       </ul> --}}
       {{-- <ul class="nav nav-treeview">
@@ -170,10 +219,9 @@
 
 
         </ul>
-
-
-
       </li>
+
+
       <li class="nav-item">
         <a href="{{ route('auditoria.index') }}" class="nav-link">
           {{-- <i class="far fa-circle nav-icon"></i> --}}
@@ -184,6 +232,7 @@
           </p>
         </a>
       </li>
+
       @can('usuarios_index')
 
 
@@ -222,7 +271,7 @@
       </li> --}}
       @endcan
       </ul>
-      
+
     </nav>
     <!-- /.sidebar-menu -->
   </div>

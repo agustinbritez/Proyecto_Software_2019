@@ -12,6 +12,7 @@
         touch-action: none;
         user-select: none;
         width: 120px;
+        height: 50px;
 
         /* This makes things *much* easier */
         box-sizing: border-box;
@@ -19,8 +20,8 @@
 
     .resize-container {
         display: inline-block;
-        width: 480px;
-        height: 720px;
+        width: 526px;
+        height: 435px;
         background-repeat: no-repeat;
     }
 </style>
@@ -31,22 +32,102 @@
 
 
 <br>
+<input type="hidden" name="" id="" value="{{$cantidadComponente=0}}" />
 
-
+@if ($modelo!=null)
 <div class=" ">
 
+    <form action="{{ route('producto.store') }}" method="POST" enctype="multipart/form-data" name="sample_form"
+        id="sample_form">
+        @csrf
 
-    <div class="row justify-content-around ">
+        <div class="row ">
 
-        <div class="col-5">
+            &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Crear Producto</button>
+        </div>
+        <br>
+
+        <div class="row justify-content-around ">
+
+            <div class="col-5">
 
 
-            <form action="{{ route('producto.store') }}" method="POST" enctype="multipart/form-data" name="sample_form"
-                id="sample_form">
-                @csrf
+
+
                 <input type="hidden" name="modelo_id" id="modelo_id" value="{{$modelo->id}}" />
-                <input type="hidden" name="" id="" value="{{$cantidadComponente=0}}" />
+                <div class="card text-left">
 
+                    <div class="card-header">
+
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                    class="fas fa-minus"></i></button>
+
+                        </div>
+                        <h3 class="text-center">Personalice su producto</h3>
+                    </div>
+                    {{-- Se le pasa todos los modelos que tiene materia primas asociadas directamente en su recetas --}}
+                    <div class="card-body">
+                        <div class="row">
+
+                            @if (!$hijoModelosConMateriaPrimas->isEmpty())
+
+                            @foreach ($hijoModelosConMateriaPrimas as $modeloHijo)
+                            @if ($modelo->id!=$modeloHijo->id)
+
+
+                            @if (!$modeloHijo->materiasPrimas->isEmpty())
+                            @foreach ($modeloHijo->materiasPrimas as $materiaPrima)
+
+                            <div class="form-group">
+
+
+
+                                <label class="control-label "> {{$modeloHijo->nombre}}:</label>
+                                <select class="form-control select2 " id="" name="modelo_{{$cantidadModelos++}}">
+
+                                    <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
+
+                                </select>
+
+                            </div>
+                            &nbsp;&nbsp;
+                            @endforeach
+                            @endif
+                            @endif
+
+
+                            @endforeach
+
+                            @endif
+                            @if (!$modelo->materiasPrimas->isEmpty())
+
+
+                            <div class="form-group">
+
+
+                                <label class="control-label "> Ingredientes estaticos:</label>
+                                @foreach ($modelo->materiasPrimas as $materia)
+                                <input type="text" disabled value="{{$materia->nombre}}" class="form-control">
+
+                                @endforeach
+
+
+
+                            </div>
+                            @endif
+
+                        </div>
+                        <input type="hidden" name="cantidadModelos" id="cantidadModelos" value="{{$cantidadModelos}}" />
+
+
+                    </div>
+
+
+
+                    <div class="card-footer text-muted justify-content-center">
+                    </div>
+                </div>
                 <div class="card text-left">
 
                     <div class="card-header">
@@ -59,16 +140,17 @@
 
                         <h3 class="text-center">Imagen para sublimar</h3>
                     </div>
-                    
-                    
+
+
                     <div class="card-body">
                         @foreach ($modelo->componentes as $componente)
-                        <div id="componente_{{$cantidadComponente++}}_imagen" data-componente="{{$componente->id}}"
+                        <div id="componente_{{$cantidadComponente}}_imagen" data-componente="{{$componente->id}}"
                             style="display:none;">
+
                             <div class="form-group">
                                 <label class="control-label ">Seleccionar Tipo Imagen : </label>
-                                <select class="form-control select2 " id="sublimacion_id" name="sublimacion_id"
-                                    style="width: 100%;">
+                                <select class="form-control select2 " id="tipoImagen_componente_{{$cantidadComponente}}"
+                                    name="tipoImagen_componente_{{$cantidadComponente}}" style="width: 100%;">
                                     @if (sizeof($tipoImagenes)>0)
 
                                     @foreach ($tipoImagenes as $tipo)
@@ -83,8 +165,9 @@
 
                             <div class="form-group">
                                 <label class="control-label ">Seleccionar Imagen : </label>
-                                <select class="form-control select2 " id="imagen_id" name="imagen_id"
-                                    style="width: 100%;" class="selectpicker">
+                                <select class="form-control select2 " id="imagen_componente_{{$cantidadComponente}}"
+                                    name="imagen_componente_{{$cantidadComponente++}}" style="width: 100%;"
+                                    class="selectpicker">
                                     {{-- <option data-thumbnail="{{asset("/imagenes/modelos/".$imagen->imagen)??'' }}">
                                     {{$imagen->nombre}}</option> --}}
                                 </select>
@@ -112,23 +195,6 @@
 
 
                             <div id="add_imagen_componente_{{$componente->id}}" class="row ">
-                                {{-- <div class=" " style="max-width: 10rem; ">
-                                        <div id="preview" class="row justify-content-center">
-                                            <img src="https://mdbootstrap.com/img/Photos/Others/placeholder.jpg" class=""
-                                            height="150" width="180">
-                                        </div>
-                                        <div>
-                                            <label class="btn btn-default btn-file ">
-                                                Subir Imagen <i class="fas fa-upload ml-3" aria-hidden="true"></i><input
-                                                type="file" id="imagenNueva" name="imagenNueva" style="display: none;">
-                                            </label>
-                                        </div>
-                                        <input type="hidden" name="imagen_x_posX" id="imagen_x_posX" value="" />
-                                        <input type="hidden" name="imagen_x_posY" id="imagen_x_posY" value="" />
-                                        <input type="hidden" name="imagen_x_alto" id="imagen_x_alto" value="" />
-                                        <input type="hidden" name="imagen_x_ancho" id="imagen_x_ancho" value="" />
-                                    </div>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; --}}
 
 
                             </div>
@@ -146,11 +212,15 @@
 
 
                     <div class="card-footer text-muted justify-content-center">
-                        <button type="submit" id="prueba2" class="btn btn-success">Enviar posicion de imagen</button>
                     </div>
                 </div>
 
                 {{-- Otro cards --}}
+
+
+            </div>
+            <div class="col-7">
+
                 <div class="card text-left">
 
                     <div class="card-header">
@@ -160,39 +230,37 @@
                                     class="fas fa-minus"></i></button>
 
                         </div>
-                        <h3 class="text-center">Personalice su producto</h3>
+                        <h3 class="text-center">Elija una ubicacion para la sublimacion</h3>
+                        <label class="control-label ">Seleccionar componente:</label>
+                        <select class="form-control select2 " id="componentes" name="componentes" onchange="cambiar();">
+                            <option value="" selected disabled>Seleccione el componente</option>
+                            @foreach ($modelo->componentes as $componente)
+
+                            <option value="{{$componente->id}}" data-componente="{{$cantidadComponente++}}">
+                                {{$componente->nombre}}</option>
+                            @endforeach
+
+                        </select>
+                        {{-- <button type="button" class="btn btn-flat btn-info" onclick="cambiar();">Elegir</button> --}}
                     </div>
+                    <input type="hidden" name="" id="" value="{{$cantidadComponente=0}}" />
+
                     {{-- Se le pasa todos los modelos que tiene materia primas asociadas directamente en su recetas --}}
                     <div class="card-body">
-                        @if (!$hijoModelosConMateriaPrimas->isEmpty())
+                        @foreach ($modelo->componentes as $componente)
+                        <div align="center" id="componente_{{$cantidadComponente}}"
+                            data-componente="{{$cantidadComponente++}}" style="display:none;">
 
-                        @foreach ($hijoModelosConMateriaPrimas as $modeloHijo)
+                            <div id="contenedor_{{$componente->id}}" class="resize-container"
+                                style="background-image: url('{{asset("/imagenes/componentes/".$componente->imagenPrincipal)??'' }}'); background-position:center; ">
 
-                        @if (!$modeloHijo->materiasPrimas->isEmpty())
-                        @foreach ($modeloHijo->materiasPrimas as $materiaPrima)
+                                {{-- <img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag"
+                                id="resize-drag"> --}}
 
-                        <div class="form-group">
-
-
-
-                            <label class="control-label "> {{$modeloHijo->nombre}}:</label>
-                            <select class="form-control select2 " id="" name="modelo_{{$cantidadModelos++}}">
-
-                                <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
-
-                            </select>
+                            </div>
 
                         </div>
-
                         @endforeach
-                        @endif
-
-
-                        @endforeach
-
-                        @endif
-
-                        <input type="hidden" name="cantidadModelos" id="cantidadModelos" value="{{$cantidadModelos}}" />
 
 
                     </div>
@@ -202,65 +270,16 @@
                     <div class="card-footer text-muted justify-content-center">
                     </div>
                 </div>
-            </form>
-        </div>
-        <div class="col-7">
 
-            <div class="card text-left">
-
-                <div class="card-header">
-
-                    <div class="card-tools">
-                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                class="fas fa-minus"></i></button>
-
-                    </div>
-                    <h3 class="text-center">Personalice su producto</h3>
-                    <label class="control-label ">Seleccionar componente:</label>
-                    <select class="form-control select2 " id="componentes" name="componentes">
-                        @foreach ($modelo->componentes as $componente)
-
-                        <option value="{{$componente->id}}" data-componente="{{$cantidadComponente++}}">
-                            {{$componente->nombre}}</option>
-                        @endforeach
-
-                    </select>
-                    <button type="button" class="btn btn-flat btn-info" onclick="cambiar();">Elegir</button>
-                </div>
-                <input type="hidden" name="" id="" value="{{$cantidadComponente=0}}" />
-
-                {{-- Se le pasa todos los modelos que tiene materia primas asociadas directamente en su recetas --}}
-                <div class="card-body">
-                    @foreach ($modelo->componentes as $componente)
-                    <div align="center" id="componente_{{$cantidadComponente}}"
-                        data-componente="{{$cantidadComponente++}}" style="display:none;">
-
-                        <div id="contenedor_{{$componente->id}}" class=" resize-container"
-                            style="background-image: url('{{asset("/imagenes/componentes/".$componente->imagenPrincipal)??'' }}');">
-                            {{-- <img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag"
-                            id="resize-drag"> --}}
-
-                        </div>
-
-                    </div>
-                    @endforeach
-
-
-                </div>
-
-
-
-                <div class="card-footer text-muted justify-content-center">
-                </div>
             </div>
 
+
         </div>
-
-
-    </div>
-
+    </form>
 </div>
 
+
+@endif
 
 @endsection
 
@@ -278,6 +297,10 @@
                 var cantidadComponente= parseInt( "{{$cantidadComponente}}");
                 $(document).ready(function(){
                     $('.cantidadImagenes_x').val(0);
+                    
+                    $('#componentes').prop('selectedIndex', 0);                    
+                   
+
                 });
                 //*********************************cambiar los componente**********************************8
                 function cambiar(){
@@ -297,6 +320,7 @@
                         console.log(numeroComponente);
                         
                     }
+
                     $('#prueba2').click(function(){
                         
                         $('#cantidadImagenes').val(cantidadImagenes);
@@ -415,6 +439,11 @@
                                             //mostrar conteneido en el bloque
                                             //   target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
                                             target.textContent = ''
+                                            posx=x
+                                            posy=y
+                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
+                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
+
                                         });
                                         
                                         function dragMoveListener(event) {
