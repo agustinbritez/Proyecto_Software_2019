@@ -97,8 +97,8 @@ class FlujoTrabajoController extends Controller
             $transicion = Transicion::create(['flujoTrabajo_id' => $flujoTrabajo->id, 'estadoInicio_id' => null, 'estadoFin_id' => $request->estado]);
 
 
-            $modelosSeleccionados = $request->modelos;
-            if (sizeof($modelosSeleccionados) > 0) {
+            if ($request->has('modelos')) {
+                $modelosSeleccionados = $request->modelos;
                 foreach ($modelosSeleccionados as $idmodelo) {
                     $modelo = Modelo::find($idmodelo);
                     if (($modelo->flujoTrabajo_id != $flujoTrabajo->id) && ($modelo->flujoTrabajo_id != null)) {
@@ -156,31 +156,36 @@ class FlujoTrabajoController extends Controller
         $flujo = FlujoTrabajo::find($idFlujo);
         $estado = Estado::find($estadoID);
         $mensaje = '';
-
+        $transicion = null;
         if (($estado != null) && ($flujo != null)) {
-
-            if ($flujo->transiciones->isEmpty()) {
-                $transicion = Transicion::create(['flujoTrabajo_id' => $idFlujo, 'estadoInicio_id' => null, 'estadoFin_id' => $estado->id]);
+            if (($idFlujo == 1) || ($idFlujo == 2)) {
+                $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
             } else {
+                if ($flujo->transiciones->isEmpty()) {
+                    $transicion = Transicion::create(['flujoTrabajo_id' => $idFlujo, 'estadoInicio_id' => null, 'estadoFin_id' => $estado->id]);
+                } else {
 
-                $transicion = null;
-                $estadoFinal = $flujo->getEstadoFinal();
-                if ($estadoFinal->id != $estado->id) {
-                    if ($flujo->existeEstado($estado)) {
-                        $mensaje = ['errors', 'Flujo no creado porque el estado a ingresar ya esta relacionado'];
+
+                    $estadoFinal = $flujo->getEstadoFinal();
+                    if ($estadoFinal->id != $estado->id) {
+                        if ($flujo->existeEstado($estado)) {
+                            $mensaje = ['errors' => 'Flujo no creado porque el estado a ingresar ya esta relacionado'];
+                        } else {
+
+                            $transicion = Transicion::create(['flujoTrabajo_id' => $idFlujo, 'estadoInicio_id' => $estadoFinal->id, 'estadoFin_id' => $estado->id]);
+                        }
                     } else {
-
-                        $transicion = Transicion::create(['flujoTrabajo_id' => $idFlujo, 'estadoInicio_id' => $estadoFinal->id, 'estadoFin_id' => $estado->id]);
+                        $mensaje = ['errors' => 'No se puede relaconar el ultimo estado de nuevo'];
                     }
-                } else {
-                    $mensaje = ['errors', 'No se puede relaconar el ultimo estado de nuevo'];
-                }
-                if ($transicion != null) {
-                    $mensaje = ['success', 'Flujo de Trabajo creado con exito!'];
-                } else {
-                    $mensaje = ['errors', 'Flujo no creado'];
+                    if ($transicion != null) {
+                        $mensaje = ['success' => 'Flujo de Trabajo creado con exito!'];
+                    } else {
+                        $mensaje = ['errors' => 'Flujo no creado'];
+                    }
                 }
             }
+
+
             $flujo = FlujoTrabajo::find($idFlujo);
             // return redirect()->back()->with('success', 'Estado Agregado correctamente!');
             return ['mensaje' => $mensaje, 'data' => $flujo, 'estadosDelFlujo' => $flujo->getEstados(), 'estadoInicial' => $flujo->getEstadoInicial(), 'estadoFinal' => $flujo->getEstadoFinal()];
@@ -193,8 +198,13 @@ class FlujoTrabajoController extends Controller
     {
         $flujo = FlujoTrabajo::find($idFlujo);
         if ($flujo != null) {
-            $transFinal = $flujo->getTransicionFinal();
-            $transFinal->delete();
+            //los flujos 1 y 2 son estaticos y forman parte del sistema no se pueden crear ni borrar nuvos estados
+            if (($idFlujo == 1) || ($idFlujo == 2)) {
+                $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
+            } else {
+                $transFinal = $flujo->getTransicionFinal();
+                $transFinal->delete();
+            }
         }
         $flujo = FlujoTrabajo::find($idFlujo);
         return ['data' => $flujo, 'estadosDelFlujo' => $flujo->getEstados(), 'estadoInicial' => $flujo->getEstadoInicial(), 'estadoFinal' => $flujo->getEstadoFinal()];
@@ -209,6 +219,7 @@ class FlujoTrabajoController extends Controller
      */
     public function update(Request $request)
     {
+
         $rules = [
             'nombre'    =>  'required|unique:flujo_trabajos,nombre,' . $request->hidden_id
         ];
@@ -277,8 +288,13 @@ class FlujoTrabajoController extends Controller
      */
     public function destroy($id)
     {
+        if (($id == 1) || ($id == 2)) {
+            return redirect()->back()->withErrors(['message2' => 'El Flujo de Trabajo que desea eliminar es parte del sistema']);
+        }
         $flujoTrabajo = FlujoTrabajo::find($id);
+        //obtiene todos los modelos que tienen deleted_at null osea que no estan borrados
         if (!$flujoTrabajo->modelos->isEmpty()) {
+
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el flujo de trabajo porque es usado en modelos']);
         }
 

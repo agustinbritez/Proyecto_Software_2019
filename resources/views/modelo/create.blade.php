@@ -9,6 +9,8 @@
 
 <div class="container">
 
+
+
     <div class="row">
         <div class="col">
 
@@ -24,6 +26,13 @@
 
                         </div>
                         <h3>Crear Modelo</h3>
+                        <div align="left">
+
+                            <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
+                                class="btn btn-success btn-sm">Crear Nuevo Modelo</a>
+
+
+                        </div>
                     </div>
 
 
@@ -410,6 +419,7 @@
                         $('#formDelete').attr('action','/componente/destroy/'+componente_id+'');
                         $('#ok_button').text('Ok');
                         $('.modal-title').text("Confirmacion");
+                        $('#formModal').modal('hide');
                         $('#confirmModal').modal('show');
                     });
                     

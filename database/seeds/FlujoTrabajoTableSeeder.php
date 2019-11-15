@@ -12,9 +12,13 @@ class FlujoTrabajoTableSeeder extends Seeder
      */
     public function run()
     {
-        $flujo=new  FlujoTrabajo();
-        $flujo->nombre='Produccion Remera';
-        
+        $flujo = new  FlujoTrabajo();
+        $flujo->id = 1;
+        $flujo->nombre = 'FLUJO PEDIDOS';
+        $flujo->save();
+        $flujo = new  FlujoTrabajo();
+        $flujo->id = 2;
+        $flujo->nombre = 'FLUJO PRODUCCION GENERAL';
         $flujo->save();
     }
 }

@@ -74,9 +74,9 @@
 
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{ route('calle.index') }}" class="nav-link">
+              <a href="{{ route('producto.tienda') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
-                <p>Ver Productos</p>
+                <p>Tienda</p>
               </a>
             </li>
           </ul>
@@ -89,7 +89,29 @@
             <i class="far fa-circle nav-icon"></i>
 
             <p>
-              Gestion de flujos de trabajos
+              Imagenes
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('imagen.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>imagenes</p>
+              </a>
+            </li>
+          </ul>
+
+
+
+        </li>
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Flujos trabajos
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
@@ -110,133 +132,116 @@
           </ul>
 
         </li>
-        {{-- <ul class="nav nav-treeview">
-                      <li class="nav-item">
-                          <a href="{{ route('item.index') }}" class="nav-link">
-        <i class="fas fa-cube nav-icon"></i>
-        <p>Item</p>
-        </a>
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Pedidos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('pedido.misPedidos',auth()->user()->id) }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Mis Pedidos</p>
+              </a>
+            </li>
+
+          </ul>
+
         </li>
-      </ul> --}}
-      {{-- <ul class="nav nav-treeview">
-                    <li class="nav-item">
-                        <a href="{{ route('categoria.index') }}" class="nav-link">
-      <i class="fas fa-cube nav-icon"></i>
-      <p>Categoria</p>
-      </a>
-      </li> --}}
-      {{-- </ul>
-                    <ul class="nav nav-treeview">
-                            <li class="nav-item">
-                                <a href="{{ route('tipoItem.index') }}" class="nav-link">
-      <i class="fas fa-people-carry nav-icon"></i>
-      <p>Tipo de Item</p>
-      </a>
-      </li>
-      </ul> --}}
-      {{-- <ul class="nav nav-treeview">
-                            
-                    </ul>
-                    <ul class="nav nav-treeview">
-                            
-                    </ul> --}}
-      {{-- <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                        <a href="{{route('ajax-crud.index')}}" class="nav-link">
-      <i class="fas fa-people-carry nav-icon"></i>
-      <p>prueba</p>
-      </a>
-      </li>
-      </ul> --}}
-      </li>
-
-      <li class="nav-item has-treeview  ">
-        <a href="#" class="nav-link">
-          <i class="far fa-circle nav-icon"></i>
-
-          <p>
-            Gestion Parametros
-            <i class="right fas fa-angle-left"></i>
-          </p>
-        </a>
-
-        <ul class="nav nav-treeview">
-          <li class="nav-item">
-            <a href="{{ route('direccion.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Direcciones</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('documento.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Documentos</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('tipoMovimiento.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Tipos de Movimientos</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('medida.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Medidas</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('pais.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Paises</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('provincia.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Provincias</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('localidad.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Localidades</p>
-            </a>
-          </li>
-
-          <li class="nav-item">
-            <a href="{{ route('calle.index') }}" class="nav-link">
-              <i class="fas  nav-icon"></i>
-              <p>Calles</p>
-            </a>
-          </li>
 
 
-        </ul>
-      </li>
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Gestion Parametros
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="{{ route('direccion.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Direcciones</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('documento.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Documentos</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('tipoMovimiento.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Tipos de Movimientos</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('medida.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Medidas</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('pais.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Paises</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('provincia.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Provincias</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('localidad.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Localidades</p>
+              </a>
+            </li>
+
+            <li class="nav-item">
+              <a href="{{ route('calle.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Calles</p>
+              </a>
+            </li>
 
 
-      <li class="nav-item">
-        <a href="{{ route('auditoria.index') }}" class="nav-link">
-          {{-- <i class="far fa-circle nav-icon"></i> --}}
-          <i class="fad fa-table nav-icon"></i>
-          <p>
-            Auditoria
-            {{-- <span class="right badge badge-danger">New</span> --}}
-          </p>
-        </a>
-      </li>
-
-      @can('usuarios_index')
+          </ul>
+        </li>
 
 
-      {{-- <li class="nav-item has-treeview ">
+        <li class="nav-item">
+          <a href="{{ route('auditoria.index') }}" class="nav-link">
+            {{-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fad fa-table nav-icon"></i>
+            <p>
+              Auditoria
+              {{-- <span class="right badge badge-danger">New</span> --}}
+            </p>
+          </a>
+        </li>
+
+        @can('usuarios_index')
+
+
+        {{-- <li class="nav-item has-treeview ">
                 <a href="#" class="nav-link active">
                     <i class="nav-icon fas fa-users-cog"></i>
                     <p>
@@ -247,10 +252,10 @@
                       <ul class="nav nav-treeview">
                         <li class="nav-item">
                           <a href="{{ route('usuarios.index') }}" class="nav-link">
-      <i class="far fa-user nav-icon"></i>
-      <p>Usuarios</p>
-      </a>
-      </li>
+        <i class="far fa-user nav-icon"></i>
+        <p>Usuarios</p>
+        </a>
+        </li>
       </ul>
       <ul class="nav nav-treeview">
         <li class="nav-item">

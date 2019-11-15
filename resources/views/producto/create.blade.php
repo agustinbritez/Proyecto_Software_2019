@@ -64,7 +64,7 @@
                                     class="fas fa-minus"></i></button>
 
                         </div>
-                        <h3 class="text-center">Personalice su producto</h3>
+                        <h3 class="text-center">Diseñe su producto</h3>
                     </div>
                     {{-- Se le pasa todos los modelos que tiene materia primas asociadas directamente en su recetas --}}
                     <div class="card-body">
@@ -76,8 +76,6 @@
                             @if ($modelo->id!=$modeloHijo->id)
 
 
-                            @if (!$modeloHijo->materiasPrimas->isEmpty())
-                            @foreach ($modeloHijo->materiasPrimas as $materiaPrima)
 
                             <div class="form-group">
 
@@ -85,15 +83,17 @@
 
                                 <label class="control-label "> {{$modeloHijo->nombre}}:</label>
                                 <select class="form-control select2 " id="" name="modelo_{{$cantidadModelos++}}">
+                                    @if (!$modeloHijo->materiasPrimas->isEmpty())
+                                    @foreach ($modeloHijo->materiasPrimas as $materiaPrima)
 
                                     <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
+                                    @endforeach
+                                    @endif
 
                                 </select>
 
                             </div>
                             &nbsp;&nbsp;
-                            @endforeach
-                            @endif
                             @endif
 
 
@@ -108,6 +108,7 @@
 
                                 <label class="control-label "> Ingredientes estaticos:</label>
                                 @foreach ($modelo->materiasPrimas as $materia)
+
                                 <input type="text" disabled value="{{$materia->nombre}}" class="form-control">
 
                                 @endforeach
@@ -128,6 +129,7 @@
                     <div class="card-footer text-muted justify-content-center">
                     </div>
                 </div>
+                {{-- Imagenes --}}
                 <div class="card text-left">
 
                     <div class="card-header">
@@ -149,8 +151,12 @@
 
                             <div class="form-group">
                                 <label class="control-label ">Seleccionar Tipo Imagen : </label>
-                                <select class="form-control select2 " id="tipoImagen_componente_{{$cantidadComponente}}"
+                                <select class="tipoImagenSelect form-control select2 "
+                                    onchange="cambiarGaleria('tipoImagen_componente_{{$cantidadComponente}}')"
+                                    id="tipoImagen_componente_{{$cantidadComponente}}"
+                                    data-componente="{{$componente->id}}"
                                     name="tipoImagen_componente_{{$cantidadComponente}}" style="width: 100%;">
+                                    <option value="" selected disabled>Seleccione el Tipo Imagen</option>
                                     @if (sizeof($tipoImagenes)>0)
 
                                     @foreach ($tipoImagenes as $tipo)
@@ -161,20 +167,12 @@
 
                             </div>
 
+                            <button type="button" id="agregarImagen_sistema" class="btn btn-success"
+                                data-componente="{{$componente->id}}">Agregar
+                                Imagen del Sistema</button>
 
 
-                            <div class="form-group">
-                                <label class="control-label ">Seleccionar Imagen : </label>
-                                <select class="form-control select2 " id="imagen_componente_{{$cantidadComponente}}"
-                                    name="imagen_componente_{{$cantidadComponente++}}" style="width: 100%;"
-                                    class="selectpicker">
-                                    {{-- <option data-thumbnail="{{asset("/imagenes/modelos/".$imagen->imagen)??'' }}">
-                                    {{$imagen->nombre}}</option> --}}
-                                </select>
-
-                            </div>
-
-
+                            <hr>
                             <div class="form-group  justify-content-center">
 
                                 <label for="">Subir una nueva imagen</label>
@@ -189,7 +187,13 @@
                                 </div>
                                 <br>
                             </div>
+                            <hr>
+                            <div class="form-group  justify-content-center">
 
+                                <label for="">Imagenes Agregadas</label>
+
+                                <br>
+                            </div>
                             {{-- Guardamos la la posicion x e y tambien el id de la imagen --}}
 
 
@@ -199,8 +203,12 @@
 
                             </div>
 
+                            <input type="hidden" value="{{$cantidadComponente++}}" />
                             <input type="hidden" name="cantidadImagenes_{{$componente->id}}"
                                 id="cantidadImagenes_{{$componente->id}}" class="cantidadImagenes_x" value="0" />
+                            <input type="hidden" name="cantidadImagenes_sistema_{{$componente->id}}"
+                                id="cantidadImagenes_sistema_{{$componente->id}}" class="cantidadImagenes_x"
+                                value="0" />
 
 
 
@@ -230,7 +238,7 @@
                                     class="fas fa-minus"></i></button>
 
                         </div>
-                        <h3 class="text-center">Elija una ubicacion para la sublimacion</h3>
+                        <h3 class="text-center">Elija una ubicacion para sublimar</h3>
                         <label class="control-label ">Seleccionar componente:</label>
                         <select class="form-control select2 " id="componentes" name="componentes" onchange="cambiar();">
                             <option value="" selected disabled>Seleccione el componente</option>
@@ -284,6 +292,36 @@
 @endsection
 
 @section('htmlFinal')
+<div id="formModal" class="modal fade" role="dialog">
+
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content ">
+
+            <div class="modal-header">
+                <div class="text-center">
+
+                    <h4 class="modal-title"> TITULO</h4>
+                </div>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <div id="add_imagenes_sistema" class="row">
+
+
+                </div>
+
+            </div>
+            <div class="modal-footer ">
+
+            </div>
+
+
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -299,8 +337,9 @@
                     $('.cantidadImagenes_x').val(0);
                     
                     $('#componentes').prop('selectedIndex', 0);                    
-                   
-
+                    $('.tipoImagenSelect').prop('selectedIndex', 0);                    
+                    
+                    
                 });
                 //*********************************cambiar los componente**********************************8
                 function cambiar(){
@@ -320,7 +359,8 @@
                         console.log(numeroComponente);
                         
                     }
-
+                    
+                    
                     $('#prueba2').click(function(){
                         
                         $('#cantidadImagenes').val(cantidadImagenes);
@@ -355,7 +395,7 @@
                                                 +'</div>';
                                                 
                                                 $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
-                                                $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'">');
+                                                $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema=""0"">');
                                                 
                                                 
                                             }
@@ -378,132 +418,248 @@
                                             $('#cantidadImagenes_'+componenteSeleccionado).val(cantidadImagenes);
                                             
                                         });
-                                        
-                                        // *****************************************Codigo para mover los componentes*******************************************************
-                                        interact('.resize-drag')
-                                        .draggable({
-                                            onmove: window.dragMoveListener,
-                                            modifiers: [
-                                            interact.modifiers.restrictRect({
-                                                restriction: 'parent'
-                                            })
-                                            ]
-                                        })
-                                        .resizable({
-                                            // resize from all edges and corners
-                                            edges: { left: true, right: true, bottom: true, top: true },
+                                        function cambiarGaleria(id){
                                             
-                                            modifiers: [
-                                            // keep the edges inside the parent
-                                            interact.modifiers.restrictEdges({
-                                                outer: 'parent',
-                                                endOnly: false
-                                            }),
+                                            var select= document.getElementById(id);
+                                            var idTipo = select.value;
                                             
-                                            // minimum size
-                                            interact.modifiers.restrictSize({
-                                                min: { width: 100, height: 50 }
-                                            })
-                                            ],
+                                            var componenteSeleccionado=select.getAttribute('data-componente');
+                                            var cantidadImagenesSistema=parseInt($('#cantidadImagenes_sistema_'+componenteSeleccionado).val());
+                                            url2="{{route('tipoImagen.obtenerImagenes',":id")}}";
                                             
-                                            inertia: true
-                                        })
-                                        .on('resizemove', function (event) {
-                                            var idNumeroDeImagen= event.target.getAttribute('data-id');
-                                            var idNumeroDeComponente= event.target.getAttribute('data-componente');
-                                            // console.log(event.target.getAttribute('data-id'));
+                                            url2=url2.replace(':id',idTipo);
+                                            alert(url2);
                                             
-                                            var target = event.target
-                                            var x = (parseFloat(target.getAttribute('data-x')) || 0)
-                                            var y = (parseFloat(target.getAttribute('data-y')) || 0)
-                                            
-                                            // update the element's style
-                                            target.style.width = event.rect.width + 'px'
-                                            target.style.height = event.rect.height + 'px'
-                                            ancho=event.rect.width;
-                                            alto=event.rect.height;
-                                            //guardamos el ancho y el lato de la imagen
-                                            
-                                            // document.getElementById('imagen_'+idNumeroDeImagen+'_alto').setAttribute('value',alto);
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_ancho').setAttribute('value',ancho);
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_alto').setAttribute('value',alto);
-                                            
-                                            // translate when resizing from top or left edges
-                                            x += event.deltaRect.left
-                                            y += event.deltaRect.top
-                                            
-                                            target.style.webkitTransform = target.style.transform ='translate(' + x + 'px,' + y + 'px)'
-                                            
-                                            target.setAttribute('data-x', x)
-                                            target.setAttribute('data-y', y)
-                                            //mostrar conteneido en el bloque
-                                            //   target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
-                                            target.textContent = ''
-                                            posx=x
-                                            posy=y
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
-
-                                        });
-                                        
-                                        function dragMoveListener(event) {
-                                            var idNumeroDeImagen= event.target.getAttribute('data-id');
-                                            var idNumeroDeComponente= event.target.getAttribute('data-componente');
-                                            var target = event.target;
-                                            // keep the dragged position in the data-x/data-y attributes
-                                            var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
-                                            var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
-                                            // translate the element
-                                            target.style.webkitTransform =
-                                            target.style.transform =
-                                            'translate(' + x + 'px, ' + y + 'px)'
-                                            
-                                            // update the posiion attributes
-                                            target.setAttribute('data-x', x)
-                                            target.setAttribute('data-y', y)
-                                            posx=x
-                                            posy=y
-                                            //guardamos en los hidden la posicion x y de la imagen
-                                            // document.getElementById('imagen_'+idNumeroDeImagen+'_posX').setAttribute('value',posx);
-                                            // document.getElementById('imagen_'+idNumeroDeImagen+'_posY').setAttribute('value',posy);
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
-                                            document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
-
-                                        }
-                                        
-                                        // this is used later in the resizing and gesture demos
-                                        window.dragMoveListener = dragMoveListener;
-                                        //*********************************************************cargar imagen en las sublimaciones**********************************
-                                        function cargar(idImagen,componenteSeleccionado){
-                                            // Creamos el objeto de la clase FileReader
-                                            
-                                            let reader = new FileReader();
-                                            // Leemos el archivo subido y se lo pasamos a nuestro fileReader
-                                            reader.readAsDataURL(this.event.target.files[0]);
-                                            
-                                            // Le decimos que cuando este listo ejecute el código interno
-                                            reader.onload = function(){
-                                                let preview = document.getElementById('preview_'+idImagen+'_componente_'+componenteSeleccionado);
-                                                image = document.createElement('img');
-                                                image.src = reader.result;
-                                                image.class = 'img-fluid';
-                                                image.height='150';
-                                                image.width='180';
-                                                preview.innerHTML = '';
-                                                preview.append(image);
-                                                // alert(image.src);
+                                            $.ajax({
+                                                // async:false,
                                                 
-                                                document.getElementById('nuevaImagen_'+idImagen+'_componente_'+componenteSeleccionado).src=image.src;
-                                                
-                                                // $('.resize-drag').src(image.src);
-                                            };
-                                        };
-                                        
-                                        
-                                        
-                                        
-                                        
-                                        
+                                                type: 'GET',
+                                                url: url2,
+                                                success: function(data) {
+                                                    console.log(data);
+                                                    if(data!=null){
+                                                        data['imagenes'].forEach(imagen => {
+                                                            var urlSurce='{{asset("/imagenes/sublimaciones")}}'+'/'+data['tipoImagen'].nombre+'/'+ imagen.imagen;
+                                                            var nuevaImagen='<div class="form-group " id="" style="margin-left:5%;">'
+                                                                +'<div class="col " style="max-width: 10rem; ">'
+                                                                    +'<div id="" class=" row justify-content-center">'
+                                                                        +'<img src="" class="" height="150" width="180">'
+                                                                        +'</div>'
+                                                                        +'<div class=" row justify-content-center">'
+                                                                            +'<button  type="button" class="agregarImagenSistema btn btn-default" data-imagen="'+imagen.id+'" data-ruta="'+urlSurce+'" data-componente="'+componenteSeleccionado+'">'
+                                                                                +'Agregar Imagen'
+                                                                                +'</button>'
+                                                                                +'</div>'
+                                                                                // +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posX" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posX" value="" />'
+                                                                                // +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posY" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posY" value="" />'
+                                                                                // +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_alto" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_alto" value="" />'
+                                                                                // +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_ancho" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_ancho" value="" />'
+                                                                                +'</div>'
+                                                                                +'</div>';
+                                                                                
+                                                                                // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
+                                                                                $('#add_imagenes_sistema').append(nuevaImagen);
+                                                                                // $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'">');
+                                                                                cantidadImagenesSistema++;
+                                                                                console.log(cantidadImagenesSistema);
+                                                                            });
+                                                                            $('#cantidadImagenes_sistema_'+componenteSeleccionado).val(cantidadImagenesSistema);
+                                                                            
+                                                                        }
+                                                                    },
+                                                                    error:function(){
+                                                                        alert('error');
+                                                                    }
+                                                                });
+                                                            }
+                                                            $('#agregarImagen_sistema').click(function () {
+                                                                
+                                                                $('#formModal').modal('show');
+                                                            });
+                                                            
+                                                            
+                                                            //***************************************************************************************************************** 
+                                                            $(document).on('click', '.agregarImagenSistema', function(){
+                                                                var idImagen=$(this).attr('data-imagen');
+                                                                var ruta=$(this).attr('data-ruta');
+                                                                var componenteSeleccionado=$(this).attr('data-componente');
+                                                                var cantidadImagenesSistema=parseInt($('#cantidadImagenes_sistema_'+componenteSeleccionado).val());
+                                                                
+                                                                var nuevaImagen='<div class="form-group " id="add_imagen_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" style="margin-right:5%;">'
+                                                                    +'<div class=" " style="max-width: 10rem; ">'
+                                                                        +'<div id="preview_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" class=" row justify-content-center">'
+                                                                            +'<img src="'+ruta+'" class="" height="150" width="180">'
+                                                                            +'</div>'
+                                                                            +'<div>'
+                                                                                // +'<label class="btn btn-default btn-file ">'
+                                                                                    //     +'Subir Imagen <i class="fas fa-upload ml-3" aria-hidden="true"></i>'
+                                                                                    //     +'<input type="file" id="'+cantidadImagenesSistema+'" name="file_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" style="display: none;" onchange="cargar('+cantidadImagenesSistema+','+componenteSeleccionado+');"  class="cargarImagen">'
+                                                                                    //     +'</label>'
+                                                                                    +'</div>'
+                                                                                    +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_id" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_id" value="'+idImagen+'" />'
+                                                                                    +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posX" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posX" value="" />'
+                                                                                    +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posY" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_posY" value="" />'
+                                                                                    +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_alto" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_alto" value="" />'
+                                                                                    +'<input type="hidden" name="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_ancho" id="imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'_ancho" value="" />'
+                                                                                    +'</div>'
+                                                                                    +'</div>';
+                                                                                    
+                                                                                    $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
+                                                                                    $('#contenedor_'+componenteSeleccionado).append('<img src="'+ruta+'" class="resize-drag" id="nuevaImagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="1" >');
+                                                                                    cantidadImagenesSistema++;
+                                                                                    console.log(ruta);
+                                                                                    
+                                                                                    
+                                                                                }); 
+                                                                                
+                                                                                // *****************************************Codigo para mover los componentes*******************************************************
+                                                                                interact('.resize-drag')
+                                                                                .draggable({
+                                                                                    onmove: window.dragMoveListener,
+                                                                                    modifiers: [
+                                                                                    interact.modifiers.restrictRect({
+                                                                                        restriction: 'parent'
+                                                                                    })
+                                                                                    ]
+                                                                                })
+                                                                                .resizable({
+                                                                                    // resize from all edges and corners
+                                                                                    edges: { left: true, right: true, bottom: true, top: true },
+                                                                                    
+                                                                                    modifiers: [
+                                                                                    // keep the edges inside the parent
+                                                                                    interact.modifiers.restrictEdges({
+                                                                                        outer: 'parent',
+                                                                                        endOnly: false
+                                                                                    }),
+                                                                                    
+                                                                                    // minimum size
+                                                                                    interact.modifiers.restrictSize({
+                                                                                        min: { width: 100, height: 50 }
+                                                                                    })
+                                                                                    ],
+                                                                                    
+                                                                                    inertia: true
+                                                                                })
+                                                                                .on('resizemove', function (event) {
+                                                                                    var idNumeroDeImagen= event.target.getAttribute('data-id');
+                                                                                    var idNumeroDeComponente= event.target.getAttribute('data-componente');
+                                                                                    var comprobacion= event.target.getAttribute('data-imagen-sistema');
+                                                                                    console.log('comprobacion: '+comprobacion);
+                                                                                    // console.log(event.target.getAttribute('data-id'));
+                                                                                    
+                                                                                    var target = event.target
+                                                                                    var x = (parseFloat(target.getAttribute('data-x')) || 0)
+                                                                                    var y = (parseFloat(target.getAttribute('data-y')) || 0)
+                                                                                    
+                                                                                    // update the element's style
+                                                                                    target.style.width = event.rect.width + 'px'
+                                                                                    target.style.height = event.rect.height + 'px'
+                                                                                    ancho=event.rect.width;
+                                                                                    alto=event.rect.height;
+                                                                                    //guardamos el ancho y el lato de la imagen
+                                                                                    if(comprobacion ==1){
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_ancho').setAttribute('value',ancho);
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_alto').setAttribute('value',alto);
+                                                                                        
+                                                                                    }else{
+                                                                                        
+                                                                                        // document.getElementById('imagen_'+idNumeroDeImagen+'_alto').setAttribute('value',alto);
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_ancho').setAttribute('value',ancho);
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_alto').setAttribute('value',alto);
+                                                                                    }
+                                                                                    
+                                                                                    // translate when resizing from top or left edges
+                                                                                    x += event.deltaRect.left
+                                                                                    y += event.deltaRect.top
+                                                                                    
+                                                                                    target.style.webkitTransform = target.style.transform ='translate(' + x + 'px,' + y + 'px)'
+                                                                                    
+                                                                                    target.setAttribute('data-x', x)
+                                                                                    target.setAttribute('data-y', y)
+                                                                                    //mostrar conteneido en el bloque
+                                                                                    //   target.textContent = Math.round(event.rect.width) + '\u00D7' + Math.round(event.rect.height)
+                                                                                    target.textContent = ''
+                                                                                    posx=x
+                                                                                    posy=y
+                                                                                    if(comprobacion ==1){
+                                                                                        
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
+                                                                                    }else{
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
+                                                                                        
+                                                                                    }
+                                                                                    
+                                                                                });
+                                                                                
+                                                                                function dragMoveListener(event) {
+                                                                                    var idNumeroDeImagen= event.target.getAttribute('data-id');
+                                                                                    var idNumeroDeComponente= event.target.getAttribute('data-componente');
+                                                                                    var comprobacion= event.target.getAttribute('data-imagen-sistema');
+
+                                                                                    var target = event.target;
+                                                                                    // keep the dragged position in the data-x/data-y attributes
+                                                                                    var x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx
+                                                                                    var y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy
+                                                                                    // translate the element
+                                                                                    target.style.webkitTransform =
+                                                                                    target.style.transform =
+                                                                                    'translate(' + x + 'px, ' + y + 'px)'
+                                                                                    
+                                                                                    // update the posiion attributes
+                                                                                    target.setAttribute('data-x', x)
+                                                                                    target.setAttribute('data-y', y)
+                                                                                    posx=x
+                                                                                    posy=y
+                                                                                    //guardamos en los hidden la posicion x y de la imagen
+                                                                                    // document.getElementById('imagen_'+idNumeroDeImagen+'_posX').setAttribute('value',posx);
+                                                                                    // document.getElementById('imagen_'+idNumeroDeImagen+'_posY').setAttribute('value',posy);
+                                                                                    if(comprobacion ==1){
+                                                                                        
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
+                                                                                        document.getElementById('imagen_sistema_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
+                                                                                    }else{
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posY').setAttribute('value',posy);
+                                                                                        document.getElementById('imagen_'+idNumeroDeImagen+'_componente_'+idNumeroDeComponente+'_posX').setAttribute('value',posx);
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                                
+                                                                                // this is used later in the resizing and gesture demos
+                                                                                window.dragMoveListener = dragMoveListener;
+                                                                                //*********************************************************cargar imagen en las sublimaciones**********************************
+                                                                                function cargar(idImagen,componenteSeleccionado){
+                                                                                    // Creamos el objeto de la clase FileReader
+                                                                                    
+                                                                                    let reader = new FileReader();
+                                                                                    // Leemos el archivo subido y se lo pasamos a nuestro fileReader
+                                                                                    reader.readAsDataURL(this.event.target.files[0]);
+                                                                                    
+                                                                                    // Le decimos que cuando este listo ejecute el código interno
+                                                                                    reader.onload = function(){
+                                                                                        let preview = document.getElementById('preview_'+idImagen+'_componente_'+componenteSeleccionado);
+                                                                                        image = document.createElement('img');
+                                                                                        image.src = reader.result;
+                                                                                        image.class = 'img-fluid';
+                                                                                        image.height='150';
+                                                                                        image.width='180';
+                                                                                        preview.innerHTML = '';
+                                                                                        preview.append(image);
+                                                                                        // alert(image.src);
+                                                                                        
+                                                                                        document.getElementById('nuevaImagen_'+idImagen+'_componente_'+componenteSeleccionado).src=image.src;
+                                                                                        
+                                                                                        // $('.resize-drag').src(image.src);
+                                                                                    };
+                                                                                };
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
+                                                                                
 </script>
 
 @endpush

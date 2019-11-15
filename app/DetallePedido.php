@@ -12,11 +12,12 @@ class DetallePedido extends Model implements Auditable
     use SoftDeletes;
     protected $guarded = [];
 
-    public function producto(){
-        return $this->belongsTo(Producto::class);
-    } 
-    public function pedido(){
-        return $this->belongsTo(Pedido::class);
-    } 
-
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'producto_id');
+    }
+    public function pedido()
+    {
+        return $this->belongsTo(Pedido::class, 'pedido_id');
+    }
 }

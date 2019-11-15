@@ -15,7 +15,7 @@ class FlujoTrabajo extends Model implements Auditable
    public function modelos()
    {
 
-      return $this->hasMany(Modelo::class,'flujoTrabajo_id');
+      return $this->hasMany(Modelo::class, 'flujoTrabajo_id');
    }
 
 
@@ -46,7 +46,6 @@ class FlujoTrabajo extends Model implements Auditable
 
    public function getEstados()
    {
-
 
       $estados = collect();
 

@@ -16,12 +16,13 @@ class CreateImagensTable extends Migration
         Schema::create('imagens', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('nombre');
-            $table->string('ruta');
-            
+            $table->string('imagen')->nullable();
+
             $table->unsignedBigInteger('tipoImagen_id')->nullable();
             $table->foreign('tipoImagen_id')->references('id')->on('tipo_imagens');
-            
 
+
+            $table->softDeletes();
             $table->timestamps();
         });
     }

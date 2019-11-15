@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Componente;
+use App\FlujoTrabajo;
 use App\MateriaPrima;
 use App\Medida;
 use App\Modelo;
@@ -131,14 +132,20 @@ class ModeloController extends Controller
             if ($request->has('venta')) {
                 $venta = 1;
             }
-
+            $flujoGeneral = FlujoTrabajo::find(2);
+            $idFlujo = null;
+            if ($flujoGeneral != null) {
+                $idFlujo = $flujoGeneral->id;
+            }
             $form_data = array(
                 'nombre'        =>  $request->nombre,
                 'imagenPrincipal'        =>  $imagen,
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
                 'medida_id' => $request->medida_id,
-                'venta' => $venta
+                'venta' => $venta,
+                //el id es del FLUJO PRODUCCION GENERAL
+                'flujoTrabajo_id' => $idFlujo
             );
 
             //si no crea es porque hay agun atributo que no permite null que esta vacio

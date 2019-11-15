@@ -447,76 +447,76 @@
                                             });
                                         });
                                         //el boton edit en el index que mostrara el modal
-                                        $(document).on('click', '.edit', function(){
-                                            var id = $(this).attr('id');
-                                            document.getElementById('agregarEstado').setAttribute('data-id',id);
-                                            document.getElementById('quitarEstado').setAttribute('data-id',id);
-                                           
-                                            $("#sample_form").attr("action","flujoTrabajo/update/"+id);
-                                            document.getElementById('botonAgregar').style.display='block';
-                                            $('#form_result').html('');
-                                            $('#add_estados').html(''); 
+                                            $(document).on('click', '.edit', function(){
+                                                var id = $(this).attr('id');
+                                                document.getElementById('agregarEstado').setAttribute('data-id',id);
+                                                document.getElementById('quitarEstado').setAttribute('data-id',id);
                                             
-                                            
-                                            var url="{{route('flujoTrabajo.edit',":id")}}";
-                                            url=url.replace(':id',id);
-                                            
-                                            //*********************************Ajax cargar combobox desde un checkbox***********************************************************8
-                                            //recibe un array de materia prima o de modelos depende del checkbox
-                                            
-                                            $.get(url,function(array){
-                                                console.log(array);
+                                                $("#sample_form").attr("action","flujoTrabajo/update/"+id);
+                                                document.getElementById('botonAgregar').style.display='block';
+                                                $('#form_result').html('');
+                                                $('#add_estados').html(''); 
                                                 
-                                                $('#nombre').val(array['data'].nombre);
-                                                $('#detalle').val(array['data'].detalle);
-                                                $('#hidden_id').val(array['data'].id);
-                                                //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
                                                 
-                                                $('#modelos').find('option').remove();
-                                                console.log();
-                                                array['totalModelos'].forEach(modelo => {
-                                                    $('#modelos').append($('<option>', {
-                                                        value: modelo.id,
-                                                        text: modelo.nombre,
-                                                    }));
-                                                });
-                                                array['modelos'].forEach(modelo => {
-                                                    $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
-                                                });
+                                                var url="{{route('flujoTrabajo.edit',":id")}}";
+                                                url=url.replace(':id',id);
                                                 
-                                                console.log(array['estadosDelFlujo'].length);
-                                                if( array['estadosDelFlujo'].length>0){
-                                                    var html='';
-                                                    if(array['estadoInicial']!=null){
-                                                        html+= '<span class="badge badge-success " id="estado_">'+array['estadoInicial'].nombre+' </span><span><i class="fas fa-arrow-right"></i></span>';
-                                                        array['estadosDelFlujo'].forEach(estado => {
-                                                            if(estado!=null){
-                                                                
-                                                                if((estado.id !=array['estadoInicial'].id)&&(estado.id != array['estadoFinal'].id) ){
-                                                                    html+= '<span class="badge badge-info " id="estado_">'+estado.nombre+' </span>'
-                                                                    +'<span><i class="fas fa-arrow-right"></i></span>'; 
+                                                //*********************************Ajax cargar combobox desde un checkbox***********************************************************8
+                                                //recibe un array de materia prima o de modelos depende del checkbox
+                                                
+                                                $.get(url,function(array){
+                                                    console.log(array);
+                                                    
+                                                    $('#nombre').val(array['data'].nombre);
+                                                    $('#detalle').val(array['data'].detalle);
+                                                    $('#hidden_id').val(array['data'].id);
+                                                    //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
+                                                    
+                                                    $('#modelos').find('option').remove();
+                                                    console.log();
+                                                    array['totalModelos'].forEach(modelo => {
+                                                        $('#modelos').append($('<option>', {
+                                                            value: modelo.id,
+                                                            text: modelo.nombre,
+                                                        }));
+                                                    });
+                                                    array['modelos'].forEach(modelo => {
+                                                        $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
+                                                    });
+                                                    
+                                                    console.log(array['estadosDelFlujo'].length);
+                                                    if( array['estadosDelFlujo'].length>0){
+                                                        var html='';
+                                                        if(array['estadoInicial']!=null){
+                                                            html+= '<span class="badge badge-success " id="estado_">'+array['estadoInicial'].nombre+' </span><span><i class="fas fa-arrow-right"></i></span>';
+                                                            array['estadosDelFlujo'].forEach(estado => {
+                                                                if(estado!=null){
+                                                                    
+                                                                    if((estado.id !=array['estadoInicial'].id)&&(estado.id != array['estadoFinal'].id) ){
+                                                                        html+= '<span class="badge badge-info " id="estado_">'+estado.nombre+' </span>'
+                                                                        +'<span><i class="fas fa-arrow-right"></i></span>'; 
+                                                                    }
                                                                 }
+                                                            });
+                                                            if(array['estadoFinal'].id!=array['estadoInicial'].id){
+                                                                
+                                                                html+= '<span class="badge badge-danger " id="estado_">'+array['estadoFinal'].nombre+' </span>';
                                                             }
-                                                        });
-                                                        if(array['estadoFinal'].id!=array['estadoInicial'].id){
                                                             
-                                                            html+= '<span class="badge badge-danger " id="estado_">'+array['estadoFinal'].nombre+' </span>';
                                                         }
                                                         
+                                                        $('#add_estados').html(html);    
                                                     }
                                                     
-                                                    $('#add_estados').html(html);    
-                                                }
+                                                    
+                                                });
+                                                $('.modal-title').text("Editar Flujo de Trabajo");
+                                                $('#action_button').val("Actualizar");
+                                                $('#action').val("Edit");
+                                                $('#formModal').modal('show');
                                                 
                                                 
                                             });
-                                            $('.modal-title').text("Editar Flujo de Trabajo");
-                                            $('#action_button').val("Actualizar");
-                                            $('#action').val("Edit");
-                                            $('#formModal').modal('show');
-                                            
-                                            
-                                        });
                                         
                                         
                                         

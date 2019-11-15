@@ -88,11 +88,41 @@ Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->n
 Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
 Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
 Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow')->middleware('permission:producto_preshow');
+Route::get('producto/{id}/miProducto', 'ProductoController@miProducto')->name('producto.miProducto')->middleware('permission:producto_miProducto');
 Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
 Route::post('producto', 'ProductoController@store')->name('producto.store')->middleware('permission:producto_store');
 Route::get('producto/{id}/edit', 'ProductoController@edit')->name('producto.edit')->middleware('permission:producto_edit');
 Route::post('producto/update', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
 Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('producto.destroy')->middleware('permission:producto_delete');
+Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
+// Pedidos
+Route::get('pedido', 'pedidoController@index')->name('pedido.index')->middleware('permission:pedido_index');
+Route::get('pedido/{pedido}/show', 'pedidoController@show')->name('pedido.show')->middleware('permission:pedido_show');
+Route::get('pedido/{id}/preshow', 'pedidoController@preshow')->name('pedido.preshow')->middleware('permission:pedido_preshow');
+Route::get('pedido/create/{id}', 'pedidoController@create')->name('pedido.create')->middleware('permission:pedido_create');
+Route::post('pedido', 'pedidoController@store')->name('pedido.store')->middleware('permission:pedido_store');
+Route::get('pedido/{id}/edit', 'pedidoController@edit')->name('pedido.edit')->middleware('permission:pedido_edit');
+Route::post('pedido/update', 'pedidoController@update')->name('pedido.update')->middleware('permission:pedido_update');
+Route::delete('pedido/destroy/{id}', 'pedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
+Route::get('pedido/misPedidos', 'pedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
+// detalle de pedido
+Route::get('detallePedido', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
+Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
+Route::get('detallePedido/{id}/preshow', 'DetallePedidoController@preshow')->name('detallePedido.preshow')->middleware('permission:detallePedido_preshow');
+Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create')->middleware('permission:detallePedido_create');
+Route::post('detallePedido', 'DetallePedidoController@store')->name('detallePedido.store')->middleware('permission:detallePedido_store');
+Route::get('detallePedido/{id}/edit', 'DetallePedidoController@edit')->name('detallePedido.edit')->middleware('permission:detallePedido_edit');
+Route::post('detallePedido/update/{id}', 'DetallePedidoController@update')->name('detallePedido.update')->middleware('permission:detallePedido_update');
+Route::delete('detallePedido/destroy/{id}', 'DetallePedidoController@destroy')->name('detallePedido.destroy')->middleware('permission:detallePedido_delete');
+// Sublimacion
+Route::get('sublimacion', 'SublimacionController@index')->name('sublimacion.index')->middleware('permission:sublimacion_index');
+Route::get('sublimacion/{sublimacion}/show', 'SublimacionController@show')->name('sublimacion.show')->middleware('permission:sublimacion_show');
+Route::get('sublimacion/{id}/preshow', 'SublimacionController@preshow')->name('sublimacion.preshow')->middleware('permission:sublimacion_preshow');
+Route::get('sublimacion/create/{id}', 'SublimacionController@create')->name('sublimacion.create')->middleware('permission:sublimacion_create');
+Route::post('sublimacion', 'SublimacionController@store')->name('sublimacion.store')->middleware('permission:sublimacion_store');
+Route::get('sublimacion/{id}/edit', 'SublimacionController@edit')->name('sublimacion.edit')->middleware('permission:sublimacion_edit');
+Route::post('sublimacion/update/{id}', 'SublimacionController@update')->name('sublimacion.update')->middleware('permission:sublimacion_update');
+Route::delete('sublimacion/destroy/{id}', 'SublimacionController@destroy')->name('sublimacion.destroy')->middleware('permission:sublimacion_delete');
 
 // Flujo de trabajos
 Route::get('flujoTrabajo', 'flujoTrabajoController@index')->name('flujoTrabajo.index')->middleware('permission:flujoTrabajo_index');
@@ -125,6 +155,18 @@ Route::get('tipoMovimiento/{id}/edit', 'tipoMovimientoController@edit')->name('t
 Route::post('tipoMovimiento/update', 'tipoMovimientoController@update')->name('tipoMovimiento.update')->middleware('permission:tipoMovimiento_update');
 Route::delete('tipoMovimiento/destroy', 'tipoMovimientoController@destroy')->name('tipoMovimiento.destroy')->middleware('permission:tipoMovimiento_delete');
 //  Route::resource('tipoMovimiento','tipoMovimientoController');
+
+//imagen
+Route::get('imagen', 'imagenController@index')->name('imagen.index')->middleware('permission:imagen_index');
+Route::get('imagen/{imagen}/show', 'imagenController@show')->name('imagen.show')->middleware('permission:imagen_show');
+Route::get('imagen/create', 'imagenController@create')->name('imagen.create')->middleware('permission:imagen_create');
+Route::post('imagen', 'imagenController@store')->name('imagen.store')->middleware('permission:imagen_store');
+Route::get('imagen/{id}/edit', 'imagenController@edit')->name('imagen.edit')->middleware('permission:imagen_edit');
+Route::post('imagen/update', 'imagenController@update')->name('imagen.update')->middleware('permission:imagen_update');
+Route::delete('imagen/destroy/{id}', 'imagenController@destroy')->name('imagen.destroy')->middleware('permission:imagen_delete');
+
+//tipo imagen
+Route::get('tipoImagen/obtenerImagenes/{id}', 'TipoImagenController@obtenerImagenes')->name('tipoImagen.obtenerImagenes')->middleware('permission:tipoImagen_obtenerImagenes');
 
 //Pais
 Route::get('pais', 'PaisController@index')->name('pais.index')->middleware('permission:pais_index');

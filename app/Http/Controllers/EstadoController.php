@@ -144,6 +144,7 @@ class EstadoController extends Controller
      */
     public function destroy($id)
     {
+
         $estado = Estado::find($id);
         if (!$estado->transiciones->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el estado se encuentra utilizado por una transicion']);

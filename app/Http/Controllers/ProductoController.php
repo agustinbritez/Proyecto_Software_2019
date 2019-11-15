@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\FlujoTrabajo;
+use App\Imagen;
 use App\Modelo;
+use App\Pedido;
 use App\Producto;
 use App\Sublimacion;
 use App\TipoImagen;
@@ -39,7 +42,16 @@ class ProductoController extends Controller
         $cantidadModelos = 0;
         return view('producto.create', compact('modelo', 'tipoImagenes', 'hijoModelosConMateriaPrimas', 'cantidadModelos'));
     }
+    public function tienda()
+    {
+        $productos = Producto::where('final', '<>', 0)->where('final', '<>', null)->get();
+        $imagenes = Imagen::all();
+        $tipoImagenes = TipoImagen::all();
+        //modelos para la venta
+        $modelosVentas = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
 
+        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes', 'modelosSinPadres'));
+    }
     public function obtenerTodoslosModelosConMateriaPrimas($modelo, $array)
     {
         if ($modelo != null) {
@@ -112,30 +124,9 @@ class ProductoController extends Controller
             $mensaje2 = array_merge($mensaje2, ['modelo_' . $i . '.required' => 'El modelo no fue seleccionado']);
         }
 
-        $rules = [
-            // 'imagenNueva'     =>  'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
-            // 'posX'     =>  'required|numeric',
-            // 'posY'     =>  'required|numeric',
-            // 'modelo_id' => 'required'
-        ];
-        //transformamos la mascara de precio unitario a un valor double normal
-        // $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
+        $rules = [];
 
-        // $request->precioUnitario = $tr;
-        $messages = [
-            // 'posX.required' => 'El objeto debe tener una posicion X.',
-            // 'posY.required' => 'El objeto debe tener una posicion Y.',
-            // 'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
-
-            // 'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
-            // 'posX.numeric' => 'La posicion x debe ser un numero',
-            // 'posY.numeric' => 'La posicion x debe ser un numero',
-
-            // 'modelo_id.required' => 'El modelo no esta seleccionado',
-            // 'modelo_id.integer' => 'El id del modelo debe ser un numero entero',
-
-        ];
+        $messages = [];
 
         // return $materiaPrimaSeleccionada;
         $messages = array_merge($messages, $mensaje2);
@@ -185,7 +176,7 @@ class ProductoController extends Controller
                     ]);
                     $imagen = $sublimacion->id . $imagen;
                     $sublimacion->update(['nuevaImagen' =>  $imagen]);
-                    $file->move(public_path('/imagenes/sublimaciones/'), $imagen);
+                    $file->move(public_path('/imagenes/sublimaciones/sinProcesar/'), $imagen);
                 }
             }
         }
@@ -197,6 +188,25 @@ class ProductoController extends Controller
         }
 
         $producto->materiasPrimas()->sync($materiaPrimaSeleccionada);
+        //creamos el pedido y asociamos el producto a un detalle de pedido
+        $flujoTrabajo = FlujoTrabajo::find(1);
+
+        if (auth()->user()->pedidoAPagar() == null) {
+            $pedido = Pedido::create([
+                'precio' => $producto->modelo->precioUnitario,
+                //termiando null cuando el pedido se creo y no se pago
+                //terminado 0 cuando el pedido se pago y no se verifico
+                //terminado 1 cuando se finalizo la venta
+                'terminado' => null,
+                'flujoTrabajo_id' => 1,
+                'estado_id' => $flujoTrabajo->getEstadoInicial()->id,
+                'user_id' => auth()->user()->id
+            ]);
+        }
+        //ya existe un pedido creado para el carrito
+        $control = new PedidoController();
+        $control->agregarCarrito($producto, 1, auth()->user());
+
 
         return redirect()->back()->with('success', 'Producto Creado Con Exito!');
     }
@@ -214,7 +224,18 @@ class ProductoController extends Controller
     public function preshow($id)
     {
         $producto = Producto::find($id);
-        return view('producto.preShow', compact('producto'));
+        $tipoImagenes = TipoImagen::all();
+        return view('producto.preShow', compact('producto', 'tipoImagenes'));
+    }
+    //hace lo mismo que preshow pero verifica que el usuario este accediendo a un producto que el creo
+    public function miProducto($id)
+    {
+        $producto = Producto::find($id);
+        if ($producto != null) {
+            $producto = $producto->where('user_id', auth()->user()->id)->first();
+        }
+        $tipoImagenes = TipoImagen::all();
+        return view('producto.preShow', compact('producto', 'tipoImagenes'));
     }
 
     /**

@@ -16,14 +16,16 @@ class CreateDetallePedidosTable extends Migration
         Schema::create('detalle_pedidos', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('cantidad');
-            $table->date('fecha');
-            
+            $table->dateTime('fecha');
+            $table->boolean('verificado')->nullable();
+            $table->string('detalle')->nullable();
+
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->foreign('producto_id')->references('id')->on('productos');
-            
+
             $table->unsignedBigInteger('pedido_id')->nullable();
             $table->foreign('pedido_id')->references('id')->on('pedidos');
-            
+
 
             $table->softDeletes();
             $table->timestamps();

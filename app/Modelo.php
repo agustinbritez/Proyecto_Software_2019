@@ -29,7 +29,7 @@ class Modelo extends Model implements Auditable
         //primero va el id del objeto este objeto segundo los id de los objetos que quiero traer
         return $this->belongsToMany(Modelo::class, 'recetas', 'modeloPadre_id', 'modeloHijo_id')->where('recetas.deleted_at', null);
     }
-    //obtiene todos los modelos que son sus madres osea los padres de diferentes recetas
+    //obtiene todos los modelos que son sus padres osea los padres de diferentes recetas
     public function padresModelos()
     {
         //primero va el id del objeto este objeto segundo los id de los objetos que quiero traer

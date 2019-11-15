@@ -15,20 +15,21 @@ class CreatePedidosTable extends Migration
     {
         Schema::create('pedidos', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('nombre');
-            $table->string('detalle');
-            $table->date('cambioEstado');
-            $table->double('precio');
+            $table->string('nombre')->nullable();
+            $table->string('detalle')->nullable();
+            $table->dateTime('cambioEstado')->nullable();
+            $table->double('precio')->nullable();
+            $table->boolean('terminado')->nullable();
 
-            $table->unsignedBigInteger('usuario_id')->nullable();
-            $table->foreign('usuario_id')->references('id')->on('users');
-        
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users');
+
             $table->unsignedBigInteger('flujoTrabajo_id')->nullable();
             $table->foreign('flujoTrabajo_id')->references('id')->on('flujo_trabajos');
-        
+
             $table->unsignedBigInteger('estado_id')->nullable();
             $table->foreign('estado_id')->references('id')->on('estados');
-        
+
             $table->timestamps();
             $table->softDeletes();
         });

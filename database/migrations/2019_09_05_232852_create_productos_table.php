@@ -18,7 +18,7 @@ class CreateProductosTable extends Migration
             //si es verdadero significa que el produto ya se produjo una vez
             $table->boolean('final');
             $table->string('imagenPrincipal')->nullable();
-            
+
             $table->softDeletes();
             $table->timestamps();
         });

@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\DetallePedido;
+use App\FlujoTrabajo;
+use App\Modelo;
 use App\Pedido;
+use App\Producto;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PedidoController extends Controller
@@ -33,9 +38,41 @@ class PedidoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $idUsuario)
     {
         //
+    }
+
+    public function agregarCarrito(Producto $producto, $cantidad, $usuario)
+    {
+        $verificado = 0;
+        if ($usuario->pedidoAPagar() != null) {
+            foreach ($producto->sublimaciones as $key => $sublimacion) {
+
+                if ($sublimacion->nuevaImagen != null) {
+                    $verificado = null;
+                    break;
+                }
+            }
+            $detallePedido = DetallePedido::create([
+                'cantidad' => $cantidad,
+                'fecha' => Carbon::now(),
+                'verificado' => $verificado,
+                'pedido_id' => $usuario->pedidoAPagar()->id,
+                'producto_id' => $producto->id
+
+            ]);
+        }
+        return 0;
+    }
+
+    public function misPedidos()
+    {
+        $misPedidos = auth()->user()->pedidos;
+        $estados = (FlujoTrabajo::find(1))->getEstados();
+        $productosVenta = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
+
+        return view('pedido.misPedidos', compact('misPedidos', 'estados', 'productosVenta'));
     }
 
     /**
@@ -78,8 +115,6 @@ class PedidoController extends Controller
      * @param  \App\Pedido  $pedido
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Pedido $pedido)
-    {
-        //
-    }
+    public function destroy($id)
+    { }
 }

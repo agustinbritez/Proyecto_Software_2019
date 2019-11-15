@@ -18,6 +18,15 @@ class EstadoTableSeeder extends Seeder
         $estado = new Estado();
         $estado->nombre = 'FINALIZADO';
         $estado->save();
+        $estado = new Estado();
+        $estado->nombre = 'PRODUCCION';
+        $estado->save();
+        $estado = new Estado();
+        $estado->nombre = 'VERIFICACION';
+        $estado->save();
+        $estado = new Estado();
+        $estado->nombre = 'ESPERA DE PAGO';
+        $estado->save();
 
         // $estado=new Estado();
         // $estado->nombre='Final';

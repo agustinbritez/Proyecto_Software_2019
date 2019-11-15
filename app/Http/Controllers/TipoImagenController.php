@@ -26,6 +26,17 @@ class TipoImagenController extends Controller
     {
         //
     }
+    public function obtenerImagenes($id)
+    {
+
+        $tipoImagen = TipoImagen::find($id);
+
+        if ($tipoImagen != null) {
+            $imagenes = $tipoImagen->imagenes;
+            return ['imagenes' => $imagenes, 'tipoImagen' => $tipoImagen];
+        }
+        return null;
+    }
 
     /**
      * Store a newly created resource in storage.

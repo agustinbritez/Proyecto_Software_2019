@@ -19,6 +19,7 @@ class CreateSublimacionsTable extends Migration
             $table->string('posY')->nullable();
             $table->string('alto')->nullable();
             $table->string('ancho')->nullable();
+            $table->integer('cantidadCambios')->nullable();
             //cuando carga una imagen nueva que no es del sistema  el siguiente atributo estara cargado
             //cuando se procesa la imagen, el atributo nuevaImagen debera ser null y se debe referenciar a la imagen procesada
             $table->string('nuevaImagen')->nullable();

@@ -15,7 +15,7 @@ class Estado extends Model implements Auditable
 
     public function transiciones()
     {
-        return $this->hasMany(Transicion::class);
+        return $this->hasMany(Transicion::class, 'estadoFin_id');
     }
     public function Pedidos()
     {

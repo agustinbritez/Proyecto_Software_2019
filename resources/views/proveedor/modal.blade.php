@@ -519,7 +519,7 @@
         contentType: false,
         cache:false,
         processData: false,
-        dataType:"json",
+        dataType:"json",  
         success:function(html){
           //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
           $('#nombre').val(html.data.nombre);
