@@ -393,7 +393,7 @@
                                         
                                         var nuevoComponente=
                                         '<div class="form-group">'
-                                            +'<div class="card" style="width: 15rem;">'
+                                            +'<div class="card" style="max-width: 18rem;">'
                                                 var ruta='';
                                                 
                                                 if(array.componente!=null){
@@ -642,7 +642,7 @@
                                                                             
                                                                             
                                                                             var nuevaReceta='<div class="form-group ">'
-                                                                                +'<div class="card border-secondary " style="width: 18rem; height: 15rem;>'
+                                                                                +'<div class="card border-secondary " style="max-width: 18rem;">'
                                                                                     +'<div class="card-header">';
                                                                                         if(array.hijoModelo!=null){
                                                                                             nuevaReceta+= '<h3 class="text-center">'+array.hijoModelo.nombre+'</h3>';     

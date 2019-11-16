@@ -23,7 +23,7 @@
 
                     <div align="left">
                         <button type="button" name="create_record" id="create_record"
-                            class="btn btn-success btn-sm">Crear Nuevo Pais</button>
+                            class="btn btn-success btn-sm">Crear Nueva Imagen</button>
 
                     </div>
 

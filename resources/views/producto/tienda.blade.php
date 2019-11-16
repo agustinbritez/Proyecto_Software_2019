@@ -1,7 +1,32 @@
 @extends('admin_panel.index')
 
+@section('style')
+<style>
+    .contenido {
 
+        /* width: 100%; */
+
+        /* height: 200px; */
+
+        background-color: lightgoldenrodyellow;
+
+        color: white;
+
+        overflow: hidden;
+
+        white-space: nowrap;
+
+        text-overflow: ellipsis;
+
+    }
+</style>
+@endsection
 @section('content')
+
+
+
+
+
 
 
 

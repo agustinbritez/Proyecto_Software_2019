@@ -130,7 +130,7 @@ class ModeloController extends Controller
             $venta = 0;
             //El modelo va a estar disponibles para la venta
             if ($request->has('venta')) {
-                $venta = 1;
+                $venta = 0;
             }
             $flujoGeneral = FlujoTrabajo::find(2);
             $idFlujo = null;
@@ -414,18 +414,18 @@ class ModeloController extends Controller
         return $medida;
     }
 
-    private function verificarSiContieneMateriasPrimas($modelo)
+    private function verificarSiContieneMateriasPrimas(Modelo $modelo)
     {
-        if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
-            return false;
-        }
         if (!$modelo->materiasPrimas->isEmpty()) {
             return true;
+        }
+        if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
+            return false;
         }
         foreach ($modelo->hijosModelos as $key => $modeloHijo) {
             # code...
             if ($modeloHijo != null) {
-                if (verificarSiContieneMateriasPrimas($modeloHijo)) {
+                if ($this->verificarSiContieneMateriasPrimas($modeloHijo)) {
                     return true;
                 }
             }
@@ -522,17 +522,16 @@ class ModeloController extends Controller
         $mensaje = [];
         if ($request->has('venta')) {
 
-            if (!$modelo->materiasPrimas->isEmpty()) {
+
+            if ($this->verificarSiContieneMateriasPrimas($modelo)) {
                 $venta = 1;
-            } else {
-                if ($this->verificarSiContieneMateriasPrimas($modelo)) {
-                    $venta = 1;
-                }
             }
+
             if ($venta == 0) {
                 $mensaje = array_merge($mensaje, ['warning' => 'No se puede habilitar para la venta porque el  modelo o ninguno de sus hijos tiene materias primas asociadas']);
             }
         }
+
         $imagen = null;
         $medida = Medida::find($request->medida_id);
         $idMedida = null;

@@ -98,10 +98,18 @@
             <li class="nav-item">
               <a href="{{ route('imagen.index') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
-                <p>imagenes</p>
+                <p>Imagenes</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('tipoImagen.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Tipo de Imagenes</p>
               </a>
             </li>
           </ul>
+
+
 
 
 

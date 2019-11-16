@@ -166,7 +166,15 @@ Route::post('imagen/update', 'imagenController@update')->name('imagen.update')->
 Route::delete('imagen/destroy/{id}', 'imagenController@destroy')->name('imagen.destroy')->middleware('permission:imagen_delete');
 
 //tipo imagen
+Route::get('tipoImagen', 'TipoImagenController@index')->name('tipoImagen.index')->middleware('permission:tipoImagen_index');
+Route::get('tipoImagen/{tipoImagen}/show', 'TipoImagenController@show')->name('tipoImagen.show')->middleware('permission:tipoImagen_show');
+Route::get('tipoImagen/create', 'TipoImagenController@create')->name('tipoImagen.create')->middleware('permission:tipoImagen_create');
+Route::post('tipoImagen', 'TipoImagenController@store')->name('tipoImagen.store')->middleware('permission:tipoImagen_store');
+Route::get('tipoImagen/{id}/edit', 'TipoImagenController@edit')->name('tipoImagen.edit')->middleware('permission:tipoImagen_edit');
+Route::post('tipoImagen/update', 'TipoImagenController@update')->name('tipoImagen.update')->middleware('permission:tipoImagen_update');
+Route::delete('tipoImagen/destroy', 'TipoImagenController@destroy')->name('tipoImagen.destroy')->middleware('permission:tipoImagen_delete');
 Route::get('tipoImagen/obtenerImagenes/{id}', 'TipoImagenController@obtenerImagenes')->name('tipoImagen.obtenerImagenes')->middleware('permission:tipoImagen_obtenerImagenes');
+
 
 //Pais
 Route::get('pais', 'PaisController@index')->name('pais.index')->middleware('permission:pais_index');

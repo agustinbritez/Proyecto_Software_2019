@@ -16,32 +16,32 @@
                     <p>Seleccione el modelo que usara como base para crear su producto.</p>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        @foreach ($modelosVentas as $modelo)
-                        <div class="form-group">
+                    @foreach ($modelosVentas as $modelo)
+                    <div class="form-group">
+                        <div class="col">
                             <form action="{{ route('producto.create', $modelo->id) }}">
 
-                                <div class="card" style="width: 13rem;">
+                                <div class="card" style="width: 15rem; ">
                                     <img src="{{ asset('/imagenes/modelos/'.$modelo->imagenPrincipal) }}"
                                         class="card-img-top" alt="...">
                                     <div class="card-body">
                                         <div class="text-center">
+                                            <div class="text-justify"> </div>
+                                            <h5 class="text-dark contenido" title="{{$modelo->nombre}}">
+                                                {{$modelo->nombre}}</h5>
 
-                                            <h5 class="text-dark">{{$modelo->nombre}}</h5>
 
                                             <input type="submit" name="action_button" id="action_button"
                                                 class="btn btn-info btn-sm" value="Diseñar Producto" />
-
                                         </div>
-                                        <div>
 
-                                        </div>
                                     </div>
+
                                 </div>
                             </form>
                         </div>
-                        @endforeach
                     </div>
+                    @endforeach
                 </div>
 
             </div>

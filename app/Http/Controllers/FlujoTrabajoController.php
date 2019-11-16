@@ -159,6 +159,7 @@ class FlujoTrabajoController extends Controller
         $transicion = null;
         if (($estado != null) && ($flujo != null)) {
             if (($idFlujo == 1) || ($idFlujo == 2)) {
+            // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
                 $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
             } else {
                 if ($flujo->transiciones->isEmpty()) {
@@ -200,6 +201,7 @@ class FlujoTrabajoController extends Controller
         if ($flujo != null) {
             //los flujos 1 y 2 son estaticos y forman parte del sistema no se pueden crear ni borrar nuvos estados
             if (($idFlujo == 1) || ($idFlujo == 2)) {
+            // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
                 $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
             } else {
                 $transFinal = $flujo->getTransicionFinal();

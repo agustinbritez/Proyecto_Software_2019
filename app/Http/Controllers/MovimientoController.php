@@ -76,31 +76,29 @@ class MovimientoController extends Controller
             'materiaPrima_id.exists' => 'No existe la materia prima seleccionado'
 
         ];
-        
-        $request->validate( $rules, $messages);
+
+        $request->validate($rules, $messages);
         //segunda validacion
-        if((($proveedor=Proveedor::find($request->proveedor_id))==null) && ($request->proveedor_id!=-1)){
-            return redirect()->back()->withErrors(['message2'=>'El proveedor seleccionado no existe']);
+        if ((($proveedor = Proveedor::find($request->proveedor_id)) == null) && ($request->proveedor_id != -1)) {
+            return redirect()->back()->withErrors(['message2' => 'El proveedor seleccionado no existe']);
         }
-        
+
 
         $materiaPrima = MateriaPrima::find($request->materiaPrima_id);
         $tipoMovimiento = TipoMovimiento::find($request->tipoMovimiento_id);
         //si es distitno a 0 es porqu es verdadero osea suar 
-        if($tipoMovimiento->operacion!=0){
+        if ($tipoMovimiento->operacion != 0) {
             $materiaPrima->cantidad = $materiaPrima->cantidad + $request->cantidad;
-            
-        }else{
-            if($materiaPrima->cantidad<$request->cantidad){
-                return redirect()->back()->withErrors(['message1'=>'La cantidad ingresada supera a la cantidad de materia prima almacenada']);
+        } else {
+            if ($materiaPrima->cantidad < $request->cantidad) {
+                return redirect()->back()->withErrors(['message1' => 'La cantidad ingresada supera a la cantidad de materia prima almacenada']);
             }
             $materiaPrima->cantidad = $materiaPrima->cantidad - $request->cantidad;
-
         }
-       
+
         //si la operacion es positiva osea '0' sumamos al stock de la materia prima
         $materiaPrima->update();
-       
+
 
         if ($proveedor != null) {
             $form_data = array(
@@ -111,7 +109,7 @@ class MovimientoController extends Controller
                 'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
                 'materiaPrima_id'         =>  $request->input('materiaPrima_id')
             );
-        }else{
+        } else {
             $form_data = array(
                 'precioUnitario'        =>  $request->precioUnitario,
                 'fecha'         =>  Carbon::now(),
