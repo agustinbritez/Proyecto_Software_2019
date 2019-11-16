@@ -66,7 +66,7 @@ class ControllerMateriaPrima extends Controller
             'cantidad'     =>  'required|integer',
             'precioUnitario'     =>  'required|numeric',
             'medida_id'     =>  'required',
-            'modelos'     =>  'required'
+            // 'modelos'     =>  'required'
         ];
         //transformamos la mascara de precio unitario a un valor double normal
         $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
@@ -234,8 +234,8 @@ class ControllerMateriaPrima extends Controller
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
             'cantidad'     =>  'required|integer',
             'precioUnitario'     =>  'required|numeric',
-            'medida_id'     =>  'required',
-            'modelos'     =>  'required'
+            'medida_id'     =>  'required'
+            // 'modelos'     =>  'required'
         ];
 
         //transformamos la mascara de precio unitario a un valor double normal
@@ -263,10 +263,12 @@ class ControllerMateriaPrima extends Controller
             'imagenPrincipal.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
             'imagenPrincipal.max'     => 'La resolucion maxima de la imagen es 2048',
         ];
+
         $this->validate($request, $rules, $messages);
 
         //si el id que crea es uno borrado lo revivimos
         $materiaPrima = MateriaPrima::withTrashed()->find($request->hidden_id);
+
 
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
@@ -281,7 +283,8 @@ class ControllerMateriaPrima extends Controller
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
                 'cantidad'         =>  $request->cantidad,
-                'medida_id'         =>  $request->medida_id
+                'medida_id'         =>  $request->medida_id,
+
             );
             //creamos el camino de la imagen vieja
             $file_path = public_path() . '/imagenes/materia_primas/' . $materiaPrima->imagenPrincipal;
@@ -319,7 +322,7 @@ class ControllerMateriaPrima extends Controller
         $materiaPrima->update($form_data);
         // $materiaPrima->modelos()->detach($request->input('modelos',[]),$request->input('modelos',[]) );
 
-        $materiaPrima->modelos()->sync($request->input('modelos', []));
+        // $materiaPrima->modelos()->sync($request->input('modelos', []));
         // return response()->json(['success' => 'Materia Prima Actualizada Correctamente']);
         return redirect()->back()->with('success', 'Actualizado Correctamente');
     }

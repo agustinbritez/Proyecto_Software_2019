@@ -108,7 +108,7 @@ Route::get('pedido/misPedidos', 'pedidoController@misPedidos')->name('pedido.mis
 // detalle de pedido
 Route::get('detallePedido', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
 Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
-Route::get('detallePedido/{id}/preshow', 'DetallePedidoController@preshow')->name('detallePedido.preshow')->middleware('permission:detallePedido_preshow');
+Route::get('detallePedido/show/{id}', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
 Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create')->middleware('permission:detallePedido_create');
 Route::post('detallePedido', 'DetallePedidoController@store')->name('detallePedido.store')->middleware('permission:detallePedido_store');
 Route::get('detallePedido/{id}/edit', 'DetallePedidoController@edit')->name('detallePedido.edit')->middleware('permission:detallePedido_edit');

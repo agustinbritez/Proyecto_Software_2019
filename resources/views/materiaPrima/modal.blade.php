@@ -78,7 +78,7 @@
                         </div>
 
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Modelos : </label>
                             <select class="select2" multiple="multiple" id='modelos' name="modelos[]"
                                 data-placeholder="Seleccione Un Modelo" style="width: 100%;">
@@ -87,35 +87,35 @@
                                 @if(sizeof($modelos)>0)
                                 @foreach ($modelos as $modelo)
                                 <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
-                                @endforeach
+                        @endforeach
 
-                                @endif
+                        @endif
 
 
-                            </select>
-                        </div>
+                        </select>
+                    </div> --}}
 
-                        {{-- <div class="form-group row">
+                    {{-- <div class="form-group row">
                         <label for="exampleFormControlFile1">Subir Una Imagen</label>
                         <input type="file" class="form-control-file" id="imagenPrincipal">
                     </div> --}}
-                        <br />
-
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-around">
-
-                    <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
-
-                    <input type="hidden" name="action" id="action" />
-                    <input type="hidden" name="hidden_id" id="hidden_id" />
+                    <br />
 
                 </div>
-
-            </form>
         </div>
+        <div class="modal-footer justify-content-around">
+
+            <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
+            <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+
+            <input type="hidden" name="action" id="action" />
+            <input type="hidden" name="hidden_id" id="hidden_id" />
+
+        </div>
+
+        </form>
     </div>
+</div>
 </div>
 
 <div id="confirmModal" class="modal fade" role="dialog">

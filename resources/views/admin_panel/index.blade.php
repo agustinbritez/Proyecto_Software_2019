@@ -18,16 +18,19 @@
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
   <!-- IonIcons -->
-  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  {{-- <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> --}}
   {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('admin_panel/dist/css/adminlte.min.css') }}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <!-- Ion Slider -->
+  <link rel="stylesheet" href="{{ asset('admin_panel/plugins/ion-rangeslider/css/ion.rangeSlider.min.css') }}">
+
 
   @yield('style')
   <style>
-    .btn-pill{
+    .btn-pill {
       border-radius: 40px;
     }
   </style>
@@ -103,6 +106,9 @@
   {{-- java script interact --}}
   <script src="{{asset('js/interactjs.js')}}"></script>
   {{-- <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script> --}}
+
+  <!-- Ion Slider -->
+  <script src="{{asset('admin_panel/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
 
   <script>
     $(document).ready(function(){

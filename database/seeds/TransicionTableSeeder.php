@@ -20,8 +20,8 @@ class TransicionTableSeeder extends Seeder
         $verificacion = Estado::where('nombre', 'VERIFICACION')->first();
         $espera = Estado::where('nombre', 'ESPERA DE PAGO')->first();
 
-        $flujoPedidos = FlujoTrabajo::where('FLUJO PEDIDOS')->first();
-        $flujoProducto = FlujoTrabajo::where('FLUJO PRODUCCION GENERAL')->first();
+        $flujoPedidos = FlujoTrabajo::where('nombre', 'FLUJO PEDIDOS')->first();
+        $flujoProducto = FlujoTrabajo::where('nombre', 'FLUJO PRODUCCION GENERAL')->first();
         // Creando el fujo de trabajo del pedido
         $trans = new Transicion();
         $trans->flujoTrabajo_id = $flujoPedidos->id;

@@ -86,9 +86,9 @@ class ProductoController extends Controller
      */
     public function store(Request $request)
     {
+        //No controlo los id de las imagenes del sistema
         // return $request;
         $materiaPrimaSeleccionada = collect();
-        $imagenesSeleccionadas = collect();
         $rule2 = [];
         $mensaje2 = [];
 
@@ -103,7 +103,6 @@ class ProductoController extends Controller
 
             for ($i = 1; $i <= $cantidadImagenes; $i++) {
 
-                $imagenesSeleccionadas = $imagenesSeleccionadas->add($request->input('file_' . $i));
                 $rule2 = array_merge($rule2, [
                     'file_' . $i . '_componente_' . $componente->id => 'mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
 
@@ -115,6 +114,23 @@ class ProductoController extends Controller
                 ]);
             }
         }
+
+        foreach ($modelo->componentes as $key => $componente) {
+            $cantidadImagenes = $request->input('cantidadImagenes_sistema_' . $componente->id);
+
+            for ($i = 1; $i <= $cantidadImagenes; $i++) {
+
+                $rule2 = array_merge($rule2, [
+                    'imagen_sistema_' . $i . '_componente_' . $componente->id . '_id' . $componente->id => 'integer',
+
+                ]);
+                $mensaje2 = array_merge($mensaje2, [
+                    'imagen_sistema_' . $i . '_componente_' . $componente->id . '_id' . $componente->id . '.required'     => 'La imagen es obligatoria',
+                    'imagen_sistema_' . $i . '_componente_' . $componente->id . '_id' . $componente->id . '.integer'     => 'La imagen seleccionada no existe',
+                ]);
+            }
+        }
+
 
         //creamos el array para el sync de productos a materias primas
         for ($i = 0; $i < $request->cantidadModelos; $i++) {
@@ -151,6 +167,7 @@ class ProductoController extends Controller
             $imagen = null;
             $sublimaciones = collect();
             $cantidadImagenes = $request->input('cantidadImagenes_' . $componente->id);
+            $cantidadImagenesSistema = $request->input('cantidadImagenes_sistema_' . $componente->id);
             $sublimacion = null;
             for ($i = 1; $i <= $cantidadImagenes; $i++) {
 
@@ -169,6 +186,7 @@ class ProductoController extends Controller
                         'posY' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_posY'),
                         'alto' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_alto'),
                         'ancho' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_ancho'),
+                        'forma' => $request->input('imagen_' . $i . '_componente_' . $componente->id . '_forma'),
                         'componente_id' => $componente->id,
                         'producto_id' => $producto->id,
                         'imagen_id' => null
@@ -177,6 +195,23 @@ class ProductoController extends Controller
                     $imagen = $sublimacion->id . $imagen;
                     $sublimacion->update(['nuevaImagen' =>  $imagen]);
                     $file->move(public_path('/imagenes/sublimaciones/sinProcesar/'), $imagen);
+                }
+            }
+            for ($i = 1; $i <= $cantidadImagenesSistema; $i++) {
+                if ($request->has('imagen_sistema_' . $i . '_componente_' . $componente->id . '_id')) {
+
+                    $sublimacion = Sublimacion::create([
+                        'nuevaImagen' =>  null,
+                        'posX' => $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_posX'),
+                        'posY' => $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_posY'),
+                        'alto' => $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_alto'),
+                        'ancho' => $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_ancho'),
+                        'forma' => $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_forma'),
+                        'componente_id' => $componente->id,
+                        'producto_id' => $producto->id,
+                        'imagen_id' =>  $request->input('imagen_sistema_' . $i . '_componente_' . $componente->id . '_id')
+
+                    ]);
                 }
             }
         }
@@ -230,11 +265,13 @@ class ProductoController extends Controller
     //hace lo mismo que preshow pero verifica que el usuario este accediendo a un producto que el creo
     public function miProducto($id)
     {
+
         $producto = Producto::find($id);
         if ($producto != null) {
-            $producto = $producto->where('user_id', auth()->user()->id)->first();
+            $producto = Producto::where('id', $id)->where('user_id', auth()->user()->id)->first();
         }
         $tipoImagenes = TipoImagen::all();
+
         return view('producto.preShow', compact('producto', 'tipoImagenes'));
     }
 

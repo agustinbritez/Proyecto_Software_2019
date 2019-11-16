@@ -127,6 +127,9 @@
                             <div id="pedido_{{$pedido->id}}" class="collapse " aria-labelledby="heading_{{$pedido->id}}"
                                 data-parent="#accordionExample">
                                 <div class="card-body">
+                                    <button type="submit" name="delete" data-id="{{$pedido->id}}"
+                                        class="deletePedido btn btn-danger btn-sm">Eliminar Pedido</button>
+
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
@@ -202,15 +205,10 @@
                                                         </div>
                                                         <div class="col">
 
-                                                            <form id="formDelete{{$detalle->id}}"
-                                                                action="{{route('detallePedido.destroy',$detalle->id)}}"
-                                                                method="POST">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" name="delete"
-                                                                    id="{{$detalle->producto->modelo->id}}"
-                                                                    class="delete btn btn-outline-danger btn-sm">Eliminar</button>
-                                                            </form>
+
+                                                            <button type="submit" name="delete" id="{{$detalle->id}}"
+                                                                class="deleteDetalle btn btn-outline-danger btn-sm">Eliminar</button>
+
                                                         </div>
 
 
@@ -275,7 +273,7 @@
         url=url.replace(':id',id);
         console.log(url);
         $.get(url,function(array){
-            console.log('asd');
+            console.log(array);
             
             $('#cantidad').val(array['data'].cantidad);
             $('#detalle').val(array['data'].detalle);
@@ -288,5 +286,34 @@
         
         
     }); 
+    
+        $(document).on('click', '.deleteDetalle', function(){
+            var id = $(this).attr('id');
+            $('#button_delete').val(id);
+            $('#ok_button').text('Ok')
+            $('.modal-title').text("Confirmacion");
+            url2="{{route('detallePedido.destroy',":id")}}";
+                                            
+             url2=url2.replace(':id',id);
+            $('#formDelete').attr('action',url2);
+            $('#confirmModal').modal('show');
+        });
+        $(document).on('click', '.deletePedido', function(){
+            var id = $(this).attr('data-id');
+            $('#button_delete').val(id);
+            $('#ok_button').text('Ok')
+            $('.modal-title').text("Confirmacion");
+            url2="{{route('pedido.destroy',":id")}}";
+                                            
+             url2=url2.replace(':id',id);
+            $('#formDelete').attr('action',url2);
+            $('#confirmModal').modal('show');
+        });
+        
+        $('#formDelete').on('submit',function(){
+            $('#ok_button').text('Eliminando...')
+        });
+
+
 </script>
 @endpush

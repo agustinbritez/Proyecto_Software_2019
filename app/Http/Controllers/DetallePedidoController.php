@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\DetallePedido;
+use App\Pedido;
+use App\Producto;
+use App\TipoImagen;
 use Illuminate\Http\Request;
 
 class DetallePedidoController extends Controller
@@ -44,9 +47,18 @@ class DetallePedidoController extends Controller
      * @param  \App\DetallePedido  $detallePedido
      * @return \Illuminate\Http\Response
      */
-    public function show(DetallePedido $detallePedido)
+    public function show($id)
     {
-        //
+        $detallePedido = DetallePedido::find($id);
+        if (($detallePedido == null)) {
+            return redirect()->back()->withErrors('El detalle del pedido no existe');
+        }
+        $producto = Producto::find($detallePedido->id);
+        if ($producto == null) {
+            return redirect()->back()->withErrors('El producto no existe');
+        }
+        $tipoImagenes = TipoImagen::all();
+        return view('detallePedido.show', compact('producto', 'tipoImagenes', 'detallePedido'));
     }
 
     /**

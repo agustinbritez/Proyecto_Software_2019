@@ -54,12 +54,23 @@ class PedidoController extends Controller
                     break;
                 }
             }
+            $flujoTrabajo = FlujoTrabajo::where('nombre', 'FLUJO PRODUCCION GENERAL')->first();
+            $estado = null;
+            if ($producto->modelo->flujoTrabajo != null) {
+                if ($producto->modelo->flujoTrabajo->getEstadoInicial() != null) {
+
+                    $estado = $producto->modelo->flujoTrabajo->getEstadoInicial()->id;
+                }
+            }
+
             $detallePedido = DetallePedido::create([
                 'cantidad' => $cantidad,
                 'fecha' => Carbon::now(),
                 'verificado' => $verificado,
                 'pedido_id' => $usuario->pedidoAPagar()->id,
-                'producto_id' => $producto->id
+                'producto_id' => $producto->id,
+                'estado_id'         =>  $estado,
+
 
             ]);
         }
@@ -116,5 +127,18 @@ class PedidoController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
-    { }
+    {
+        $pedido = Pedido::find($id);
+        if ($pedido->terminado == null) {
+            $pedido->delete();
+            return redirect()->back()->with('warning', 'Se elimino el pedido de manera correcta');
+        }
+        if ($pedido->terminado) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pedido porque ha finalizado']);
+        } else {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pedido porque se ha pagado']);
+        }
+
+        return redirect()->back()->withErrors('No se pudo eliminar el pedido');
+    }
 }

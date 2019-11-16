@@ -271,6 +271,7 @@ class ModeloController extends Controller
         // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $request->has('cambiarIngrediente') ]);
 
         if (request()->ajax()) {
+            $mensaje = [];
             $agregar = false;
             //el modelo padre
             $modelo = Modelo::find($request->hidden_id_modelo);
@@ -313,11 +314,18 @@ class ModeloController extends Controller
                     if (($modeloPadre->id == $modeloHijo->id)) {
                         return response()->json(['errors' => ['No puede seleccionar el mismo modelo como ingrediente ']]);
                     }
+
                     if ($this->verificarSiEsRecursivo($modeloPadre, $modeloHijo)) {
                         return response()->json(['errors' => ['El modelo seleccionado no esta permitido  para recursion ']]);
                     }
                 }
 
+                $medida = $this->asignarMedidaAlModelo($modelo, $modelo->medida);
+
+                if ($medida->id != $modelo->medida->id) {
+                    $mensaje = array_merge($mensaje, ['warning' => 'La unidad de medida seleccionada se cambio a ' . $medida->nombre . ' porque algunos de sus hijos tienen unidades de medidas diferentes']);
+                    $modelo->update();
+                }
                 //si el check esta seleccionado quiere decir que trajo una materia prima
                 if ($request->has('cambiarIngrediente')) {
 
@@ -332,7 +340,8 @@ class ModeloController extends Controller
                     //si no crea es porque hay agun atributo que no permite null que esta vacio
                     $receta = Receta::create($form_data);
                     $agregar = true;
-                    return response()->json(['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => null, 'hijoMateriaPrima' => $receta->materiaPrima]);
+                    $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => null, 'hijoMateriaPrima' => $receta->materiaPrima]);
+                    return response()->json($mensaje);
                 } else {
                     //si el check no esta seleccionado significa que trajo una relacion de modelo
 
@@ -349,8 +358,8 @@ class ModeloController extends Controller
                     //si no crea es porque hay agun atributo que no permite null que esta vacio
                     $receta = Receta::create($form_data);
                     $agregar = true;
-
-                    return response()->json(['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => $receta->modeloHijo, 'hijoMateriaPrima' => null]);
+                    $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => $receta->modeloHijo, 'hijoMateriaPrima' => null]);
+                    return response()->json($mensaje);
                 }
 
 
@@ -361,6 +370,67 @@ class ModeloController extends Controller
 
             return response()->json(['errors' => ['El modelo que quiere sincronizar no existe']]);
         }
+    }
+    //Verifica mientras se agrega un nuevo modelo o materia prima si son de la misma unidad de medida.
+    //Si se agrega un modelo o materia prima con otra unidad de medida se le asigna UNIDAD como unidad por defecto para evitar
+    //problemas de calculos.
+    //si un hijo tiene la unidad de medida UNIDAD al padre tambien se le asigna esa.
+    private function asignarMedidaAlModelo($modelo, $medida)
+    {
+
+        if ($modelo != null) {
+            if (!$modelo->hijosModelos->isEmpty()) {
+                //modelo auxiliar se usa para verificar si sus hermanos tienen la misma unidad de medida
+                $modeloAuxiliar = $modelo->hijosModelos->first();
+                foreach ($modelo->hijosModelos as $key => $modeloHijo) {
+                    # code...
+                    if ($modeloAuxiliar->medida->id != $modeloHijo->medida->id) {
+                        //si encuentro un modelo que tiene una medida diferente le asigan UNIDAD
+                        $unidad = Medida::where('nombre', 'UNIDAD')->first();
+                        if ($unidad != null) {
+                            $medida = $unidad;
+                            $modelo->medida_id = $unidad->id;
+                        }
+                        break;
+                    }
+                }
+            } elseif (!$modelo->materiasPrimas->isEmpty()) {
+                # code...
+                $materiaAuxiliar = $modelo->materiasPrimas->first();
+                foreach ($modelo->materiasPrimas as $key => $materiaHijo) {
+                    # code...
+                    if ($materiaAuxiliar->medida->id != $materiaHijo->medida->id) {
+                        //si encuentro un modelo que tiene una medida diferente le asigan UNIDAD
+                        $unidad = Medida::where('nombre', 'UNIDAD')->first();
+                        if ($unidad != null) {
+
+                            $medida = $unidad;
+                        }
+                        break;
+                    }
+                }
+            }
+        }
+        return $medida;
+    }
+
+    private function verificarSiContieneMateriasPrimas($modelo)
+    {
+        if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
+            return false;
+        }
+        if (!$modelo->materiasPrimas->isEmpty()) {
+            return true;
+        }
+        foreach ($modelo->hijosModelos as $key => $modeloHijo) {
+            # code...
+            if ($modeloHijo != null) {
+                if (verificarSiContieneMateriasPrimas($modeloHijo)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     //los modelos no pueden contener recetas que se autoreferencien en todos sus recectas hijos
@@ -442,10 +512,40 @@ class ModeloController extends Controller
 
         //si el id que crea es uno borrado lo revivimos
         $modelo = Modelo::withTrashed()->find($request->hidden_id);
-
+        if ($modelo == null) {
+            return response()->json(['errors' => ['El modelo  no existe']]);
+        }
         // return response()->json(['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => new Modelo()]);
+        $venta = 0;
+        //El modelo va a estar disponibles para la venta
 
+        $mensaje = [];
+        if ($request->has('venta')) {
+
+            if (!$modelo->materiasPrimas->isEmpty()) {
+                $venta = 1;
+            } else {
+                if ($this->verificarSiContieneMateriasPrimas($modelo)) {
+                    $venta = 1;
+                }
+            }
+            if ($venta == 0) {
+                $mensaje = array_merge($mensaje, ['warning' => 'No se puede habilitar para la venta porque el  modelo o ninguno de sus hijos tiene materias primas asociadas']);
+            }
+        }
         $imagen = null;
+        $medida = Medida::find($request->medida_id);
+        $idMedida = null;
+
+        if ($medida != null) {
+
+            $medida = $this->asignarMedidaAlModelo($modelo, $medida);
+            $idMedida = $medida->id;
+            if ($idMedida != $request->medida_id) {
+                $mensaje = array_merge($mensaje, ['warning2' => 'La unidad de medida seleccionada se cambio a ' . $medida->nombre . ' porque algunos de sus hijos tienen unidades de medidas diferentes']);
+            }
+        }
+
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
             $hoy = Carbon::now();
@@ -456,7 +556,8 @@ class ModeloController extends Controller
                 'imagenPrincipal'        =>  $imagen,
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
-                'medida_id' => $request->medida_id
+                'medida_id' => $idMedida,
+                'venta' => $venta
             );
             //creamos el camino de la imagen vieja
             $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
@@ -469,7 +570,8 @@ class ModeloController extends Controller
                 'nombre'        =>  $request->nombre,
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
-                'medida_id' => $request->medida_id
+                'venta' => $venta,
+                'medida_id' => $idMedida
             );
         }
 
@@ -479,8 +581,10 @@ class ModeloController extends Controller
         //Actualizamos
         // $modelo->fill($request->all());
         $modelo->update($form_data);
+        $mensaje = array_merge($mensaje, ['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => $modelo]);
 
-        return response()->json(['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => $modelo]);
+
+        return response()->json($mensaje);
     }
 
     /**

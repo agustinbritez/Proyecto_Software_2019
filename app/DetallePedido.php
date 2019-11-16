@@ -20,4 +20,8 @@ class DetallePedido extends Model implements Auditable
     {
         return $this->belongsTo(Pedido::class, 'pedido_id');
     }
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'estado_id');
+    }
 }
