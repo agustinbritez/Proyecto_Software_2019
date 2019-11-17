@@ -84,15 +84,17 @@
 
   <script src="{{ asset('js/app.js') }}"></script>
   <!-- jQuery -->
-  {{--intercatsjs para intercatuar con las imagenes  --}}
   <script src="{{asset('admin_panel/plugins/jquery/jquery.min.js')}}"></script>
 
   <script src="{{asset('admin_panel/plugins/inputmask/jquery.inputmask.bundle.js')}}"></script>
 
-  <!-- Bootstrap -->
+
+  <!-- Bootstrap 4-->
   <script src="{{asset('admin_panel/plugins/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
   <!-- AdminLTE -->
   <script src="{{asset('admin_panel/dist/js/adminlte.js')}}"></script>
+  <!-- AdminLTE App -->
+  {{-- <script src="{{asset('admin_panel/dist/js/adminlte.min.js')}}"></script> --}}
   <!-- DataTables -->
   <script src="{{asset('admin_panel/plugins/datatables/jquery.dataTables.js')}}"></script>
   <script src="{{asset('admin_panel/plugins/datatables-bs4/js/dataTables.bootstrap4.js')}}"></script>

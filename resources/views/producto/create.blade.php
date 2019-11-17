@@ -359,7 +359,7 @@
                         document.getElementById("componente_"+numeroComponente+"_imagen").style.display='block';
                         
                         // text = select.options[select.selectedIndex].innerText; //El texto de la opción seleccionada
-                        console.log(numeroComponente);
+                        // console.log(numeroComponente);
                         
                     }
                     
@@ -368,7 +368,7 @@
                         
                         $('#cantidadImagenes').val(cantidadImagenes);
                         
-                        console.log('pos x: '+$('#posX').val() +'\n pos y: '+$('#posY').val());
+                        // console.log('pos x: '+$('#posX').val() +'\n pos y: '+$('#posY').val());
                     });
                     
                     // *****************************************boton agreggar y quitar imagenes***********************************************************8
@@ -377,7 +377,7 @@
                         cantidadImagenes=parseInt($('#cantidadImagenes_'+componenteSeleccionado).val());
                         cantidadImagenesSistema=parseInt($('#cantidadImagenes_sistema_'+componenteSeleccionado).val());
                         cantidadTotal= cantidadImagenes+  cantidadImagenesSistema;
-                        console.log('cantidad Imagnes total: '+cantidadTotal);
+                        // console.log('cantidad Imagnes total: '+cantidadTotal);
                         if(cantidadTotal<limiteImagen){
                             
                             cantidadImagenes++; 
@@ -433,7 +433,7 @@
                                                 
                                                 cantidadImagenes=$('#cantidadImagenes_'+componenteSeleccionado).val();
                                                 cantidadImagenesSistema=($('#cantidadImagenes_sistema_'+componenteSeleccionado).val());
-                                                console.log('cantida imagenes: '+cantidadImagenes+' cantidad sistema: '+cantidadImagenesSistema );
+                                                // console.log('cantida imagenes: '+cantidadImagenes+' cantidad sistema: '+cantidadImagenesSistema );
                                                 numeroImagenSistema=parseInt($('#add_imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado).attr('data-totalImagenes'));
                                                 numeroImagen=parseInt($('#add_imagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado).attr('data-totalImagenes'));
                                                 if(isNaN(numeroImagen)){
@@ -442,7 +442,7 @@
                                                 if(isNaN(numeroImagenSistema)){
                                                     numeroImagenSistema=-1;
                                                 }
-                                                console.log('numero imagen: '+numeroImagen+ ' numero sistema: '+numeroImagenSistema);
+                                                // console.log('numero imagen: '+numeroImagen+ ' numero sistema: '+numeroImagenSistema);
                                                 if(numeroImagenSistema>numeroImagen){
                                                     if(cantidadImagenesSistema<=0){
                                                         cantidadImagenesSistema=0;
@@ -487,7 +487,7 @@
                                                 idImagen.style="border-radius: "+   idSlider.value +'%;' ;
                                                 idDise.style="border-radius: "+   idSlider.value +'%;' ;
                                                 document.getElementById(idImagen.id+'_forma').value=idSlider.value;
-                                                console.log(idSlider.value);
+                                                // console.log(idSlider.value);
                                                 
                                             }
                                             
@@ -507,7 +507,7 @@
                                                     type: 'GET',
                                                     url: url2,
                                                     success: function(data) {
-                                                        console.log(data);
+                                                        // console.log(data);
                                                         if(data!=null){
                                                             data['imagenes'].forEach(imagen => {
                                                                 var urlSurce='{{asset("/imagenes/sublimaciones")}}'+'/'+data['tipoImagen'].nombre+'/'+ imagen.imagen;
@@ -549,13 +549,13 @@
                                                                 
                                                                 //***************************************************************************************************************** 
                                                                 $(document).on('click', '.agregarImagenSistema', function(){
-                                                                    var idImagen=$(this).attr('data-imagen');
+                                                                    var idImagenPrincipal=$(this).attr('data-imagen');
                                                                     var ruta=$(this).attr('data-ruta');
                                                                     var componenteSeleccionado=$(this).attr('data-componente');
                                                                     var cantidadImagenesSistema=parseInt($('#cantidadImagenes_sistema_'+componenteSeleccionado).val());
                                                                     cantidadImagenes=parseInt($('#cantidadImagenes_'+componenteSeleccionado).val());
                                                                     var cantidadTotal= cantidadImagenes+  cantidadImagenesSistema;
-                                                                    console.log('cantidad Imagnes total: '+cantidadTotal);
+                                                                    // console.log('cantidad Imagnes total: '+cantidadTotal);
                                                                     if(cantidadTotal<limiteImagen){
                                                                         cantidadImagenesSistema++;
                                                                         var idSlider='slider_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado;
@@ -575,7 +575,7 @@
                                                                                                 //     +'<input type="file" id="'+cantidadImagenesSistema+'" name="file_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" style="display: none;" onchange="cargar('+cantidadImagenesSistema+','+componenteSeleccionado+');"  class="cargarImagen">'
                                                                                                 //     +'</label>'
                                                                                                 +'</div>'
-                                                                                                +'<input type="hidden" name="'+idImagen+'_id" id="'+idImagen+'_id" value="'+idImagen+'" />'
+                                                                                                +'<input type="hidden" name="'+idImagen+'_id" id="'+idImagen+'_id" value="'+idImagenPrincipal+'" />'
                                                                                                 +'<input type="hidden" name="'+idImagen+'_posX" id="'+idImagen+'_posX" value="" />'
                                                                                                 +'<input type="hidden" name="'+idImagen+'_posY" id="'+idImagen+'_posY" value="" />'
                                                                                                 +'<input type="hidden" name="'+idImagen+'_alto" id="'+idImagen+'_alto" value="" />'
@@ -640,7 +640,7 @@
                                                                                             var idNumeroDeImagen= event.target.getAttribute('data-id');
                                                                                             var idNumeroDeComponente= event.target.getAttribute('data-componente');
                                                                                             var comprobacion= event.target.getAttribute('data-imagen-sistema');
-                                                                                            console.log('comprobacion: '+comprobacion);
+                                                                                            // console.log('comprobacion: '+comprobacion);
                                                                                             // console.log(event.target.getAttribute('data-id'));
                                                                                             
                                                                                             var target = event.target

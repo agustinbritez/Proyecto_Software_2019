@@ -111,6 +111,7 @@
                                             <span
                                                 class="badge badge-warning">{{$pedido->estado->nombre ?? 'Sin Estado'}}
                                             </span>
+
                                         </div>
                                         <div class="col-2">
                                             <button class="btn btn-primary" type="button" data-toggle="collapse"
@@ -127,14 +128,29 @@
                             <div id="pedido_{{$pedido->id}}" class="collapse " aria-labelledby="heading_{{$pedido->id}}"
                                 data-parent="#accordionExample">
                                 <div class="card-body">
-                                    <button type="submit" name="delete" data-id="{{$pedido->id}}"
-                                        class="deletePedido btn btn-danger btn-sm">Eliminar Pedido</button>
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="submit" name="delete" data-id="{{$pedido->id}}"
+                                                class="deletePedido btn btn-danger btn-sm">Eliminar Pedido</button>
+
+                                        </div>
+                                        <div class="col-1">
+                                            <a class="nav-link" data-toggle="dropdown" href="#">
+                                                <i class="fas fa-question-circle" style="font-size: 200%"></i>
+                                            </a>
+
+
+
+                                        </div>
+
+                                    </div>
 
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Producto</th>
+                                                <th scope="col">Precio</th>
                                                 <th scope="col">Detalle</th>
                                                 <th scope="col">Cantidad</th>
                                                 <th scope="col">Estado</th>
@@ -150,6 +166,7 @@
                                             <tr>
                                                 <th scope="row">{{$detalle->id}}</th>
                                                 <td>{{$detalle->producto->modelo->nombre}}</td>
+                                                <td align="right">${{$detalle->producto->modelo->precioUnitario}}</td>
                                                 <td>{{$detalle->detalle}}</td>
                                                 <td>{{$detalle->cantidad}}</td>
                                                 @if ($detalle->estado !=null)
@@ -159,12 +176,45 @@
                                                 <td>Sin Estado</td>
 
                                                 @endif
-                                                @if ($detalle->verificado==0)
+                                                <td>
+                                                    @if (is_null($detalle->verificado))
+                                                    <div class=" text-center "
+                                                        title="El producto esta en espera para ser revisado por la empresa">
+                                                        <i class="icon fas fa-exclamation-triangle alert-warning  p-0 m-0"
+                                                            style="font-size: 200%; border-radius: 10%"></i>
+                                                        <p class="alert-warning p-0 m-0 " style="border-radius: 10%">En
+                                                            Verificacion!</p>
+                                                    </div>
 
-                                                <td>NO</td>
-                                                @else
-                                                <td>SI</td>
-                                                @endif
+
+
+                                                    @else
+                                                    @if ($detalle->verificado)
+                                                    <div class=" text-center "
+                                                        title="El producto fue aprobado para la produccion">
+                                                        <i class="icon fas fa-check alert-success  p-0 m-0"
+                                                            style="font-size: 200%; border-radius: 10%"></i>
+                                                        <p class="alert-success p-0 m-0 " style="border-radius: 10%">
+                                                            Aprobado!</p>
+                                                    </div>
+
+                                                    @else
+                                                    <div class=" text-center "
+                                                        title="El producto fue rechazado debe revisar las imagenes y materias primas">
+                                                        <i class="icon fas fa-ban alert-danger  p-0 m-0"
+                                                            style="font-size: 200%; border-radius: 100%"></i>
+                                                        <p class="alert-danger p-0 m-0 " style="border-radius: 10%">
+                                                            {{$detalle->aviso}}</p>
+                                                    </div>
+
+
+
+
+
+                                                    @endif
+
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     <div class="row">
 

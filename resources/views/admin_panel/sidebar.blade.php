@@ -157,6 +157,12 @@
                 <p>Mis Pedidos</p>
               </a>
             </li>
+            <li class="nav-item">
+              <a href="{{ route('pedido.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Todos los Pedidos</p>
+              </a>
+            </li>
 
           </ul>
 

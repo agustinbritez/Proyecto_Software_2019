@@ -106,7 +106,7 @@ Route::post('pedido/update', 'pedidoController@update')->name('pedido.update')->
 Route::delete('pedido/destroy/{id}', 'pedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
 Route::get('pedido/misPedidos', 'pedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
 // detalle de pedido
-Route::get('detallePedido', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
+Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
 Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
 Route::get('detallePedido/show/{id}', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
 Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create')->middleware('permission:detallePedido_create');

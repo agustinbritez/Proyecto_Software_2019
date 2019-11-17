@@ -19,7 +19,9 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        //
+        $pedidos = Pedido::all();
+        $modelos = Modelo::all();
+        return view('pedido.index', compact('pedidos', 'modelos'));
     }
 
     /**
@@ -45,7 +47,7 @@ class PedidoController extends Controller
 
     public function agregarCarrito(Producto $producto, $cantidad, $usuario)
     {
-        $verificado = 0;
+        $verificado = 1;
         if ($usuario->pedidoAPagar() != null) {
             foreach ($producto->sublimaciones as $key => $sublimacion) {
 
@@ -65,7 +67,6 @@ class PedidoController extends Controller
 
             $detallePedido = DetallePedido::create([
                 'cantidad' => $cantidad,
-                'fecha' => Carbon::now(),
                 'verificado' => $verificado,
                 'pedido_id' => $usuario->pedidoAPagar()->id,
                 'producto_id' => $producto->id,

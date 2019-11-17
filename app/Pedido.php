@@ -18,14 +18,14 @@ class Pedido extends Model implements Auditable
     }
     public function flujoTrabajo()
     {
-        return $this->belongsTo(FlujoTrabajo::class);
+        return $this->belongsTo(FlujoTrabajo::class, 'flujoTrabajo_id');
     }
     public function estado()
     {
-        return $this->belongsTo(Estado::class);
+        return $this->belongsTo(Estado::class, 'estado_id');
     }
     public function detallePedidos()
     {
-        return $this->hasMany(DetallePedido::class);
+        return $this->hasMany(DetallePedido::class, 'pedido_id');
     }
 }

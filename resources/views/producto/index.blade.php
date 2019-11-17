@@ -86,7 +86,7 @@
 
                     <div align="left">
 
-                        <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
+                        <a href="{{route('producto.create')}}" name="create_record" id="create_record"
                             class="btn btn-success btn-sm">Crear Nuevo Producto</a>
 
                     </div>
@@ -97,12 +97,12 @@
                             <thead style="background-color:white ; color:black;">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Imagen</th>
+                                    <th>Imagen Principal</th>
                                     <th>Precio</th>
                                     <th>Modelo</th>
+                                    <th>Finalizado</th>
+                                    <th>Cantidad de producidos</th>
                                     <th>&nbsp; </th>
-
-
                                 </tr>
                             </thead>
                             <tbody style="background-color:white ; color:black;">
@@ -111,26 +111,38 @@
                                 @foreach ($productos as $producto)
                                 <tr>
 
-                                    <td>{{$producto->id}} </td>
+                                    <td align="right">{{$producto->id}} </td>
 
                                     <td><img src="{{asset("/imagenes/productos/".$producto->imagenPrincipal)}}" alt=""
                                             width='70px' height='70px'></td>
-                                    <td>{{$producto->modelo->precioUnitario??'Sin precio'}} </td>
+                                    <td align="right">{{$producto->modelo->precioUnitario ?? 'Sin precio'}} </td>
                                     <td>
                                         <span class="badge badge-info">{{$producto->modelo->nombre??''}} </span>
+                                    </td>
+                                    <td>
+                                        @if ($producto->final!=null)
+                                        @if ($producto->final)
+                                        Producto Finalizado
+                                        @else
+                                        Producto No Finalizado
+                                        @endif
+                                        @else
+                                        Producto No Finalizado
+
+                                        @endif
                                     </td>
 
                                     <td>
                                         <div class="row">
 
-                                            <a href="{{route('modelo.modificar',$producto->id)}}" type="button"
+                                            <a href="{{route('producto.modificar',$producto->id)}}" type="button"
                                                 name="edit" id="{{$producto->id}}"
                                                 class="edit btn btn-outline-primary btn-sm">Editar</a>
 
 
                                             &nbsp;&nbsp;
                                             <form id="formDelete{{$producto->id}}"
-                                                action="{{route('modelo.destroy',$producto->id)}}" method="POST">
+                                                action="{{route('producto.destroy',$producto->id)}}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" name="delete" id="{{$producto->id}}"
@@ -150,12 +162,13 @@
                             <tfoot style="background-color:#ccc; color:white;">
                                 <tr>
                                     <th>ID</th>
-                                    <th>Imagen</th>
-                                    <th>Nombre</th>
-                                    <th>Precio Unitario</th>
-                                    <th>Receta</th>
-
+                                    <th>Imagen Principal</th>
+                                    <th>Precio</th>
+                                    <th>Modelo</th>
+                                    <th>Finalizado</th>
+                                    <th>Cantidad de producidos</th>
                                     <th>&nbsp; </th>
+
 
                                 </tr>
                             </tfoot>
@@ -185,7 +198,7 @@
                 <h4 align="center" style="margin:0;">¿Esta seguro que desea borrarlo?</h4>
             </div>
             <div class="modal-footer">
-                <form id="formDelete" action="{{route('modelo.destroy')}}" method="POST">
+                <form id="formDelete" action="{{route('producto.destroy')}}" method="POST">
 @csrf
 @method('DELETE')
 {{-- Paso el id de la materia  aborrar en materia_delete--}}

@@ -198,7 +198,8 @@
               @else
               <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
                 class="resize-drag" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
-                height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
+                height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
+                style="border-radius: {{$sublimacion->forma}}%;">
               @endif
 
 
@@ -219,7 +220,8 @@
               <img
                 src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
                 class="resize-drag" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
-                height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
+                height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
+                style="border-radius: {{$sublimacion->forma}}%;">
 
               <input type="hidden" name="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}_posX"
                 id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}_posX"

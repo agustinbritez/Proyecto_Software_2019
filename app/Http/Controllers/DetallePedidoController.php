@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\DetallePedido;
+use App\Modelo;
 use App\Pedido;
 use App\Producto;
 use App\TipoImagen;
@@ -15,9 +16,12 @@ class DetallePedidoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($id)
     {
-        //
+        $pedido = Pedido::find($id);
+        $detallePedidos = $pedido->detallePedidos;
+        $modelos = Modelo::all();
+        return view('detallePedido.index', compact('detallePedidos', 'modelos'));
     }
 
     /**
