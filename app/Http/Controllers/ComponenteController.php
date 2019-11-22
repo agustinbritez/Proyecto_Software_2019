@@ -83,6 +83,10 @@ class ComponenteController extends Controller
         // $receta=Receta::find($request->hidden_receta_id);
         $componente = Componente::find($id);
         if ($componente != null) {
+            if (!$componente->modelo->productosModelos->isEmpty()) {
+                return redirect()->back()->withErrors('No se elimino el componente, tiene productos asociados')->with('returnModal', 'mostrar modal');
+            }
+
             if (!$componente->sublimaciones->isEmpty()) {
                 return redirect()->back()->withErrors('No se elimino el componente, tiene sublimaciones asociadas')->with('returnModal', 'mostrar modal');
             }

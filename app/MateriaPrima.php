@@ -34,7 +34,7 @@ class MateriaPrima extends Model implements Auditable
 
    public function recetas()
    {
-      return $this->hasMany(Receta::class);
+      return $this->hasMany(Receta::class, 'materiaPrima_id');
       // $modelos=collect();
       // foreach ($recetas as $key => $receta) {
       //    $modelos->add($receta->modeloPadre);
@@ -49,7 +49,7 @@ class MateriaPrima extends Model implements Auditable
    }
    public function productos()
    {
-      return $this->belongsToMany(Producto::class, 'materia_prima_producto', 'materiaPrima_id', 'producto_id');
+      return $this->belongsToMany(Producto::class, 'recetas', 'materiaPrima_id', 'producto_id');
    }
    public function modelos()
    {
@@ -62,6 +62,6 @@ class MateriaPrima extends Model implements Auditable
    }
    public function aumentarMateriaPrima()
    {
-      $this->cantidad; 
+      $this->cantidad;
    }
 }

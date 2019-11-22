@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use OwenIt\Auditing\Contracts\Auditable;
 
 class Producto extends Model implements Auditable
@@ -18,11 +19,28 @@ class Producto extends Model implements Auditable
         return $this->belongsTo(User::class);
     }
 
-    //las materias primas que se utilizan para un producto
+    //las relaciones de los procutos con las recetas son siempre con una receta que tiene relacion con una materiaprimas
     public function materiasPrimas()
     {
-        return $this->belongsToMany(MateriaPrima::class, 'materia_prima_producto', 'producto_id', 'materiaPrima_id');
+        $array = collect();
+        $recetas = $this->recetas();
+        foreach ($recetas as $key => $receta) {
+            # code...
+
+            if ($receta != null) {
+                if ($receta->materiaPrima != null) {
+                    # code...
+                    $array->add($receta->materiaPrima);
+                }
+            }
+        }
+        return $array;
     }
+    // //las materias primas que se utilizan para un producto
+    // public function recetas()
+    // {
+    //     return $this->belongsToMany(Receta::class, 'productos_recetas',  'producto_id', 'receta_id')->where('recetas.deleted_at', null);
+    // }
 
     public function sublimaciones()
     {
@@ -40,5 +58,9 @@ class Producto extends Model implements Auditable
     {
 
         return $this->belongsToMany(ImagenIndividual::class);
+    }
+    public function materiaPrimaSeleccionadas()
+    {
+        return $this->hasMany(MateriaPrimaSeleccionada::class, 'producto_id');
     }
 }

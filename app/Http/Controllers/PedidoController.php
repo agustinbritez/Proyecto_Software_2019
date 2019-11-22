@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DetallePedido;
 use App\FlujoTrabajo;
+use App\MateriaPrimaSeleccionada;
 use App\Modelo;
 use App\Pedido;
 use App\Producto;
@@ -45,10 +46,15 @@ class PedidoController extends Controller
         //
     }
 
-    public function agregarCarrito(Producto $producto, $cantidad, $usuario)
+    public function agregarCarrito(Producto $producto, $cantidad, $usuario, $materiasPrimasSeleccionadas)
     {
-        $verificado = 1;
+        //creamos el pedido y asociamos el producto a un detalle de pedido
+
         if ($usuario->pedidoAPagar() != null) {
+
+
+            $verificado = 1;
+
             foreach ($producto->sublimaciones as $key => $sublimacion) {
 
                 if ($sublimacion->nuevaImagen != null) {
@@ -64,16 +70,32 @@ class PedidoController extends Controller
                     $estado = $producto->modelo->flujoTrabajo->getEstadoInicial()->id;
                 }
             }
-
+            $pedido = Pedido::find($usuario->pedidoAPagar()->id);
             $detallePedido = DetallePedido::create([
                 'cantidad' => $cantidad,
                 'verificado' => $verificado,
-                'pedido_id' => $usuario->pedidoAPagar()->id,
+                'pedido_id' => $pedido->id,
                 'producto_id' => $producto->id,
                 'estado_id'         =>  $estado,
 
-
             ]);
+
+            if ($detallePedido != null) {
+                foreach ($materiasPrimasSeleccionadas as $key => $padreEHijo) {
+                    # code...
+                    // return $padreEHijo;
+                    $materiaSeleccionada = MateriaPrimaSeleccionada::create([
+                        'recetaPadre_id' => $padreEHijo[0],
+                        'recetaHijo_id' => $padreEHijo[1],
+                        'producto_id' => $detallePedido->id
+                    ]);
+                }
+            }
+            // $detallePedido->recetas()->sync($materiasPrimasSeleccionadas);
+            // $detallePedido->recetasPadres()->sync($materiasPrimasSeleccionadas);
+
+            $pedido->precio +=  $producto->modelo->precioUnitario * $detallePedido->cantidad;
+            $pedido->update();
         }
         return 0;
     }
@@ -130,7 +152,14 @@ class PedidoController extends Controller
     public function destroy($id)
     {
         $pedido = Pedido::find($id);
-        if ($pedido->terminado == null) {
+        if ($pedido == null) {
+            return redirect()->back()->withErrors('No existe el pedido');
+        }
+        if ($pedido->user->id != auth()->user()->id) {
+
+            return redirect()->back()->withErrors('Usted no es el propietario del pedido no puede eliminarlo');
+        }
+        if (is_null($pedido->terminado)) {
             $pedido->delete();
             return redirect()->back()->with('warning', 'Se elimino el pedido de manera correcta');
         }

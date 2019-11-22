@@ -56,7 +56,7 @@ class TransicionTableSeeder extends Seeder
 
         $trans = new Transicion();
         $trans->flujoTrabajo_id = $flujoProducto->id;
-        $trans->estadoInicio_id = $inicio->id;
+        $trans->estadoInicio_id = $verificacion->id;
         $trans->estadoFin_id = $produccion->id;
         $trans->save();
 

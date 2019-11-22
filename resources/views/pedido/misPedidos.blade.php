@@ -150,7 +150,7 @@
                                             <tr>
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Producto</th>
-                                                <th scope="col">Precio</th>
+                                                <th scope="col">Precio Unitario</th>
                                                 <th scope="col">Detalle</th>
                                                 <th scope="col">Cantidad</th>
                                                 <th scope="col">Estado</th>
@@ -219,14 +219,40 @@
                                                     <div class="row">
 
                                                         <div class="col">
+
+                                                            @if ($detalle->pedido->terminado)
+                                                            <a href="{{route('producto.preshow',$detalle->producto->id)}}"
+                                                                type="button" name="show"
+                                                                id="{{$detalle->producto->id}}"
+                                                                class="show btn btn-outline-primary btn-sm">Ver
+                                                                Producto</a>
+                                                            @else
                                                             @if ($detalle->producto->user->id==auth()->user()->id)
-                                                            {{-- Si el producto no se pago mostrar editar sino solo puede ver --}}
-                                                            @if ($detalle->pedido->terminado==null)
-                                                            <a href="{{route('producto.miProducto',$detalle->producto->id)}}"
+                                                            @if ($detalle->verificado)
+                                                            <a href="{{route('producto.preshow',$detalle->producto->id)}}"
+                                                                type="button" name="show"
+                                                                id="{{$detalle->producto->id}}"
+                                                                class="show btn btn-outline-primary btn-sm">Ver
+                                                                Producto</a>
+                                                            @else
+                                                            @if ($detalle->producto->final)
+                                                            <a href="{{route('producto.preshow',$detalle->producto->id)}}"
+                                                                type="button" name="show"
+                                                                id="{{$detalle->producto->id}}"
+                                                                class="show btn btn-outline-primary btn-sm">Ver
+                                                                Producto</a>
+                                                            @else
+
+                                                            <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
                                                                 type="button" name="show"
                                                                 id="{{$detalle->producto->id}}"
                                                                 class="show btn btn-outline-primary btn-sm">Editar
                                                                 Producto</a>
+                                                            @endif
+
+
+                                                            @endif
+
                                                             @else
                                                             <a href="{{route('producto.preshow',$detalle->producto->id)}}"
                                                                 type="button" name="show"
@@ -235,15 +261,12 @@
                                                                 Producto</a>
 
                                                             @endif
-                                                            {{-- Si el no creo el producto solo puede verlo --}}
-                                                            @else
-                                                            <a href="{{route('producto.preshow',$detalle->producto->id)}}"
-                                                                type="button" name="show"
-                                                                id="{{$detalle->producto->id}}"
-                                                                class="show btn btn-outline-primary btn-sm">Ver
-                                                                Producto</a>
+
+
 
                                                             @endif
+
+
                                                         </div>
 
 
@@ -268,6 +291,27 @@
                                             </tr>
                                             @endif
                                             @endforeach
+                                            <tr>
+                                                <th colspan="8" style="font-size: 18px">
+                                                    <div class="row">
+                                                        <div class="col">
+
+                                                            <a href="{{ route('producto.tienda') }}" class="">
+                                                                <button type="button"
+                                                                    class="btn btn-success btn-sm">Añadir
+                                                                    Nuevo Producto</button>
+
+
+                                                            </a>
+                                                        </div>
+
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                            <tr>
+                                                <th colspan="8" style="font-size: 18px">Total : ${{$pedido->precio}}
+                                                </th>
+                                            </tr>
 
                                         </tbody>
                                     </table>

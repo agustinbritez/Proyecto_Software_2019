@@ -80,14 +80,18 @@ class RecetaController extends Controller
      */
     public function destroy($id)
     {
-        
-        
+
+
         // $receta=Receta::find($request->hidden_receta_id);
-        $receta=Receta::find($id);
+        $receta = Receta::find($id);
+        if (is_null($receta)) {
+            return redirect()->back()->withErrors('No existe la receta a eliminar');
+        }
+        if (!$receta->modeloPadre->productosModelos->isEmpty()) {
+
+            return redirect()->back()->withErrors('No se elimino el ingrediente porque el modelo tiene asociado productos');
+        }
         $receta->delete();
         return redirect()->back()->with('warning', 'Ingrediente Eliminado Correctamente');
-
-
-
     }
 }

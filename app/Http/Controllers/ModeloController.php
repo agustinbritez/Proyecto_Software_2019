@@ -230,6 +230,10 @@ class ModeloController extends Controller
 
                     return response()->json(['errors' => $validator->errors()->all()]);
                 }
+                if (!$modelo->productosModelos->isEmpty()) {
+
+                    return response()->json(['errors' => ['No se pueden agregar mas componentes porque existen productos creados en base a este modelo']]);
+                }
 
                 $imagen = null;
                 if ($request->hasFile('imagenComponente')) {
@@ -290,6 +294,9 @@ class ModeloController extends Controller
                 if ($validator->fails()) {
 
                     return response()->json(['errors' => $validator->errors()->all()]);
+                }
+                if (!$modelo->productosModelos->isEmpty()) {
+                    return response()->json(['errors' => ['Existen productos asociados al modelo no puede modificar sus recetas']]);
                 }
                 //si el modelo ya tiene el ingrediente que se desea agregar lo rechaza
                 if ($request->has('cambiarIngrediente')) {
@@ -414,6 +421,89 @@ class ModeloController extends Controller
         return $medida;
     }
 
+    public function arbolDelModeloConRecetaSeleccionadas($detallePedido)
+    {
+        // $htmlFinal='<div class="container" style="margin-top:30px;">'
+        // +'<div class="row">'
+        // +'<div class="col">'
+        // +' <ul id="tree3">'
+        // +'<li><a href="#">TECH</a>';
+        $modelo = $detallePedido->pedido->producto->modelo;
+        $htmlFinal = '<li><a href="#">' . $modelo->nombre . '</a>';
+        if ($modelo->hijosModelos->isEmpty() && $modelo->materiasPrimas->isEmpty()) {
+            $htmlFinal += '</li>';
+        } else {
+            $htmlFinal += '<ul>';
+
+            if (!$modelo->hijosModelos->isEmpty()) {
+                $htmlFinal += '<ul>';
+                foreach ($modelo->recetaPadre as $key => $receta) {
+                    $htmlHijo = $this->arbolDelModeloConRecetaSeleccionadas($modelo);
+                    $htmlFinal += $htmlHijo;
+                }
+            }
+            if (!$modelo->materiasPrimas->isEmpty()) {
+                foreach ($modelo->recetaPadre as $key => $receta) {
+                    if (!is_null($receta->materiaPrima)) {
+
+                        $htmlFinal += '<li>' . $receta->materiaPrima->nombre . '</li>';
+                    }
+                }
+            }
+            $htmlFinal += '</li>';
+        }
+
+
+
+
+
+        // <div class="container" style="margin-top:30px;">
+        //                 <div class="row">
+        //                     <div class="col">
+
+        //                         <ul id="tree3">
+        //                             <li><a href="#">TECH</a>
+
+        //                                 <ul>
+        //                                     <li>Company Maintenance</li>
+        //                                     <li>Employees
+        //                                         <ul>
+        //                                             <li>Reports
+        //                                                 <ul>
+        //                                                     <li>Report1</li>
+        //                                                     <li>Report2</li>
+        //                                                     <li>Report3</li>
+        //                                                 </ul>
+        //                                             </li>
+        //                                             <li>Employee Maint.</li>
+        //                                         </ul>
+        //                                     </li>
+        //                                     <li>Human Resources</li>
+        //                                 </ul>
+        //                             </li>
+        //                             <li>XRP
+        //                                 <ul>
+        //                                     <li>Company Maintenance</li>
+        //                                     <li>Employees
+        //                                         <ul>
+        //                                             <li>Reports
+        //                                                 <ul>
+        //                                                     <li>Report1</li>
+        //                                                     <li>Report2</li>
+        //                                                     <li>Report3</li>
+        //                                                 </ul>
+        //                                             </li>
+        //                                             <li>Employee Maint.</li>
+        //                                         </ul>
+        //                                     </li>
+        //                                     <li>Human Resources</li>
+        //                                 </ul>
+        //                             </li>
+        //                         </ul>
+        //                     </div>
+        //                 </div>
+        //             </div>
+    }
     private function verificarSiContieneMateriasPrimas(Modelo $modelo)
     {
         if (!$modelo->materiasPrimas->isEmpty()) {

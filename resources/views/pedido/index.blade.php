@@ -96,7 +96,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Cantidad de Productos</th>
-                                    <th>Precio Unitario</th>
+                                    <th>Precio Total</th>
                                     <th>Fecha de Pago</th>
                                     <th>Estado</th>
                                     <th>Fecha de Cambio de Estado</th>
@@ -205,7 +205,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Cantidad de Productos</th>
-                                    <th>Precio Unitario</th>
+                                    <th>Precio Total</th>
                                     <th>Fecha de Pago</th>
                                     <th>Estado</th>
                                     <th>Fecha de Cambio de Estado</th>

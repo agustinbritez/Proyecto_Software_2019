@@ -71,55 +71,73 @@
                     <div class="card-body">
                         <div class="row">
 
-                            @if (!$hijoModelosConMateriaPrimas->isEmpty())
+                            @if (!$recetasPadres->isEmpty())
+                            <input type="hidden" value="{{$cantidadModelos=0}}">
+                            @foreach ($recetasPadres as $recetaPadre)
 
-                            @foreach ($hijoModelosConMateriaPrimas as $modeloHijo)
-                            @if ($modelo->id!=$modeloHijo->id)
-
-
-
+                            {{-- Verifico que el modelo no tenga hijos modelos porque o sino sus materias primas serian estaticas --}}
+                            @if ($recetaPadre->modeloHijo!=null)
                             <div class="form-group">
 
 
 
-                                <label class="control-label "> {{$modeloHijo->nombre}}:</label>
-                                <select class="form-control select2 " id="" name="modelo_{{$cantidadModelos++}}">
-                                    @if (!$modeloHijo->materiasPrimas->isEmpty())
-                                    @foreach ($modeloHijo->materiasPrimas as $materiaPrima)
-
-                                    <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
+                                @if ($recetaPadre->modeloHijo->hijosModelos->isEmpty())
+                                <label class="control-label "> {{$recetaPadre->modeloHijo->nombre}}:</label>
+                                <input type="hidden" name="recetaPadre_{{$cantidadModelos}}"
+                                    value="{{$recetaPadre->id}}">
+                                <select class="form-control select2 " id="" name="recetaHijo_{{$cantidadModelos++}}">
+                                    {{-- Se supone que el modelo hijo de la receta es un modelo sin modelos hijos --}}
+                                    @foreach ($recetaPadre->modeloHijo->recetaPadre as $receta)
+                                    <option value="{{$receta->id}}">{{$receta->materiaPrima->nombre}}</option>
                                     @endforeach
-                                    @endif
-
                                 </select>
+
+                                @else
+
+                                @endif
 
                             </div>
                             &nbsp;&nbsp;
                             @endif
 
 
+
                             @endforeach
 
                             @endif
-                            @if (!$modelo->materiasPrimas->isEmpty())
-
+                        </div>
+                        <div class="row">
 
                             <div class="form-group">
 
-
                                 <label class="control-label "> Ingredientes estaticos:</label>
-                                @foreach ($modelo->materiasPrimas as $materia)
+
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            @foreach ($modeloConMateriaPrimaEstatica as $modelo2)
+                            @if (!$modelo2->hijosModelos->isEmpty())
+
+
+
+                            @foreach ($modelo2->materiasPrimas as $materia)
+                            <div class="form-group">
 
                                 <input type="text" disabled value="{{$materia->nombre}}" class="form-control">
 
-                                @endforeach
-
-
-
                             </div>
-                            @endif
+                            @endforeach
 
+
+
+
+                            @endif
+                            @endforeach
                         </div>
+
+
+
                         <input type="hidden" name="cantidadModelos" id="cantidadModelos" value="{{$cantidadModelos}}" />
 
 
@@ -409,9 +427,9 @@
                                                     +'</div>';
                                                     
                                                     $('#add_imagen_componente_'+componenteSeleccionado).html('');
-                                                    $('#add_imagen_componente_'+componenteSeleccionado).html(nuevaImagen);
                                                     $('#contenedor_'+componenteSeleccionado).html('');
-                                                    $('#contenedor_'+componenteSeleccionado).html('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="'+idDise+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema=""0"">');
+                                                    $('#add_imagen_componente_'+componenteSeleccionado).html(nuevaImagen);
+                                                    $('#contenedor_'+componenteSeleccionado).html('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="'+idDise+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="0">');
                                                     // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
                                                     // $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema=""0"">');
                                                     
@@ -484,10 +502,10 @@
                                             
                                             function cambiarSlider(idSlider,idImagen,idDise){
                                                 
+                                                console.log(idSlider);
                                                 idImagen.style="border-radius: "+   idSlider.value +'%;' ;
                                                 idDise.style="border-radius: "+   idSlider.value +'%;' ;
                                                 document.getElementById(idImagen.id+'_forma').value=idSlider.value;
-                                                // console.log(idSlider.value);
                                                 
                                             }
                                             
@@ -625,7 +643,7 @@
                                                                                             // keep the edges inside the parent
                                                                                             interact.modifiers.restrictEdges({
                                                                                                 outer: 'parent',
-                                                                                                endOnly: false
+                                                                                                endOnly: true
                                                                                             }),
                                                                                             
                                                                                             // minimum size
@@ -735,7 +753,8 @@
                                                                                                     // Le decimos que cuando este listo ejecute el código interno
                                                                                                     reader.onload = function(){
                                                                                                         let preview = document.getElementById('preview_'+idImagen+'_componente_'+componenteSeleccionado);
-                                                                                                        image = document.createElement('img');
+                                                                                                        // image = document.createElement('img');
+                                                                                                        image = document.getElementById( 'imagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado);
                                                                                                         image.src = reader.result;
                                                                                                         image.class = 'img-fluid';
                                                                                                         image.height='150';
@@ -743,7 +762,6 @@
                                                                                                         preview.innerHTML = '';
                                                                                                         preview.append(image);
                                                                                                         // alert(image.src);
-                                                                                                        
                                                                                                         document.getElementById('nuevaImagen_'+idImagen+'_componente_'+componenteSeleccionado).src=image.src;
                                                                                                         
                                                                                                         // $('.resize-drag').src(image.src);

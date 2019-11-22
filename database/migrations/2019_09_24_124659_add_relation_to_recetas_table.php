@@ -16,13 +16,15 @@ class AddRelationToRecetasTable extends Migration
         Schema::table('recetas', function (Blueprint $table) {
             $table->unsignedBigInteger('modeloHijo_id')->nullable();
             $table->foreign('modeloHijo_id')->references('id')->on('modelos');
-        
+
             $table->unsignedBigInteger('modeloPadre_id')->nullable();
             $table->foreign('modeloPadre_id')->references('id')->on('modelos');
-            
+
             $table->unsignedBigInteger('materiaPrima_id')->nullable();
             $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
 
+            $table->unsignedBigInteger('producto_id')->nullable();
+            $table->foreign('producto_id')->references('id')->on('productos');
         });
     }
 

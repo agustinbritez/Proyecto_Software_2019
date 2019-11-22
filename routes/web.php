@@ -88,13 +88,15 @@ Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->n
 Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
 Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
 Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow')->middleware('permission:producto_preshow');
+Route::get('producto/{id}/editMiProducto', 'ProductoController@editMiProducto')->name('producto.editMiProducto')->middleware('permission:producto_editMiProducto');
 Route::get('producto/{id}/miProducto', 'ProductoController@miProducto')->name('producto.miProducto')->middleware('permission:producto_miProducto');
 Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
 Route::post('producto', 'ProductoController@store')->name('producto.store')->middleware('permission:producto_store');
 Route::get('producto/{id}/edit', 'ProductoController@edit')->name('producto.edit')->middleware('permission:producto_edit');
-Route::post('producto/update', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
+Route::post('producto/update/{id}', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
 Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('producto.destroy')->middleware('permission:producto_delete');
 Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
+Route::post('producto/confirmarProducto/{id}', 'ProductoController@confirmarProducto')->name('producto.confirmarProducto')->middleware('permission:producto_confirmarProducto');;
 // Pedidos
 Route::get('pedido', 'pedidoController@index')->name('pedido.index')->middleware('permission:pedido_index');
 Route::get('pedido/{pedido}/show', 'pedidoController@show')->name('pedido.show')->middleware('permission:pedido_show');
@@ -105,6 +107,7 @@ Route::get('pedido/{id}/edit', 'pedidoController@edit')->name('pedido.edit')->mi
 Route::post('pedido/update', 'pedidoController@update')->name('pedido.update')->middleware('permission:pedido_update');
 Route::delete('pedido/destroy/{id}', 'pedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
 Route::get('pedido/misPedidos', 'pedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
+
 // detalle de pedido
 Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
 Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
@@ -112,8 +115,13 @@ Route::get('detallePedido/show/{id}', 'DetallePedidoController@show')->name('det
 Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create')->middleware('permission:detallePedido_create');
 Route::post('detallePedido', 'DetallePedidoController@store')->name('detallePedido.store')->middleware('permission:detallePedido_store');
 Route::get('detallePedido/{id}/edit', 'DetallePedidoController@edit')->name('detallePedido.edit')->middleware('permission:detallePedido_edit');
+Route::get('detallePedido/verificarDetalle/{id}', 'DetallePedidoController@verificarDetalle')->name('detallePedido.verificarDetalle')->middleware('permission:detallePedido_verificarDetalle');
+Route::get('detallePedido/rechazarDetalle/{id}', 'DetallePedidoController@rechazarDetalle')->name('detallePedido.rechazarDetalle')->middleware('permission:detallePedido_rechazarDetalle');
+Route::get('detallePedido/estadoSiguiente/{id}', 'DetallePedidoController@estadoSiguiente')->name('detallePedido.estadoSiguiente')->middleware('permission:detallePedido_estadoSiguiente');
+Route::get('detallePedido/estadoAnterior/{id}', 'DetallePedidoController@estadoAnterior')->name('detallePedido.estadoAnterior')->middleware('permission:detallePedido_estadoAnterior');
 Route::post('detallePedido/update/{id}', 'DetallePedidoController@update')->name('detallePedido.update')->middleware('permission:detallePedido_update');
 Route::delete('detallePedido/destroy/{id}', 'DetallePedidoController@destroy')->name('detallePedido.destroy')->middleware('permission:detallePedido_delete');
+
 // Sublimacion
 Route::get('sublimacion', 'SublimacionController@index')->name('sublimacion.index')->middleware('permission:sublimacion_index');
 Route::get('sublimacion/{sublimacion}/show', 'SublimacionController@show')->name('sublimacion.show')->middleware('permission:sublimacion_show');

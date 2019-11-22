@@ -37,11 +37,13 @@ class FlujoTrabajo extends Model implements Auditable
    {
       foreach ($this->transiciones as $key => $transicion) {
          # code...
-         if ($transicion->estadoInicial == null) {
+         if (is_null($transicion->estadoInicial)) {
             return $transicion->estadoFinal;
          }
       }
-      return null;
+      $sinEstado = new Estado();
+      $sinEstado->estado = 'SIN ESTADO';
+      return $sinEstado;
    }
 
    public function getEstados()
@@ -72,6 +74,17 @@ class FlujoTrabajo extends Model implements Auditable
             return $transicion->estadoFinal;
          }
       }
+      return null;
+   }
+   public function estadoAnterior(Estado $estado)
+   {
+      $transiciones = $this->transiciones;
+      foreach ($transiciones as  $transicion) {
+         if ($transicion->estadoFinal == $estado) {
+            return $transicion->estadoInicial;
+         }
+      }
+      return null;
    }
 
 

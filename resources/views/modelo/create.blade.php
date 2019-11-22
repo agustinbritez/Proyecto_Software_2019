@@ -99,7 +99,19 @@
                                             @if (sizeof($medidas)>0)
 
                                             @foreach ($medidas as $medida)
+                                            @if ($modelo->medida!=null)
+                                            @if ($modelo->medida->id == $medida->id)
+                                            <option value="{{$medida->id}}" selected>{{$medida->nombre}}</option>
+
+                                            @else
                                             <option value="{{$medida->id}}">{{$medida->nombre}}</option>
+
+                                            @endif
+                                            @else
+                                            <option value="{{$medida->id}}">{{$medida->nombre}}</option>
+
+                                            @endif
+
                                             @endforeach
                                             @endif
                                         </select>

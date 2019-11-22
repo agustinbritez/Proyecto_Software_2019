@@ -54,15 +54,53 @@ class DetallePedidoController extends Controller
     public function show($id)
     {
         $detallePedido = DetallePedido::find($id);
+
         if (($detallePedido == null)) {
             return redirect()->back()->withErrors('El detalle del pedido no existe');
         }
-        $producto = Producto::find($detallePedido->id);
+        $producto = Producto::find($detallePedido->producto->id);
         if ($producto == null) {
             return redirect()->back()->withErrors('El producto no existe');
         }
+
         $tipoImagenes = TipoImagen::all();
         return view('detallePedido.show', compact('producto', 'tipoImagenes', 'detallePedido'));
+    }
+
+    public function verificarDetalle($id)
+    {
+        $detallePedido = DetallePedido::find($id);
+        if ($detallePedido != null) {
+            $detallePedido->verificado = 1;
+            $detallePedido->update();
+            return redirect()->back()->with('success', 'El producto se verifico y aprobo para pasar a produccion');
+        }
+        return redirect()->back()->withErrors('No existe el producto');
+    }
+    public function rechazarDetalle(Request $request, $id)
+    {
+
+        $rules = [
+            'aviso_detalle'    =>  'required|max:190'
+        ];
+
+
+
+        $messages = [
+            'aviso_detalle.required' => 'La descripcion del rechazo es obligatorio.',
+            'aviso_detalle.max' => 'El tamaño maximo del aviso es 190 caracteres.'
+        ];
+
+        $this->validate($request, $rules, $messages);
+
+        $detallePedido = DetallePedido::find($id);
+        if ($detallePedido != null) {
+            $detallePedido->verificado = 0;
+            $detallePedido->aviso = $request->aviso_detalle;
+            $detallePedido->update();
+            return redirect()->back()->with('warning', 'El producto se rechazo por algun motivo descrito en AVISOS');
+        }
+        return redirect()->back()->withErrors('No existe el producto');
     }
 
     /**
@@ -78,6 +116,57 @@ class DetallePedidoController extends Controller
         return [
             'data' => $detalle
         ];
+    }
+    public function estadoAnterior($id)
+    {
+
+        $detalle = DetallePedido::findOrFail($id);
+        $mensaje = [];
+        if ($detalle != null) {
+            $estadoAnterior = $detalle->producto->modelo->flujoTrabajo->estadoAnterior($detalle->estado);
+            if ($estadoAnterior != null) {
+                $detalle->estado_id = $estadoAnterior->id;
+                if ($detalle->update()) {
+                    $mensaje = array_merge($mensaje, ['success' => 'Cambiado al estado anterior.']);
+                    $mensaje = array_merge($mensaje, ['estado' => $estadoAnterior]);
+                } else {
+                    $mensaje = array_merge($mensaje, ['warning' => 'No se actualizo el producto al  estado anterior.']);
+                }
+            }
+
+
+            return response()->json($mensaje);
+        }
+
+        $mensaje = array_merge($mensaje,  ['errors' => ['El detalle del producto no existe']]);
+        return response()->json($mensaje);
+        // return ['errors' => ['El detalle del producto no existe']];
+    }
+    public function estadoSiguiente($id)
+    {
+
+        $detalle = DetallePedido::findOrFail($id);
+        $mensaje = [];
+
+        if ($detalle != null) {
+            $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
+
+            if ($estadoSiguiente != null) {
+                $detalle->estado_id = $estadoSiguiente->id;
+                if ($detalle->update()) {
+                    $mensaje = array_merge($mensaje, ['success' => 'Cambiado al siguiente estado.']);
+                    $mensaje = array_merge($mensaje, ['estado' => $estadoSiguiente]);
+                } else {
+                    $mensaje = array_merge($mensaje, ['warning' => 'No se actualizo el producto al siguiente estado.']);
+                }
+            }
+
+
+            return response()->json($mensaje);
+        }
+
+        $mensaje = array_merge($mensaje,  ['errors' => ['El detalle del producto no existe']]);
+        return response()->json($mensaje);
     }
 
 
@@ -108,11 +197,33 @@ class DetallePedidoController extends Controller
 
 
         $detallePedido = DetallePedido::find($id);
-        $form_data = array(
-            'detalle'        =>  $request->detalle,
-            'cantidad'         =>  $request->cantidad
-        );
-        $detallePedido->update($form_data);
+        if (is_null($detallePedido)) {
+            return redirect()->back()->withErrors('El detalle de pedido no existe');
+        } else {
+            if (!is_null($detallePedido->pedido)) { } else {
+                return redirect()->back()->withErrors('El detalle de pedido no esta asociado a ningun pedido');
+            }
+        }
+        if (!is_null($detallePedido->pedido->fechaPago)) {
+            $form_data = array(
+                'detalle'        =>  $request->detalle
+            );
+            $detallePedido->update($form_data);
+            return redirect()->back()->with('warning', 'Se ha efectuado el pago del pedido no puede modificar sus cantidades');
+        } else {
+            $form_data = array(
+                'detalle'        =>  $request->detalle,
+                'cantidad'         =>  $request->cantidad
+            );
+            $pedido = $detallePedido->pedido;
+            $pedido->precio -= $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+            $detallePedido->update($form_data);
+            if (!is_null($detallePedido)) {
+                $pedido->precio += $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+                $pedido->update();
+            }
+        }
+
 
         return redirect()->back()->with('success', 'Detalle del pedido actualizado con exito!');
     }
@@ -128,11 +239,15 @@ class DetallePedidoController extends Controller
         $detallePedido = DetallePedido::find($id);
         if ($detallePedido != null) {
             if (!$detallePedido->pedido->terminado) {
+                $pedido = Pedido::find($detallePedido->pedido->id);
+                $pedido->precio -=  $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+                $pedido->update();
                 //si el pedido no es el final osea que uno nuevo debo borrrarlo
                 if (!$detallePedido->producto->final) {
+
                     $detallePedido->producto->delete();
                     $detallePedido->delete();
-                    return redirect()->back()->with('warning', 'El detalle del pedido se elmino y el proucto nuevo tambien');
+                    return redirect()->back()->with('warning', 'El detalle del pedido se elmino y el producto nuevo tambien');
                 }
                 $detallePedido->delete();
                 return redirect()->back()->with('warning', 'El detalle del pedido se elimino');
