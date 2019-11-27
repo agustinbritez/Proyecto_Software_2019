@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -27,5 +28,26 @@ class Pedido extends Model implements Auditable
     public function detallePedidos()
     {
         return $this->hasMany(DetallePedido::class, 'pedido_id');
+    }
+    public function getPrecio()
+    {
+        $precioTotal = 0.0;
+        foreach ($this->detallePedidos as $key => $detalle) {
+            # code...
+            if ($detalle != null) {
+                $precioTotal += $detalle->producto->modelo->precioUnitario * $detalle->cantidad;
+            }
+        }
+        return $precioTotal;
+    }
+    public function getFechaPago()
+    {
+        $fecha = Carbon::create($this->fechaPago)->format('d/m/Y');
+        return $fecha;
+    }
+    public function getCambioEstado()
+    {
+        $fecha = Carbon::create($this->cambioEstado)->format('d/m/Y');
+        return $fecha;
     }
 }

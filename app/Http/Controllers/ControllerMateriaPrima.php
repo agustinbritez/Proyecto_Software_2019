@@ -27,6 +27,15 @@ class ControllerMateriaPrima extends Controller
         $materiaPrimas = MateriaPrima::all();
         return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas'));
     }
+    public function urgente(Request $request)
+    {
+        $medidas = Medida::all();
+        $modelos = Modelo::all();
+        $materiaPrimas = MateriaPrima::all()->where('cantidad', '<=', 'materia_primas.stockMinimo');
+        //cantidad de productos que no se pueden realizar por falta de materia prima.
+        // $cantidadDePedidosNoAtendidos=
+        return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas'));
+    }
 
 
 
@@ -63,22 +72,32 @@ class ControllerMateriaPrima extends Controller
             'nombre'    =>  'required|unique:materia_primas',
             'imagenPrincipal'     =>  'required|mimes:jpeg,png,jpg,gif,svg|max:2048',
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
-            'cantidad'     =>  'required|integer',
+            'cantidad'     =>  'required|min:0',
+            'stockMinimo'     =>  'required|min:1',
             'precioUnitario'     =>  'required|numeric',
             'medida_id'     =>  'required',
             // 'modelos'     =>  'required'
         ];
         //transformamos la mascara de precio unitario a un valor double normal
         $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
+        $cant = str_replace([',', '$', ' '], '', $request->cantidad);
+        $stock = str_replace([',', '$', ' '], '', $request->stockMinimo);
         // $tr= str_replace('.',',',$tr);
 
         $request->precioUnitario = $tr;
+        $request->cantidad = $cant;
+        $request->stockMinimo = $stock;
         $messages = [
             'nombre.required' => 'Agrega el nombre de la materia prima.',
             'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
 
             'cantidad.required' => 'Agrega la  cantidad de materias primas.',
             'cantidad.integer' => 'La cantidad debe ser un valor entero',
+            'cantidad.min' => 'La cantidad minima es 0',
+
+            'stockMinimo.required' => 'Agrega la  cantidad del stock minimo.',
+            'stockMinimo.integer' => 'La cantidad debe ser un valor entero',
+            'stockMinimo.min' => 'La cantidad minima es 1 para el stock minimo',
 
             'precioUnitario.required' => 'Agrege el precio de la materia prima.',
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
@@ -143,6 +162,7 @@ class ControllerMateriaPrima extends Controller
             'detalle'         =>  $request->detalle,
             'precioUnitario'         =>  $request->precioUnitario,
             'cantidad'         =>  $request->cantidad,
+            'stockMinimo' => $request->stockMinimo,
             'medida_id'         =>  $request->input('medida_id')
         );
         // $materiaPrima= new MateriaPrima();
@@ -232,25 +252,30 @@ class ControllerMateriaPrima extends Controller
             'nombre'    =>  'required|unique:materia_primas,nombre,' . $request->hidden_id,
             'imagenPrincipal'     =>  'mimes:jpeg,png,jpg,gif,svg|max:2048',
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
-            'cantidad'     =>  'required|integer',
+            // 'cantidad'     =>  'required|integer',
+            'stockMinimo'     =>  'required|min:1',
+
             'precioUnitario'     =>  'required|numeric',
             'medida_id'     =>  'required'
             // 'modelos'     =>  'required'
         ];
-
-        //transformamos la mascara de precio unitario a un valor double normal
         $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
+        $cant = str_replace([',', '$', ' '], '', $request->cantidad);
+        $stock = str_replace([',', '$', ' '], '', $request->stockMinimo);
         // $tr= str_replace('.',',',$tr);
 
         $request->precioUnitario = $tr;
+        $request->cantidad = $cant;
+        $request->stockMinimo = $stock;
+
         $request->nombre = strtoupper($request->nombre);
 
         $messages = [
             'nombre.required' => 'Agrega el nombre de la materia prima.',
             'nombre.unique' => 'El nombre de la materia prima debe ser unico.',
 
-            'cantidad.required' => 'Agrega la  cantidad de materias primas.',
-            'cantidad.integer' => 'La cantidad debe ser un valor entero',
+            'stockMinimo.required' => 'Agregar la  cantidad de stock minimo .',
+            'stockMinimo.min' => 'La cantidad minima del stock es 1',
 
             'precioUnitario.required' => 'Agrege el precio de la materia prima.',
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
@@ -282,7 +307,8 @@ class ControllerMateriaPrima extends Controller
                 'imagenPrincipal'        =>  $imagen,
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
-                'cantidad'         =>  $request->cantidad,
+                'stockMinimo' => $request->stockMinimo,
+                // 'cantidad'         =>  $request->cantidad,
                 'medida_id'         =>  $request->medida_id,
 
             );
@@ -295,7 +321,8 @@ class ControllerMateriaPrima extends Controller
                 'nombre'        =>  $request->nombre,
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
-                'cantidad'         =>  $request->cantidad,
+                'stockMinimo' => $request->stockMinimo,
+                // 'cantidad'         =>  $request->cantidad,
                 'medida_id'         =>  $request->medida_id
             );
         }

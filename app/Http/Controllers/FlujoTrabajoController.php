@@ -159,7 +159,7 @@ class FlujoTrabajoController extends Controller
         $transicion = null;
         if (($estado != null) && ($flujo != null)) {
             if (($idFlujo == 1) || ($idFlujo == 2)) {
-            // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
+                // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
                 $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
             } else {
                 if ($flujo->transiciones->isEmpty()) {
@@ -201,7 +201,7 @@ class FlujoTrabajoController extends Controller
         if ($flujo != null) {
             //los flujos 1 y 2 son estaticos y forman parte del sistema no se pueden crear ni borrar nuvos estados
             if (($idFlujo == 1) || ($idFlujo == 2)) {
-            // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
+                // if (!(($idFlujo == 1) || ($idFlujo == 2))) {
                 $mensaje = ['errors' => 'El flujo de trabajo a actualizar es parte del sistema no puede ser modificado'];
             } else {
                 $transFinal = $flujo->getTransicionFinal();
@@ -252,11 +252,11 @@ class FlujoTrabajoController extends Controller
         );
         $flujoTrabajo->update($form_data);
         if ($flujoTrabajo != null) {
-            foreach ($flujoTrabajo->modelos as $key => $modelo) {
-                # code...
-                $modelo->flujoTrabajo_id = null;
-                $modelo->update();
-            }
+            // foreach ($flujoTrabajo->modelos as $key => $modelo) {
+            //     # code...
+            //     $modelo->flujoTrabajo_id = null;
+            //     $modelo->update();
+            // }
 
             if ($request->has('modelos')) {
                 $modelosSeleccionados = $request->modelos;
@@ -273,7 +273,7 @@ class FlujoTrabajoController extends Controller
 
 
 
-            return redirect()->back()->with('success', 'Flujo de Trabajo creado con exito!');
+            return redirect()->back()->with('success', 'Flujo de Trabajo actualizado con exito!');
         }
         // $flujoTrabajo->modelos()->detach($request->input('modelos',[]),$request->input('modelos',[]) );
 

@@ -17,8 +17,14 @@ class CreatePedidosTable extends Migration
             $table->bigIncrements('id');
             $table->string('nombre')->nullable();
             $table->string('detalle')->nullable();
-            $table->dateTime('cambioEstado')->nullable();
+            $table->integer('reservado')->nullable();
+            // id del pedido en mercado pago antes de pagar
+            $table->string('preference_id')->nullable();
+            //id del pedido pagado
+            $table->string('pago_id')->nullable();
             $table->dateTime('fechaPago')->nullable();
+            $table->dateTime('cambioEstado')->nullable();
+            $table->string('rutaDePago')->nullable();
             $table->double('precio')->nullable();
             $table->smallInteger('terminado')->nullable();
 

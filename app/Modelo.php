@@ -16,7 +16,7 @@ class Modelo extends Model implements Auditable
     //obtiene la receta donde es el padre
     public function recetaPadre()
     {
-        return $this->hasMany(Receta::class, 'modeloPadre_id');
+        return $this->hasMany(Receta::class, 'modeloPadre_id')->where('deleted_at', null);
     }
     //obtiene la recetas donde el es un ingrediente
     public function recetaHijo()
@@ -62,5 +62,51 @@ class Modelo extends Model implements Auditable
     public function flujoTrabajo()
     {
         return $this->belongsTo(FlujoTrabajo::class, 'flujoTrabajo_id');
+    }
+
+    public function restarMateriaPrima($cantidad)
+    {
+
+        # code...
+        if (!$this->hijosModelos->isEmpty()) {
+            foreach ($this->recetaPadre as $key => $receta) {
+                # code...
+                if ($receta->modeloHijo != null) {
+                    $receta->modeloHijo->restarMateriaPrima($cantidad * $receta->cantidad);
+                }
+            }
+        }
+        if (!$this->materiasPrimas->isEmpty()) {
+            # code...
+            foreach ($this->recetaPadre as $key => $receta) {
+                # code...
+                if ($receta->materiaPrima != null) {
+                    $receta->materiaPrima->restarMateriaPrima($cantidad * $receta->cantidad);
+                }
+            }
+        }
+    }
+    public function comprobarResta($cantidad)
+    {
+        $materiaPrimaSinStock = [];
+        # code...
+        if (!$this->hijosModelos->isEmpty()) {
+            foreach ($this->recetaPadre as $key => $receta) {
+                # code...
+                if ($receta->modeloHijo != null) {
+                    $materiaPrimaSinStock = array_merge($materiaPrimaSinStock, $receta->modeloHijo->comprobarResta($cantidad * $receta->cantidad));
+                }
+            }
+        }
+        if (!$this->materiasPrimas->isEmpty()) {
+            # code...
+            foreach ($this->recetaPadre as $key => $receta) {
+                # code...
+                if ($receta->materiaPrima != null) {
+                    $materiaPrimaSinStock = array_merge($materiaPrimaSinStock, $receta->materiaPrima->pruebaDeResta($cantidad * $receta->cantidad));
+                }
+            }
+        }
+        return $materiaPrimaSinStock;
     }
 }

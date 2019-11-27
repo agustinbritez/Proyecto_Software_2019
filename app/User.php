@@ -57,14 +57,14 @@ class User extends Authenticatable implements Auditable
     }
     public function pedidos()
     {
-        return $this->hasMany(Pedido::class, 'user_id');
+        return $this->hasMany(Pedido::class, 'user_id')->orderBy('created_at', 'desc');
     }
     //obtiene el pedido que no se ha enviado
     public function pedidoAPagar()
     {
-        // si el atributo terminado es null significa que no se envio si es 0 se pago pero no se termino
+        // si el atributo pago_id es null significa que no pago
         //si es 1 finalizo el pedido
-        return DB::table('pedidos')->where('user_id', $this->id)->where('deleted_at', null)->where('terminado', null)->first();
+        return DB::table('pedidos')->where('user_id', $this->id)->where('deleted_at', null)->where('pago_id', null)->where('terminado', null)->where('preference_id', null)->first();
     }
     public function productos()
     {

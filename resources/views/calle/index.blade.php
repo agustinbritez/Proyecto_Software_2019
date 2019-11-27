@@ -34,10 +34,9 @@
                         <div class="form-group col">
                             <label>Numero de la calle : </label>
                             <input class="form-control" type="text" name="filtro_numero" id="filtro_numero"
-                                data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;"
-                                data-mask
-                            data-inputmask="'alias': 'integer',  'digits': 0, 'digitsOptional': false">
-                                
+                                data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;" data-mask
+                                data-inputmask="'alias': 'integer',  'digits': 0, 'digitsOptional': false">
+
                         </div>
 
                     </div>
@@ -86,9 +85,9 @@
 
                                     <td>{{$calle->id}} </td>
                                     <td>{{$calle->nombre}} </td>
-                                 
 
-                                   
+
+
 
                                     <td>
                                         <button type="button" name="edit" id="{{$calle->id}}"
@@ -109,7 +108,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nombre</th>
-                                  
+
                                     <th>&nbsp; </th>
 
                                 </tr>
@@ -128,15 +127,6 @@
 
     @endsection
 
-    @push('scripts')
-    <script>
-        $(document).ready(function(){
-							$('.select2').select2(
-							// {theme: 'bootstrap4'}
-							);
-						});
-    </script>
-    @endpush
 
     @section('htmlFinal')
     @include('calle.modal')

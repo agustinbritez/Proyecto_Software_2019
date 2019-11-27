@@ -1,24 +1,24 @@
 <div id="formModal" class="modal fade" role="dialog">
-    
+
     <div class="modal-dialog" role="document">
         <div class="modal-content ">
-            
+
             <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="modal-header">
-                    
+
                     <h4 class="modal-title"> TITULO</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger print-error-msg" style="display:none">
-                        
+
                         <ul></ul>
-                        
+
                     </div>
                     <span id="form_result"></span>
                     @csrf
                     <div class="container">
-                        
+
                         <div class="form-group ">
                             <label class="control-label">Precio Unitario : </label>
                             <div class="input-group">
@@ -26,80 +26,80 @@
                                     <span class="input-group-text">$</span>
                                 </div>
                                 <input type="text" class="form-control text-left" id="precioUnitario"
-                                name="precioUnitario" data-mask
-                                data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
+                                    name="precioUnitario" data-mask
+                                    data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
                             </div>
                         </div>
-                        
+
                         <div class="form-group ">
                             <label class="control-label">Cantidad : </label>
-                            
+
                             <input type="text" class="form-control text-left" name="cantidad" id="cantidad"
-                            placeholder="Cantidad de materia prima inicial" data-mask
-                            data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
-                            
+                                placeholder="Cantidad de materia prima inicial" data-mask
+                                data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
+
                         </div>
-                        
+
                         <div class="form-group">
                             <label class="control-label ">Tipo de Movimiento : </label>
                             <select class="form-control select2 " id="tipoMovimiento_id" name="tipoMovimiento_id"
-                            style="width: 100%;">
-                            @if (sizeof($tipoMovimientos)>0)
-                            @foreach ($tipoMovimientos as $tipoMovimiento)
-                            <option value="{{$tipoMovimiento->id}}">{{$tipoMovimiento->nombre}}</option>
-                            @endforeach
-                            @endif
-                        </select>
-                        
+                                style="width: 100%;">
+                                @if (sizeof($tipoMovimientos)>0)
+                                @foreach ($tipoMovimientos as $tipoMovimiento)
+                                <option value="{{$tipoMovimiento->id}}">{{$tipoMovimiento->nombre}}</option>
+                                @endforeach
+                                @endif
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label ">Proveedores : </label>
+                            <select class="form-control select2 " id="proveedor_id" name="proveedor_id"
+                                style="width: 100%;">
+
+                                <option value="-1" selected disabled>NINGUNO</option>
+
+                                @if (sizeof($proveedores)>0)
+
+                                @foreach ($proveedores as $proveedor)
+                                <option value="{{$proveedor->id}}">{{$proveedor->nombre}}</option>
+                                @endforeach
+                                @endif
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label ">Materia Prima : </label>
+                            <select class="form-control select2 " id="materiaPrima_id" name="materiaPrima_id"
+                                style="width: 100%;">
+
+                                @if (sizeof($materiaPrimas)>0)
+
+                                @foreach ($materiaPrimas as $materiaPrima)
+                                <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
+                                @endforeach
+                                @endif
+                            </select>
+
+                        </div>
+
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="control-label ">Proveedores : </label>
-                        <select class="form-control select2 " id="proveedor_id" name="proveedor_id"
-                        style="width: 100%;">
-                        
-                        <option value="-1" selected disabled>NINGUNO</option>
-                        
-                        @if (sizeof($proveedores)>0)
-                        
-                        @foreach ($proveedores as $proveedor)
-                        <option value="{{$proveedor->id}}">{{$proveedor->nombre}}</option>
-                        @endforeach
-                        @endif
-                    </select>
-                    
                 </div>
-                
-                <div class="form-group">
-                    <label class="control-label ">Materia Prima : </label>
-                    <select class="form-control select2 " id="materiaPrima_id" name="materiaPrima_id"
-                    style="width: 100%;">
-                    
-                    @if (sizeof($materiaPrimas)>0)
-                    
-                    @foreach ($materiaPrimas as $materiaPrima)
-                    <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
-                    @endforeach
-                    @endif
-                </select>
-                
-            </div>
-            
+                <div class="modal-footer justify-content-around">
+
+                    <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+
+                    <input type="hidden" name="action" id="action" />
+                    <input type="hidden" name="hidden_id" id="hidden_id" />
+
+                </div>
+
+            </form>
         </div>
     </div>
-    <div class="modal-footer justify-content-around">
-        
-        <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
-        <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
-        
-        <input type="hidden" name="action" id="action" />
-        <input type="hidden" name="hidden_id" id="hidden_id" />
-        
-    </div>
-    
-</form>
-</div>
-</div>
 </div>
 
 <div id="confirmModal" class="modal fade" role="dialog">
@@ -131,6 +131,43 @@
 
 @push('scripts')
 <script>
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+            
+        }
+    });
+    
+    
+    
+    //mascaras******************************************************************************
+    
+    $('[data-mask]').inputmask();
     $(document).ready(function(){
         //variables globales 
         //indices del data table que uso para el filtro
@@ -138,43 +175,6 @@
         var indiceFecha=3;
         var indiceId=0;
         
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
-            }
-        });
-        
-        
-        
-        //mascaras******************************************************************************
-        
-        $('[data-mask]').inputmask();
         
         
         //la siguiente funcion recarga toda la tabla
@@ -340,7 +340,7 @@
             
             $('#form_result').html('');
             $("#sample_form").attr("action","{{route('movimiento.store')}}");
-            $('.modal-title').text("Agregar Nuevo Modelo");
+            $('.modal-title').text("Agregar Nuevo Movimiento");
             $('#action_button').val("Agregar");
             $('#action').val("Add");
             
@@ -432,7 +432,7 @@
                     preview.append(image);
                     
                     
-                    $('.modal-title').text("Editar Modelo");
+                    $('.modal-title').text("Editar Movimiento");
                     $('#action_button').val("Editar");
                     $('#action').val("Edit");
                     $('#formModal').modal('show');

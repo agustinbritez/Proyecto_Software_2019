@@ -63,4 +63,6 @@ class Producto extends Model implements Auditable
     {
         return $this->hasMany(MateriaPrimaSeleccionada::class, 'producto_id');
     }
+
+  
 }

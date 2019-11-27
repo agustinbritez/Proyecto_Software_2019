@@ -21,7 +21,7 @@ class DetallePedidoController extends Controller
         $pedido = Pedido::find($id);
         $detallePedidos = $pedido->detallePedidos;
         $modelos = Modelo::all();
-        return view('detallePedido.index', compact('detallePedidos', 'modelos'));
+        return view('detallePedido.index', compact('detallePedidos', 'modelos', 'pedido'));
     }
 
     /**
@@ -204,22 +204,22 @@ class DetallePedidoController extends Controller
                 return redirect()->back()->withErrors('El detalle de pedido no esta asociado a ningun pedido');
             }
         }
-        if (!is_null($detallePedido->pedido->fechaPago)) {
+        if (!is_null($detallePedido->pedido->fechaPago) || !is_null($detallePedido->pedido->preference_id)) {
             $form_data = array(
                 'detalle'        =>  $request->detalle
             );
             $detallePedido->update($form_data);
-            return redirect()->back()->with('warning', 'Se ha efectuado el pago del pedido no puede modificar sus cantidades');
+            return redirect()->back()->with('warning', 'El pedido esta confirmado no puede modificar sus cantidades');
         } else {
             $form_data = array(
                 'detalle'        =>  $request->detalle,
                 'cantidad'         =>  $request->cantidad
             );
             $pedido = $detallePedido->pedido;
-            $pedido->precio -= $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+            // $pedido->precio -= $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
             $detallePedido->update($form_data);
             if (!is_null($detallePedido)) {
-                $pedido->precio += $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+                // $pedido->precio += $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
                 $pedido->update();
             }
         }
@@ -238,9 +238,15 @@ class DetallePedidoController extends Controller
     {
         $detallePedido = DetallePedido::find($id);
         if ($detallePedido != null) {
+            if (!is_null($detallePedido->pedido->pago_id)) {
+                return redirect()->back()->withErrors('No puede eliminar un dealle del pedido pagado');
+            }
+            if (!is_null($detallePedido->pedido->preference_id)) {
+                return redirect()->back()->withErrors('No puede eliminar un dealle del pedido confirmado para el pago');
+            }
             if (!$detallePedido->pedido->terminado) {
                 $pedido = Pedido::find($detallePedido->pedido->id);
-                $pedido->precio -=  $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
+                // $pedido->precio -=  $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;
                 $pedido->update();
                 //si el pedido no es el final osea que uno nuevo debo borrrarlo
                 if (!$detallePedido->producto->final) {

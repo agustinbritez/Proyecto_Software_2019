@@ -156,6 +156,7 @@
                             <input type="hidden" name="action" id="action" value="Add" />
                             @endif
                             <input type="hidden" name="hidden_id" id="hidden_id" value="{{$modelo->id??''}}" />
+                            <input type="hidden" name="hidden_modelo_base" id="hidden_modelo_base" value="0" />
                         </div>
                     </div>
             </form>
@@ -242,7 +243,10 @@
                                             class="btn btn-success btn-sm">Agregar</button>
                                         <input type="hidden" name="hidden_id_modelo" id="hidden_id_modelo"
                                             value="{{$modelo->id??''}}" />
+
                                     </div>
+                                    <input type="hidden" name="hidden_modelo_base" id="hidden_modelo_base" value="0" />
+
                                 </div>
                             </form>
 
@@ -334,6 +338,9 @@
     @push('scripts')
 
     <script>
+        //mascaras******************************************************************************
+                
+          $('[data-mask]').inputmask();
         $(document).ready(function(){
                 
                 $('#ingredientes').index(0);
@@ -374,9 +381,7 @@
                         preview.append(image);
                     };
                 }
-                //mascaras******************************************************************************
-                
-                $('[data-mask]').inputmask();
+              
                 //********************************************************************************* Componentes *************************************8
                 $('#componente_form').on('submit', function(event){
                     event.preventDefault();

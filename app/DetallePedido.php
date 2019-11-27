@@ -29,7 +29,7 @@ class DetallePedido extends Model implements Auditable
     // {
     //     return $this->belongsToMany(Receta::class, 'detalle_pedidos_recetas', 'detallePedido_id', 'receta_id')->where('recetas.deleted_at', null);
     // }
-  
+
     public function recetasPadres()
     {
         return $this->belongsToMany(Receta::class, 'materia_prima_seleccionadas', 'detallePedido_id', 'recetaPadre_id');

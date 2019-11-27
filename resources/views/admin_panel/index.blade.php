@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/select2/css/select2.css') }}">
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ asset('admin_panel/plugins/chart.js/Chart.min.css') }}">
   <!-- IonIcons -->
   {{-- <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css"> --}}
   {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
@@ -27,10 +28,16 @@
   {{-- <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet"> --}}
   <!-- Ion Slider -->
   <link rel="stylesheet" href="{{ asset('admin_panel/plugins/ion-rangeslider/css/ion.rangeSlider.min.css') }}">
+  {{-- <script src="{{ asset('js/app.js') }}" defer></script> --}}
 
 
   @yield('style')
   <style>
+    /* body {
+      background-color: #56baed;
+
+    } */
+
     .btn-pill {
       border-radius: 40px;
     }
@@ -84,6 +91,8 @@
   </div>
 
   <script src="{{ asset('js/app.js') }}"></script>
+  {{-- <script src="{{ asset('js/app.js') }}"></script> --}}
+
   <!-- jQuery -->
   <script src="{{asset('admin_panel/plugins/jquery/jquery.min.js')}}"></script>
 
@@ -113,17 +122,17 @@
   <!-- Ion Slider -->
   <script src="{{asset('admin_panel/plugins/ion-rangeslider/js/ion.rangeSlider.min.js')}}"></script>
 
-  <script>
-    $(document).ready(function(){
-        $('.select2').select2(
-		// {theme: 'bootstrap4'}
-		)});
-     
-  </script>
+
 
   @stack('scripts')
+
 </body>
 
 </html>
 
 @yield('htmlFinal')
+<script>
+  $('.select2').select2();
+  $('[data-mask]').inputmask();
+  $('.dropdown-toggle').dropdown();
+</script>

@@ -40,12 +40,24 @@
                                 id="detalle"> </textarea>
                         </div>
 
-                        <div class="form-group ">
-                            <label class="control-label">Cantidad : </label>
+                        <div class="form-group " id="cantidad_nueva" style="display: none">
+                            <label class="control-label">Cantidad Inicial : </label>
 
                             <input type="text" class="form-control text-left" name="cantidad" id="cantidad"
                                 placeholder="Cantidad de materia prima inicial" data-mask
-                                data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
+                                {{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
+                                'digitsOptional': false, 'placeholder': '0'">
+
+                        </div>
+                        <div class="form-group ">
+                            <label class="control-label">Stock Minimo : </label>
+
+                            <input type="text" class="form-control text-left" name="stockMinimo" id="stockMinimo"
+                                placeholder="Cantidad de stock minimo" data-mask
+                                {{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
+                                'digitsOptional': false, 'placeholder': '0'">
 
                         </div>
 
@@ -147,6 +159,39 @@
 
 @push('scripts')
 <script>
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+            
+        }
+    });
+    $('[data-mask]').inputmask();
+
     $(document).ready(function(){
 
         // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
@@ -159,37 +204,6 @@
         var modelosGlobal;
         const vacio='Cualquiera';
         // const vacio='-1';
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
-            }
-        });
         //cargar imagen local de forma dinamica
         document.getElementById("imagenPrincipal").onchange = function(e) {
             // Creamos el objeto de la clase FileReader
@@ -212,7 +226,6 @@
         
         //mascaras******************************************************************************
         
-        $('[data-mask]').inputmask();
                 
         //cargamos por primera vez las variables globales
         $.ajax({
@@ -266,7 +279,9 @@
             //****************************************** FILTRO DE LA TABLA**************************************************************
             function filtro_funcion(){
                 var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
-                var filtro_cantidad = $('#filtro_cantidad').val().trim().toUpperCase();
+                
+                var filtro_cantidad = ($('#filtro_cantidad').val().replace(/,| $|' '/gi,'') );
+                console.log(filtro_cantidad.length>0);
                 // alert(filtro_cant    idad.length);
                 var filtro_modelo = $('#filtro_modelo option:selected').text();
                 //se guardan la cantidad de filtros que se quieren realizar
@@ -305,7 +320,8 @@
                             //si contieneModelo es -1 no encontro en la cadena 
                             (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
                             // (contieneModelo>-1)? filtro_completos++ : 0;
-                            (filtro_cantidad<=data[indiceCantidad])? filtro_completos++ :0;
+                            // (data[indiceCantidad].replace(/,| $|' '/gi,'') )
+                            (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
                             (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
                             //si cummple con los tres filtro que guarde en la tabla la fila
                             return filtro_completos==cantidad_filtros? true:false;
@@ -325,13 +341,16 @@
                                     return true;
                                 }
                             }
-                            if((filtro_cantidad.length>0)){
                                 
-                                (filtro_cantidad<=data[indiceCantidad])? filtro_completos++ :0;
+                            if(filtro_cantidad.length>0){
+                                // console.log(data[indiceCantidad].replace(/,| $|' '/gi,'') );
+                                (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
                                 if(filtro_completos==cantidad_filtros){
                                     return true;
                                 }
+
                             }
+                            
                             if((filtro_nombre!='')){
                                 (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
                                 if(filtro_completos==cantidad_filtros){
@@ -340,7 +359,7 @@
                             }
                             //retorna saca de la tabla porque no cumple con ningun filtro 
                             
-                            return false;
+                            return filtro_completos==cantidad_filtros? true:false;
                         }
                         
                     }
@@ -348,24 +367,17 @@
                 }
                 
                 table.draw();
+                
             };
             
             
                 //********************************Codigo para que busque en tiempo real el nombre********************************************************** 
             $('#filtro_nombre').keyup(function (){
                 return filtro_funcion();
-                
-                // var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
-                // $.fn.dataTable.ext.search.pop(
-                // function( settings, data, dataIndex ) {
-                    //     return true ;
-                    // });
-                    
-                    // var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
-                        //     return  data[indiceNombre].toUpperCase().includes(filtro_nombre)? true : false;  
-                        // };
-                        // $.fn.dataTable.ext.search.push( filtradoTabla )
-                        // table.draw();
+                        
+                    });
+            $('#filtro_cantidad').keyup(function (){
+                return filtro_funcion();
                         
                     });
                     
@@ -390,6 +402,9 @@
                         $('#detalle').val('');
                         $('#precioUnitario').val('');
                         $('#cantidad').val('');
+                        $('#stockMinimo').val('');
+                        document.getElementById('cantidad_nueva').style.display='block';
+
                         $('#modelos').find('option').attr('selected',false).ready();
                         // $('#imagenPrincipal').val('');
                         $('#hidden_id').val('');
@@ -417,7 +432,9 @@
                                 $('#nombre').val(html.data.nombre);
                                 $('#detalle').val(html.data.detalle);
                                 $('#precioUnitario').val(html.data.precioUnitario);
-                                $('#cantidad').val(html.data.cantidad);
+                                document.getElementById('cantidad_nueva').style.display='none';
+                                $('#stockMinimo').val(html.data.stockMinimo);
+                                // $('#cantidad').val(html.data.cantidad);
                                 $('#hidden_id').val(html.data.id);
                                 $('#medidaSeleccionada').text( html.medida.nombre);
                                 //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************

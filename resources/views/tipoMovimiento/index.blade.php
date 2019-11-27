@@ -92,7 +92,7 @@
 
 									<th>{{$movi->id}} </th>
 									<th>{{$movi->nombre}} </th>
-									
+
 									@if ($movi->operacion!=0)
 									<th>Sumar</th>
 									@else
@@ -137,15 +137,7 @@
 
 	@endsection
 
-	@push('scripts')
-	<script>
-		$(document).ready(function(){
-							$('.select2').select2(
-							// {theme: 'bootstrap4'}
-							);
-						});
-	</script>
-	@endpush
+
 
 	@section('htmlFinal')
 	@include('tipoMovimiento.modal')

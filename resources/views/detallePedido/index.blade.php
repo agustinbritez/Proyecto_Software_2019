@@ -2,7 +2,22 @@
 
 
 @section('content')
+@if ($message = Session::get('materiasPrimasNoRestadas'))
 
+<div class="alert alert-danger">
+
+    <button type="button" class="close" data-dismiss="alert">×</button>
+
+    <p>Las siguientes materias primas no pueden restarse (por falta de stock) por lo tanto no se finalizo el pedido</p>
+    <ul>
+        @foreach ($message as $materiaPrima)
+        <li>{{ 'id: '.$materiaPrima->id .' - nombre: '.$materiaPrima->nombre  }}</li>
+        @endforeach
+    </ul>
+
+</div>
+
+@endif
 
 
 <br>
@@ -28,7 +43,8 @@
                         @csrf
                         <div align="right">
 
-                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Productos</button>
+                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Detalle de
+                                Pedidos</button>
                         </div>
                         <hr>
                         <div class="row">
@@ -90,15 +106,25 @@
 
                 <div class="card-header">
                     <h3>Lista de Detalle de Pedido</h3>
-                </div>
-                <div class="card-body">
 
+                </div>
+
+                <div class="card-body">
+                    <div align='right'>
+                        @if ($pedido!=null)
+                        @if ($pedido->terminado)
+                        <button type="submit" class="finalizar btn btn-success" disabled>Finalizar Pedido </button>
+                        @else
+                        <button type="submit" class="finalizar btn btn-success">Finalizar Pedido </button>
+
+                        @endif
+                        @endif
+                    </div>
                     {{-- <div align="left">
                         <button type="button" name="create_record" id="create_record"
                             class="btn btn-success btn-sm">Crear Nuevo Pedido </button>
 
                     </div> --}}
-
                     <hr>
                     <div class="table-responsive ">
                         <table class='table table-bordered table-striped table-hover datatable' id='data-table'>
@@ -130,13 +156,16 @@
                                         ${{$detallePedido->cantidad * $detallePedido->producto->modelo->precioUnitario}}
                                     </td>
                                     @else
-                                    <td align="right">${{ $detallePedido->producto->modelo->precioUnitario}} </td>
+                                    <td align="right">${{ $detallePedido->producto->modelo->precioUnitario}}
+                                    </td>
                                     @endif
                                     <td>
                                         @if ($detallePedido->estado!=null)
 
-                                        @if (($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()!=null)
-                                        &&($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()!=null) )
+                                        @if(($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()!=null)
+                                        &&($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()!=null))
+
+
 
                                         @if ($detallePedido->estado->id ==
                                         $detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id)
@@ -185,11 +214,13 @@
                                         <form action="{{route('detallePedido.show',$detallePedido->id)}}">
 
                                             <button type="submit" name="edit" id="{{$detallePedido->id}}"
-                                                class="edit btn btn-outline-primary btn-sm">Ver Producto</button>
+                                                class="edit btn btn-outline-primary btn-sm">Ver
+                                                Producto</button>
                                         </form>
                                         {{-- &nbsp;&nbsp;
                                         <button type="button" name="delete" id="{{$detallePedido->id}}"
-                                        class="delete btn btn-outline-danger btn-sm">Eliminar</button> --}}
+                                        class="delete btn btn-outline-danger btn-sm">Eliminar
+                                        </button> --}}
 
                                     </td>
 
@@ -229,44 +260,71 @@
 
 
 @section('htmlFinal')
-{{-- @include('pedido.modalIndex') --}}
+@if ($pedido!=null)
+
+<div id="confirmModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmacion</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4 align="center" style="margin:0;" id="tituloConfirm">¿Esta seguro que desea finalizar el pedido?</h4>
+            </div>
+            <div class="modal-footer">
+                <form id="formConfirm" action="{{ route('pedido.terminarPedido', $pedido->id) }}" method="POST">
+                    @csrf
+                    {{-- Paso el id de la materia  aborrar en materia_delete--}}
+                    <input type="hidden" name="materia_delete" id="materia_delete">
+                    <button type="submit" name="ok_button" id="ok_button" class="btn btn-primary">OK</button>
+                </form>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endif
 @endsection
 
 @push('scripts')
 <script>
-    $(document).ready(function(){
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
             }
-        });
+            
+        }
     });
+    $('.finalizar').click(function(){
+
+        $('#confirmModal').modal('show');
+    });
+  
    
 </script>
 

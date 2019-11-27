@@ -35,12 +35,7 @@
             </p>
           </a>
           <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{ route('materiaPrima.index') }}" class="nav-link">
-                <i class="fas fa-cube nav-icon"></i>
-                <p>Materia Prima</p>
-              </a>
-            </li>
+
             <li class="nav-item">
               <a href="{{ route('proveedor.index') }}" class="nav-link">
                 <i class="fas fa-people-carry nav-icon"></i>
@@ -59,7 +54,18 @@
                 <p>Modelos</p>
               </a>
             </li>
-
+            <li class="nav-item">
+              <a href="{{ route('modelo.indexBase') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Modelos Bases</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{{ route('materiaPrima.index') }}" class="nav-link">
+                <i class="fas fa-cube nav-icon"></i>
+                <p>Materia Prima</p>
+              </a>
+            </li>
           </ul>
         </li>
         <li class="nav-item has-treeview  ">
@@ -247,6 +253,16 @@
             <i class="fad fa-table nav-icon"></i>
             <p>
               Auditoria
+              {{-- <span class="right badge badge-danger">New</span> --}}
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('estadistica.index') }}" class="nav-link">
+            {{-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fad fa-table nav-icon"></i>
+            <p>
+              Estadisticas
               {{-- <span class="right badge badge-danger">New</span> --}}
             </p>
           </a>
