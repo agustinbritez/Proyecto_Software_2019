@@ -26,8 +26,16 @@ class ModeloController extends Controller
      */
     public function index()
     {
-        $modelos = Modelo::all();
-        return view('modelo.index', compact('modelos'));
+        $modelos = Modelo::all()->where('base', 0);
+        $modeloBase = false;
+        return view('modelo.index', compact('modelos', 'modeloBase'));
+    }
+    public function indexBase()
+    {
+        $modelos = Modelo::all()->where('base', '<>', 0);
+        $modeloBase = true;
+
+        return view('modelo.index', compact('modelos', 'modeloBase'));
     }
 
     /**
@@ -52,6 +60,22 @@ class ModeloController extends Controller
         $modificar = true;
         $medidas = Medida::all();
         return view('modelo.create', compact('modelos', 'modificar', 'modelo', 'medidas'));
+    }
+    public function baseCreate()
+    {
+        $modelo = new Modelo();
+        $materiaPrimas = MateriaPrima::all();
+        $modificar = false;
+        $medidas = Medida::all();
+        return view('modelo.modeloBase', compact('materiaPrimas', 'modificar', 'modelo', 'medidas'));
+    }
+    public function baseModificar(Request $request, $id)
+    {
+        $modelo = Modelo::find($id);
+        $materiaPrimas = MateriaPrima::all();
+        $modificar = true;
+        $medidas = Medida::all();
+        return view('modelo.modeloBase', compact('materiaPrimas', 'modificar', 'modelo', 'medidas'));
     }
 
 
@@ -137,6 +161,10 @@ class ModeloController extends Controller
             if ($flujoGeneral != null) {
                 $idFlujo = $flujoGeneral->id;
             }
+            $base = 0;
+            if ($request->hidden_modelo_base == 1) {
+                $base = 1;
+            }
             $form_data = array(
                 'nombre'        =>  $request->nombre,
                 'imagenPrincipal'        =>  $imagen,
@@ -144,6 +172,7 @@ class ModeloController extends Controller
                 'precioUnitario'         =>  $request->precioUnitario,
                 'medida_id' => $request->medida_id,
                 'venta' => $venta,
+                'base' => $base,
                 //el id es del FLUJO PRODUCCION GENERAL
                 'flujoTrabajo_id' => $idFlujo
             );
@@ -280,16 +309,29 @@ class ModeloController extends Controller
             //el modelo padre
             $modelo = Modelo::find($request->hidden_id_modelo);
             if ($modelo != null) {
+
                 //validamos
-                $validator = Validator::make(
-                    $request->all(),
-                    ['cantidad' => 'required|integer', 'prioridad' => 'required|integer', 'ingredientes' => 'required'],
-                    [
-                        'cantidad.required' => 'No ingreso la cantidad', 'cantidad.integer' => 'No ingreso un numero',
-                        'prioridad.required' => 'No ingreso la prioridad', 'prioridad.integer' => 'No ingreso un numero',
-                        'ingredientes' => 'No selecciono un ingrediente'
-                    ]
-                );
+                if ($request->hidden_modelo_base == 0) {
+
+                    $validator = Validator::make(
+                        $request->all(),
+                        ['cantidad' => 'required|integer|min:1', 'prioridad' => 'required|integer', 'ingredientes' => 'required'],
+                        [
+                            'cantidad.required' => 'No ingreso la cantidad', 'cantidad.integer' => 'No ingreso un numero',
+                            'cantidad.min' => 'La cantidad no puede ser menor a 1',
+                            'prioridad.required' => 'No ingreso la prioridad', 'prioridad.integer' => 'No ingreso un numero',
+                            'ingredientes' => 'No selecciono un ingrediente'
+                        ]
+                    );
+                } else {
+                    $validator = Validator::make(
+                        $request->all(),
+                        ['ingredientes' => 'required'],
+                        [
+                            'ingredientes' => 'No selecciono un ingrediente'
+                        ]
+                    );
+                }
 
                 if ($validator->fails()) {
 
@@ -298,50 +340,32 @@ class ModeloController extends Controller
                 if (!$modelo->productosModelos->isEmpty()) {
                     return response()->json(['errors' => ['Existen productos asociados al modelo no puede modificar sus recetas']]);
                 }
+                // if($modelo->){
+
+                // }
                 //si el modelo ya tiene el ingrediente que se desea agregar lo rechaza
-                if ($request->has('cambiarIngrediente')) {
+                if ($request->hidden_modelo_base != 0) {
                     foreach ($modelo->recetaPadre as $key => $receta) {
                         if ($receta->materiaPrima != null) {
                             if ($receta->materiaPrima->id == $request->ingredientes) {
                                 return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
                             }
-                        }
-                    }
-                } else {
-                    foreach ($modelo->recetaPadre as $key => $receta) {
-                        if ($receta->modeloHijo != null) {
-                            if ($receta->modeloHijo->id == $request->ingredientes) {
-                                return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado ']]);
+                            $materiaPrimis = MateriaPrima::find($request->ingredientes);
+                            if ($materiaPrimis != null) {
+                                if ($materiaPrimis->medida->id != $modelo->medida->id) {
+                                    return response()->json(['errors' => ['La materia prima que se quiere agregar al modelo tiene la unidad de medida diferente deben ser iguales']]);
+                                }
                             }
                         }
                     }
-                    //verificarmos si el modelo a agregar no esta relacionado de manera profunda
-                    $modeloPadre = Modelo::find($request->hidden_id_modelo);
-                    $modeloHijo = Modelo::find($request->ingredientes);
-                    if (($modeloPadre->id == $modeloHijo->id)) {
-                        return response()->json(['errors' => ['No puede seleccionar el mismo modelo como ingrediente ']]);
-                    }
-
-                    if ($this->verificarSiEsRecursivo($modeloPadre, $modeloHijo)) {
-                        return response()->json(['errors' => ['El modelo seleccionado no esta permitido  para recursion ']]);
-                    }
-                }
-
-                $medida = $this->asignarMedidaAlModelo($modelo, $modelo->medida);
-
-                if ($medida->id != $modelo->medida->id) {
-                    $mensaje = array_merge($mensaje, ['warning' => 'La unidad de medida seleccionada se cambio a ' . $medida->nombre . ' porque algunos de sus hijos tienen unidades de medidas diferentes']);
-                    $modelo->update();
-                }
-                //si el check esta seleccionado quiere decir que trajo una materia prima
-                if ($request->has('cambiarIngrediente')) {
-
-
+                    //si el check esta seleccionado quiere decir que trajo una materia prima
+                    $cantidadIngrediente = 1;
+                    $prioridad = 0;
                     $form_data = array(
                         'modeloPadre_id' => $request->hidden_id_modelo,
                         'materiaPrima_id' => $request->ingredientes,
-                        'cantidad'        =>  $request->cantidad,
-                        'prioridad' => $request->prioridad
+                        'cantidad'        =>  $cantidadIngrediente,
+                        'prioridad' => $prioridad
                     );
 
                     //si no crea es porque hay agun atributo que no permite null que esta vacio
@@ -349,25 +373,92 @@ class ModeloController extends Controller
                     $agregar = true;
                     $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => null, 'hijoMateriaPrima' => $receta->materiaPrima]);
                     return response()->json($mensaje);
+
+                    //queda aca
                 } else {
-                    //si el check no esta seleccionado significa que trajo una relacion de modelo
+                    if ($request->has('cambiarIngrediente')) {
+                        foreach ($modelo->recetaPadre as $key => $receta) {
+                            if ($receta->materiaPrima != null) {
+                                if ($receta->materiaPrima->id == $request->ingredientes) {
+                                    return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
+                                }
+                            }
+                        }
+                        //liso
+                    } else {
+                        foreach ($modelo->recetaPadre as $key => $receta) {
+                            if ($receta->modeloHijo != null) {
+                                if ($receta->modeloHijo->id == $request->ingredientes) {
+                                    return response()->json(['errors' => ['El modelo seleccionado se encuentra  relacionado ']]);
+                                }
+                            }
+                        }
+                        //verificarmos si el modelo a agregar no esta relacionado de manera profunda
+                        $modeloPadre = Modelo::find($request->hidden_id_modelo);
+                        $modeloHijo = Modelo::find($request->ingredientes);
+                        if (($modeloPadre->id == $modeloHijo->id)) {
+                            return response()->json(['errors' => ['No puede seleccionar el mismo modelo como ingrediente ']]);
+                        }
 
-                    //si llego hasta este punto se puede agregar la relacion de modelo a modelo
+                        if ($this->verificarSiEsRecursivo($modeloPadre, $modeloHijo)) {
+                            return response()->json(['errors' => ['El modelo seleccionado no esta permitido  para recursion ']]);
+                        }
+                    }
+                    //listo
+                    $medida = $this->asignarMedidaAlModelo($modelo, $modelo->medida);
 
-                    $form_data = array(
-                        'modeloPadre_id' => $request->hidden_id_modelo,
-                        'modeloHijo_id' => $request->ingredientes,
-                        'cantidad'        =>  $request->cantidad,
-                        'prioridad' => $request->prioridad
-                    );
+                    if ($medida->id != $modelo->medida->id) {
+                        $mensaje = array_merge($mensaje, ['warning' => 'La unidad de medida seleccionada se cambio a ' . $medida->nombre . ' porque algunos de sus hijos tienen unidades de medidas diferentes']);
+                        $modelo->update();
+                    }
+                    //si el check esta seleccionado quiere decir que trajo una materia prima
+                    $cantidadIngrediente = 1;
+                    $prioridad = 0;
+                    if ($request->hidden_modelo_base == 0) {
+                        $cantidadIngrediente = $request->cantidad;
+                        $prioridad = $request->prioridad;
+                    }
+                    if ($request->has('cambiarIngrediente')) {
 
-                    // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $form_data]);
-                    //si no crea es porque hay agun atributo que no permite null que esta vacio
-                    $receta = Receta::create($form_data);
-                    $agregar = true;
-                    $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => $receta->modeloHijo, 'hijoMateriaPrima' => null]);
-                    return response()->json($mensaje);
+
+                        $form_data = array(
+                            'modeloPadre_id' => $request->hidden_id_modelo,
+                            'materiaPrima_id' => $request->ingredientes,
+                            'cantidad'        =>  $cantidadIngrediente,
+                            'prioridad' => $prioridad
+                        );
+
+                        //si no crea es porque hay agun atributo que no permite null que esta vacio
+                        $receta = Receta::create($form_data);
+                        $agregar = true;
+                        $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => null, 'hijoMateriaPrima' => $receta->materiaPrima]);
+                        return response()->json($mensaje);
+                    } else {
+                        //si el check no esta seleccionado significa que trajo una relacion de modelo
+
+                        //si llego hasta este punto se puede agregar la relacion de modelo a modelo
+
+                        $form_data = array(
+                            'modeloPadre_id' => $request->hidden_id_modelo,
+                            'modeloHijo_id' => $request->ingredientes,
+                            'cantidad'        =>  $cantidadIngrediente,
+                            'prioridad' => $prioridad
+                        );
+
+                        // return response()->json(['success' => 'Modelo creado con exito!.', 'request' => $form_data]);
+                        //si no crea es porque hay agun atributo que no permite null que esta vacio
+                        $receta = Receta::create($form_data);
+                        $agregar = true;
+                        $mensaje = array_merge($mensaje, ['success' => 'Relacion agregada correctamente.', 'agregar' => $agregar, 'receta' => $receta, 'hijoModelo' => $receta->modeloHijo, 'hijoMateriaPrima' => null]);
+                        return response()->json($mensaje);
+                    }
                 }
+
+
+
+
+
+
 
 
                 // $modelo->$modelo->modelos()->sync($request->input('modelos', []));
@@ -595,6 +686,7 @@ class ModeloController extends Controller
 
         $validator = Validator::make($request->all(), $rules, $messages);
 
+
         if ($validator->fails()) {
 
             return response()->json(['errors' => $validator->errors()->all()]);
@@ -602,6 +694,10 @@ class ModeloController extends Controller
 
         //si el id que crea es uno borrado lo revivimos
         $modelo = Modelo::withTrashed()->find($request->hidden_id);
+        $base = 0;
+        if ($request->hidden_modelo_base == 1) {
+            $base = 1;
+        }
         if ($modelo == null) {
             return response()->json(['errors' => ['El modelo  no existe']]);
         }
@@ -635,6 +731,7 @@ class ModeloController extends Controller
             }
         }
 
+
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
             $hoy = Carbon::now();
@@ -646,6 +743,7 @@ class ModeloController extends Controller
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
                 'medida_id' => $idMedida,
+                'base' => $base,
                 'venta' => $venta
             );
             //creamos el camino de la imagen vieja
@@ -660,6 +758,7 @@ class ModeloController extends Controller
                 'detalle'         =>  $request->detalle,
                 'precioUnitario'         =>  $request->precioUnitario,
                 'venta' => $venta,
+                'base' => $base,
                 'medida_id' => $idMedida
             );
         }

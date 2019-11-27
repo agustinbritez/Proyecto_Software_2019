@@ -1,41 +1,41 @@
- 
- <div id="formModal" class="modal fade" role="dialog">
-    
+<div id="formModal" class="modal fade" role="dialog">
+
     <div class="modal-dialog" role="document">
         <div class="modal-content ">
-            
+
             <form method="post" id="sample_form" class="form-horizontal" enctype="multipart/form-data">
                 <div class="modal-header">
-                    
+
                     <h4 class="modal-title"> TITULO</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <div class="alert alert-danger print-error-msg" style="display:none">
-                        
+
                         <ul></ul>
-                        
+
                     </div>
                     <span id="form_result"></span>
                     @csrf
                     <div class="container">
                         <div class="form-group  ">
-                            <label class="control-label" >Nombre: </label>
-                            
-                            <input type="text" name="nombre" id="nombre" required placeholder="Ingrese el Nombre del Documento" class="form-control" />
+                            <label class="control-label">Nombre: </label>
+
+                            <input type="text" name="nombre" id="nombre" required
+                                placeholder="Ingrese el Nombre del Documento" class="form-control" />
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer justify-content-around" >
-                    
+                <div class="modal-footer justify-content-around">
+
                     <input type="submit" name="action_button" id="action_button" class="btn btn-success" value="Add" />
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>    
-                    
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+
                     <input type="hidden" name="action" id="action" />
                     <input type="hidden" name="hidden_id" id="hidden_id" />
-                    
+
                 </div>
-                
+
             </form>
         </div>
     </div>
@@ -56,7 +56,7 @@
                     @csrf
                     @method('DELETE')
                     {{-- Paso el id de la materia  aborrar en boton_delete--}}
-                    <input type="hidden" name="boton_delete" id="boton_delete" >
+                    <input type="hidden" name="boton_delete" id="boton_delete">
                     <button type="submit" name="ok_button" id="ok_button" class="btn btn-danger">OK</button>
                 </form>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
@@ -70,46 +70,44 @@
 
 @push('scripts')
 <script>
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+            
+        }
+    });
     
     
+    //mascaras******************************************************************************
+    
+    $('[data-mask]').inputmask();
     $(document).ready(function(){
      
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
-            }
-        });
-        
-        
-        //mascaras******************************************************************************
-        
-        $('[data-mask]').inputmask();
         
         
         
@@ -177,5 +175,3 @@
     });
 </script>
 @endpush
-
-

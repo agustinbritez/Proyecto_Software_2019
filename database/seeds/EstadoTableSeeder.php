@@ -27,6 +27,9 @@ class EstadoTableSeeder extends Seeder
         $estado = new Estado();
         $estado->nombre = 'ESPERA DE PAGO';
         $estado->save();
+        $estado = new Estado();
+        $estado->nombre = 'CARRITO';
+        $estado->save();
 
         // $estado=new Estado();
         // $estado->nombre='Final';

@@ -409,7 +409,7 @@
                                     +'</div>'
                                     +'<div class=" " style="max-width: 10rem; ">'
                                         +'<div id="preview_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" class=" row justify-content-center">'
-                                            +'<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" id="'+idImagen+'" class="" height="150" width="180">'
+                                            +'<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" id="'+idImagen+'" class="bg-transparent" height="150" width="180">'
                                             +'</div>'
                                             +'<div>'
                                                 +'<label class="btn btn-default btn-file ">'
@@ -429,7 +429,7 @@
                                                     $('#add_imagen_componente_'+componenteSeleccionado).html('');
                                                     $('#contenedor_'+componenteSeleccionado).html('');
                                                     $('#add_imagen_componente_'+componenteSeleccionado).html(nuevaImagen);
-                                                    $('#contenedor_'+componenteSeleccionado).html('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="'+idDise+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="0">');
+                                                    $('#contenedor_'+componenteSeleccionado).html('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag bg-transparent" id="'+idDise+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="0">');
                                                     // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
                                                     // $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema=""0"">');
                                                     
@@ -532,7 +532,7 @@
                                                                 var nuevaImagen='<div class="form-group " id="" style="margin-left:5%;">'
                                                                     +'<div class="col " style="max-width: 10rem; ">'
                                                                         +'<div id="" class=" row justify-content-center">'
-                                                                            +'<img src="'+urlSurce+'" class="" height="150" width="180">'
+                                                                            +'<img src="'+urlSurce+'" class="bg-transparent" height="150" width="180">'
                                                                             +'</div>'
                                                                             +'<div class=" row justify-content-center">'
                                                                                 +'<button  type="button" class="agregarImagenSistema btn btn-default" data-imagen="'+imagen.id+'" data-ruta="'+urlSurce+'" data-componente="'+componenteSeleccionado+'">'
@@ -585,7 +585,7 @@
                                                                                 +'</div>'  
                                                                                 +'<div class=" " style="max-width: 10rem; ">'
                                                                                     +'<div id="" class=" row justify-content-center">'
-                                                                                        +'<img src="'+ruta+'" class="" height="150" width="180" id="'+idImagen+'">'
+                                                                                        +'<img src="'+ruta+'" class="bg-transparent" height="150" width="180" id="'+idImagen+'">'
                                                                                         +'</div>'
                                                                                         +'<div>'
                                                                                             // +'<label class="btn btn-default btn-file ">'
@@ -605,7 +605,7 @@
                                                                                                 $('#add_imagen_componente_'+componenteSeleccionado).html('');
                                                                                                 $('#contenedor_'+componenteSeleccionado).html('');
                                                                                                 $('#add_imagen_componente_'+componenteSeleccionado).html(nuevaImagen);
-                                                                                                $('#contenedor_'+componenteSeleccionado).html('<img src="'+ruta+'" class="resize-drag" id="'+idDise+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="1" >');
+                                                                                                $('#contenedor_'+componenteSeleccionado).html('<img src="'+ruta+'" class="resize-drag bg-transparent" id="'+idDise+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="1" >');
                                                                                                 //agrega muchas imagenes con el append
                                                                                                 // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
                                                                                                 // $('#contenedor_'+componenteSeleccionado).append('<img src="'+ruta+'" class="resize-drag" id="nuevaImagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="1" >');
@@ -756,7 +756,7 @@
                                                                                                         // image = document.createElement('img');
                                                                                                         image = document.getElementById( 'imagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado);
                                                                                                         image.src = reader.result;
-                                                                                                        image.class = 'img-fluid';
+                                                                                                        image.class = 'img-fluid bg-transparent';
                                                                                                         image.height='150';
                                                                                                         image.width='180';
                                                                                                         preview.innerHTML = '';

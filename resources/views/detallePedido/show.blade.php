@@ -116,8 +116,22 @@
 
                         <h3>
                             <span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>
-                            <span class="badge badge-warning">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==
+                            $detallePedido->estado->id)
+                            <span class="badge badge-danger ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                             </span>
+                            @else
+                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id==
+                            $detallePedido->estado->id)
+                            <span class="badge badge-success">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                            </span>
+
+                            @else
+                            <span class="badge badge-info">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                            </span>
+
+                            @endif
+                            @endif
 
                         </h3>
                     </div>
@@ -143,11 +157,14 @@
                         </div>
                     </div>
                     <div class="col-4">
+                        @if ($detallePedido->verificado)
+
                         <div class="form-group  ">
 
                             <button type="button" class="etadoSiguiente btn btn-success " id="botonConfirmarProducto">
                                 Confirmar Producto Terminado</button>
                         </div>
+                        @endif
 
                     </div>
                 </div>
@@ -283,6 +300,7 @@
 
                         @if ($detallePedido->verificado)
 
+                        @if (!$detallePedido->pedido->terminado)
 
                         <button type="button" class="estadoAnterior btn btn-outline-danger " id="botonAnterior"><i
                                 class="fad fa-arrow-left"></i>
@@ -293,6 +311,7 @@
 
                         <button type="button" class="etadoSiguiente btn btn-outline-success " id="botonSiguiente">
                             Siguiente Estado</button>
+                        @endif
 
                         @endif
 
@@ -449,12 +468,12 @@
                                     <div id=" " style="max-width: 10rem;" class=" row justify-content-center">
                                         @if ($sublimacion->nuevaImagen!=null)
                                         <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
-                                            class="" height="150" width="180">
+                                            class="bg-transparent" height="150" width="180">
 
                                         @else
                                         @if ($sublimacion->imagen !=null)
                                         <img src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                                            class="" height="150" width="180">
+                                            class="bg-transparent" height="150" width="180">
 
                                         @endif
                                         @endif
@@ -537,13 +556,13 @@
 
                                 @if ($sublimacion->forma !=null)
                                 <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                                     style="border-radius: {{$sublimacion->forma}}%;">
                                 @else
                                 <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
                                 @endif
@@ -568,7 +587,7 @@
                                 @else
                                 @if ($sublimacion->imagen!=null)
                                 <img src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
 
@@ -684,8 +703,8 @@
                                 </label>
                                 <div class=" " style="max-width: 10rem; ">
                                     <div id="preview_old" class=" row justify-content-center">
-                                        <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150"
-                                            width="180">
+                                        <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="bg-transparent"
+                                            height="150" width="180">
 
                                     </div>
                                     <div>
@@ -708,8 +727,8 @@
                                 </label>
                                 <div class=" " style="max-width: 10rem; ">
                                     <div id="preview_new" class=" row justify-content-center">
-                                        <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150"
-                                            width="180">
+                                        <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="bg-transparent"
+                                            height="150" width="180">
                                     </div>
 
                                     <div>
@@ -780,8 +799,8 @@
                                 <div class="form-group">
                                     <div class=" " style="max-width: 10rem; ">
                                         <div id="preview_producto" class=" row justify-content-center">
-                                            <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150"
-                                                width="180">
+                                            <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class=" bg-transparent"
+                                                height="150" width="180">
                                         </div>
 
                                         <div>
@@ -981,7 +1000,7 @@
                                         let preview = document.getElementById(id);
                                         image = document.createElement('img');
                                         image.src = reader.result;
-                                        image.class = 'img-fluid';
+                                        image.class = 'img-fluid bg-transparent';
                                         image.height='150';
                                         image.width='180';
                                         preview.innerHTML = '';

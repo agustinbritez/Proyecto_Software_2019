@@ -53,7 +53,7 @@ class MateriaPrima extends Model implements Auditable
    }
    public function modelos()
    {
-      return $this->belongsToMany(Modelo::class, 'recetas', 'materiaPrima_id', 'modeloPadre_id');
+      return $this->belongsToMany(Modelo::class, 'recetas', 'materiaPrima_id', 'modeloPadre_id')->where('recetas.deleted_at', null);
    }
    public function imagenes()
    {
@@ -63,5 +63,20 @@ class MateriaPrima extends Model implements Auditable
    public function aumentarMateriaPrima()
    {
       $this->cantidad;
+   }
+   public function restarMateriaPrima($cantidad)
+   {
+      # code...
+      $this->cantidad = $this->cantidad - $cantidad;
+      $this->update();
+   }
+   public function pruebaDeResta($cantidad)
+   {
+      # code...
+      $aux = $this->cantidad - $cantidad;
+      if ($aux < 0) {
+         return [$this];
+      }
+      return [];
    }
 }

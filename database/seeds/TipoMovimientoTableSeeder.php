@@ -12,11 +12,17 @@ class TipoMovimientoTableSeeder extends Seeder
      */
     public function run()
     {
-        $tipoMov= new TipoMovimiento();
-        $tipoMov->nombre='INGRESO';
-        $tipoMov->detalle='Se compran o se obtienen por donaciones las materia primas';
+        $tipoMov = new TipoMovimiento();
+        $tipoMov->nombre = 'INGRESO';
+        $tipoMov->detalle = 'Se compran o se obtienen por donaciones las materia primas';
         //se suman la materia prima
-        $tipoMov->operacion=1;
+        $tipoMov->operacion = 1;
+        $tipoMov->save();
+        $tipoMov = new TipoMovimiento();
+        $tipoMov->nombre = 'EGRESO';
+        $tipoMov->detalle = 'Materia Primas en salen de la empresa';
+        //se resta la materia prima
+        $tipoMov->operacion = 0;
         $tipoMov->save();
     }
 }

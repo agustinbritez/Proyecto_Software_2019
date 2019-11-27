@@ -69,11 +69,10 @@
         
         //mascaras******************************************************************************
         
-        $('[data-mask]').inputmask();
         //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
         $('#create_record').click(function(){
             $('.modal-title').text("Modelos para el producto");
-
+            
             $('#formModal').modal('show');
         });
         

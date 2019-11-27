@@ -19,7 +19,7 @@
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                 class="fas fa-minus"></i></button>
                     </div>
-                    <h3>Filtro de Productos</h3>
+                    <h3>Filtro de Pedidos</h3>
                 </div>
 
 
@@ -28,7 +28,7 @@
                         @csrf
                         <div align="right">
 
-                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Productos</button>
+                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Pedidos</button>
                         </div>
                         <hr>
                         <div class="row">
@@ -79,7 +79,7 @@
 
 
                 <div class="card-header">
-                    <h3>Lista de Productos</h3>
+                    <h3>Lista de Pedidos</h3>
                 </div>
                 <div class="card-body">
 
@@ -124,9 +124,9 @@
                                         @endif
 
                                     </td>
-                                    <td align="right">${{$pedido->precio}} </td>
+                                    <td align="right">${{$pedido->precio ?? 'No pagado'}} </td>
                                     @if ($pedido->fechaPago!=null)
-                                    <td>{{$pedido->fechaPago->format('d/m/Y') ?? 'No pagado' }} </td>
+                                    <td>{{$pedido->getFechaPago() ?? 'No pagado' }} </td>
 
                                     @else
 
@@ -166,21 +166,20 @@
 
                                     @if ($pedido->cambioEstado!=null)
 
-                                    <td>{{$pedido->cambioEstado->format('d/m/Y') ?? 'No pagado' }} </td>
+                                    <td>{{$pedido->getCambioEstado()?? 'No pagado' }} </td>
                                     @else
 
                                     <td>{{'No pagado' }} </td>
                                     @endif
                                     <td>
-                                        @if ($pedido->terminado!=null )
+
                                         @if ($pedido->terminado)
-                                        Terminado
+                                        Si
                                         @else
-                                        No Terminado
+                                        No 
                                         @endif
-                                        @else
-                                        No Pagado
-                                        @endif
+
+
                                     </td>
 
 
@@ -238,39 +237,38 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function(){
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
             }
-        });
+            
+        }
     });
+  
    
 </script>
 

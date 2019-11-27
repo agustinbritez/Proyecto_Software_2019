@@ -83,13 +83,24 @@
                 </div>
                 <div class="card-body">
 
-                    <div align="left">
-
-                        <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
-                            class="btn btn-success btn-sm">Crear Nuevo Modelo</a>
 
 
-                    </div>
+                    @if ($modeloBase)
+
+                    <a href="{{route('modelo.baseCreate')}}" name="create_record" id="create_record"
+                        class="btn btn-success btn-sm">Crear Modelo Base</a>
+                    @else
+                    <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
+                        class="btn btn-success btn-sm">Crear Modelo</a>
+
+                    @endif
+
+
+
+
+
+
+
 
                     <hr>
                     <div class="table-responsive ">
@@ -101,6 +112,7 @@
                                     <th>Nombre</th>
                                     <th>Precio Unitario</th>
                                     <th>Receta</th>
+                                    <th>Modelo Base</th>
 
                                     <th>&nbsp; </th>
 
@@ -136,14 +148,27 @@
                                         @endif
 
                                     </td>
-
+                                    <td>
+                                        @if ($modelo->base)
+                                        Si
+                                        @else
+                                        No
+                                        @endif
+                                    </td>
 
                                     <td>
                                         <div class="row">
+                                            @if ($modeloBase)
+                                            <a href="{{route('modelo.baseModificar',$modelo->id)}}" type="button"
+                                                name="edit" id="{{$modelo->id}}"
+                                                class="edit btn btn-outline-primary btn-sm">Editar</a>
 
+                                            @else
                                             <a href="{{route('modelo.modificar',$modelo->id)}}" type="button"
                                                 name="edit" id="{{$modelo->id}}"
                                                 class="edit btn btn-outline-primary btn-sm">Editar</a>
+
+                                            @endif
 
 
                                             &nbsp;&nbsp;
@@ -172,6 +197,7 @@
                                     <th>Nombre</th>
                                     <th>Precio Unitario</th>
                                     <th>Receta</th>
+                                    <th>Modelo Base</th>
 
                                     <th>&nbsp; </th>
 
@@ -218,49 +244,46 @@
 @endsection
 @push('scripts')
 <script>
+    var table= $('#data-table').DataTable({
+        "language": {
+            "sProcessing":     "Procesando...",
+            "sLengthMenu":     "Mostrar _MENU_ registros",
+            "sZeroRecords":    "No se encontraron resultados",
+            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+            "sInfoPostFix":    "",
+            "sSearch":         "Buscar:",
+            "sUrl":            "",
+            "sInfoThousands":  ",",
+            "sLoadingRecords": "Cargando...",
+            "oPaginate": {
+                "sFirst":    "Primero",
+                "sLast":     "Último",
+                "sNext":     "Siguiente",
+                "sPrevious": "Anterior"
+            },
+            "oAria": {
+                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+            },
+            "buttons": {
+                "copy": "Copiar",
+                "colvis": "Visibilidad"
+            }
+            
+        }
+    });
+    //mascaras******************************************************************************
+    
+    // $('[data-mask]').inputmask();
     $(document).ready(function(){
         //variables globales 
         //indices del data table que uso para el filtro
         var indicePrecioUnitario=3;
         var indiceNombre=2;
         
-        var table= $('#data-table').DataTable({
-            "language": {
-                "sProcessing":     "Procesando...",
-                "sLengthMenu":     "Mostrar _MENU_ registros",
-                "sZeroRecords":    "No se encontraron resultados",
-                "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                "sInfoPostFix":    "",
-                "sSearch":         "Buscar:",
-                "sUrl":            "",
-                "sInfoThousands":  ",",
-                "sLoadingRecords": "Cargando...",
-                "oPaginate": {
-                    "sFirst":    "Primero",
-                    "sLast":     "Último",
-                    "sNext":     "Siguiente",
-                    "sPrevious": "Anterior"
-                },
-                "oAria": {
-                    "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                    "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                },
-                "buttons": {
-                    "copy": "Copiar",
-                    "colvis": "Visibilidad"
-                }
-                
-            }
-        });
-        
-        
-        
-        //mascaras******************************************************************************
-        
-        $('[data-mask]').inputmask();
         
         
         //la siguiente funcion recarga toda la tabla

@@ -18,6 +18,7 @@ class CreateMateriaPrimasTable extends Migration
             $table->string('nombre')->nullable()->unique();
             $table->string('detalle')->nullable();
             $table->bigInteger('cantidad')->nullable();
+            $table->bigInteger('stockMinimo')->nullable();
             $table->double('precioUnitario')->nullable();
             $table->string('color')->nullable();
             $table->string('imagenPrincipal')->nullable();

@@ -203,7 +203,8 @@
                                         <div id="'preview_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}">
 
                                             <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
-                                                class="" height="150" width="180" data-id="{{$cantidadImagenes}}"
+                                                class="bg-transparent" height="150" width="180"
+                                                data-id="{{$cantidadImagenes}}"
                                                 data-componente="{{$sublimacion->componente->id}}"
                                                 data-imagen-sistema=" 0"
                                                 id="nuevaImagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}">
@@ -226,7 +227,8 @@
                                         @if ($sublimacion->imagen !=null)
                                         <img src="
                                         {{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                                            class="" height="150" width="180" data-id="{{$cantidadImagenSistema}}"
+                                            class="bg-transparent" height="150" width="180"
+                                            data-id="{{$cantidadImagenSistema}}"
                                             data-componente="{{$sublimacion->componente->id}} " data-imagen-sistema="1"
                                             id="nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}">
 
@@ -312,7 +314,7 @@
                                 {{-- <p>{{$sublimacion->id}}</p> --}}
                                 @if ($sublimacion->forma !=null)
                                 <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                                     style="border-radius: {{$sublimacion->forma}}%;" data-id="{{$cantidadImagenes}}"
@@ -321,7 +323,7 @@
                                     data-y="{{(float) ($sublimacion->posY ?? 0)}}">
                                 @else
                                 <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                                     data-x="{{(float) ($sublimacion->posX)}}" data-y="{{(float) ($sublimacion->posY)}}"
@@ -359,7 +361,7 @@
                                 @else
                                 @if ($sublimacion->imagen!=null)
                                 <img src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                                    class="resize-drag"
+                                    class="resize-drag bg-transparent"
                                     id="imagen_sistema_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                                     style="border-radius: {{$sublimacion->forma}}%;"

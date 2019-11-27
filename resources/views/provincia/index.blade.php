@@ -80,7 +80,7 @@
                                     <td>{{$provincia->id}} </td>
                                     <td>{{$provincia->nombre}} </td>
 
-                                   
+
 
                                     <td>
                                         <button type="button" name="edit" id="{{$provincia->id}}"
@@ -120,13 +120,7 @@
     @endsection
 
     @push('scripts')
-    <script>
-        $(document).ready(function(){
-							$('.select2').select2(
-							// {theme: 'bootstrap4'}
-							);
-						});
-    </script>
+
     @endpush
 
     @section('htmlFinal')

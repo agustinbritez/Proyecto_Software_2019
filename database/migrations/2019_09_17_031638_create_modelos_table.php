@@ -18,12 +18,13 @@ class CreateModelosTable extends Migration
             $table->string('nombre')->nullable();
             $table->string('detalle')->nullable();
             $table->boolean('venta')->nullable();
+            $table->boolean('base')->nullable();
             $table->double('precioUnitario')->nullable();
             $table->string('imagenPrincipal')->nullable();
             $table->softDeletes();
 
-           
-           
+
+
             $table->timestamps();
         });
     }

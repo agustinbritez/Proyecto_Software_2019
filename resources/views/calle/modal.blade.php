@@ -64,9 +64,7 @@
 
 
 <script>
-    $(document).ready(function(){
-        
-        var table=$('#data-table').DataTable({
+    var table=$('#data-table').DataTable({
             "language": {
                 "sProcessing":     "Procesando...",
                 "sLengthMenu":     "Mostrar _MENU_ registros",
@@ -98,6 +96,9 @@
             }
         });
         
+    $(document).ready(function(){
+        
+       
         //la siguiente funcion recarga toda la tabla
         $('#reiniciar').click(function(){
             // $("#callees ").prop("selectedIndex", 0) ;

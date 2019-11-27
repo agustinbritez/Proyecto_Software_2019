@@ -12,10 +12,19 @@
 */
 
 use Illuminate\Support\Facades\Route;
+//estadistica
+Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index')->middleware('permission:estadistica_index');
+Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos')->middleware('permission:estadistica_productosMasVendidos');
+// Route::get('estadistica', 'EstadisticaController@productosMasVendidos');
 
+Route::group(['middleware' => ['guest']], function () {
+    Route::get('/', 'Auth\LoginController@showLoginForm');
+    Route::post('/login', 'Auth\LoginController@login')->name('login');
+});
 Route::get('/prueba', function () {
     return view('producto.pruebaInteraccion');
 });
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', function () {
         return view('admin_panel.index');
@@ -71,8 +80,11 @@ Route::delete('movimiento/destroy', 'MovimientoController@destroy')->name('movim
 
 //Modelos
 Route::get('modelo', 'ModeloController@index')->name('modelo.index')->middleware('permission:modelo_index');
+Route::get('modelo/indexBase', 'ModeloController@indexBase')->name('modelo.indexBase')->middleware('permission:modelo_indexBase');
 Route::get('modelo/{modelo}/show', 'ModeloController@show')->name('modelo.show')->middleware('permission:modelo_show');
 Route::get('modelo/create', 'ModeloController@create')->name('modelo.create')->middleware('permission:modelo_create');
+Route::get('modelo/baseCreate', 'ModeloController@baseCreate')->name('modelo.baseCreate')->middleware('permission:modelo_baseCreate');
+Route::get('modelo/baseModificar/{id}', 'ModeloController@baseModificar')->name('modelo.baseModificar')->middleware('permission:modelo_baseModificar');
 Route::post('modelo', 'ModeloController@store')->name('modelo.store')->middleware('permission:modelo_store');
 Route::get('modelo/{id}/edit', 'ModeloController@edit')->name('modelo.edit')->middleware('permission:modelo_edit');
 Route::post('modelo/update', 'ModeloController@update')->name('modelo.update')->middleware('permission:modelo_update');
@@ -98,15 +110,18 @@ Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('prod
 Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
 Route::post('producto/confirmarProducto/{id}', 'ProductoController@confirmarProducto')->name('producto.confirmarProducto')->middleware('permission:producto_confirmarProducto');;
 // Pedidos
-Route::get('pedido', 'pedidoController@index')->name('pedido.index')->middleware('permission:pedido_index');
-Route::get('pedido/{pedido}/show', 'pedidoController@show')->name('pedido.show')->middleware('permission:pedido_show');
-Route::get('pedido/{id}/preshow', 'pedidoController@preshow')->name('pedido.preshow')->middleware('permission:pedido_preshow');
-Route::get('pedido/create/{id}', 'pedidoController@create')->name('pedido.create')->middleware('permission:pedido_create');
-Route::post('pedido', 'pedidoController@store')->name('pedido.store')->middleware('permission:pedido_store');
-Route::get('pedido/{id}/edit', 'pedidoController@edit')->name('pedido.edit')->middleware('permission:pedido_edit');
-Route::post('pedido/update', 'pedidoController@update')->name('pedido.update')->middleware('permission:pedido_update');
-Route::delete('pedido/destroy/{id}', 'pedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
-Route::get('pedido/misPedidos', 'pedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
+Route::get('pedido', 'PedidoController@index')->name('pedido.index')->middleware('permission:pedido_index');
+Route::get('pedido/{pedido}/show', 'PedidoController@show')->name('pedido.show')->middleware('permission:pedido_show');
+Route::get('pedido/{id}/preshow', 'PedidoController@preshow')->name('pedido.preshow')->middleware('permission:pedido_preshow');
+Route::get('pedido/create/{id}', 'PedidoController@create')->name('pedido.create')->middleware('permission:pedido_create');
+Route::post('pedido', 'PedidoController@store')->name('pedido.store')->middleware('permission:pedido_store');
+Route::get('pedido/{id}/edit', 'PedidoController@edit')->name('pedido.edit')->middleware('permission:pedido_edit');
+Route::post('pedido/update', 'PedidoController@update')->name('pedido.update')->middleware('permission:pedido_update');
+Route::delete('pedido/destroy/{id}', 'PedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
+Route::get('pedido/misPedidos', 'PedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
+Route::get('pedido/confirmarPedido/{id}', 'PedidoController@confirmarPedido')->name('pedido.confirmarPedido')->middleware('permission:pedido_confirmarPedido');
+Route::get('pedido/pagarPedido/{id}', 'PedidoController@pagarPedido')->name('pedido.pagarPedido')->middleware('permission:pedido_pagarPedido');
+Route::post('pedido/terminarPedido/{id}', 'PedidoController@terminarPedido')->name('pedido.terminarPedido')->middleware('permission:pedido_terminarPedido');
 
 // detalle de pedido
 Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
@@ -310,3 +325,7 @@ Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::fallback(function () {
+    return view('errors.404');
+});

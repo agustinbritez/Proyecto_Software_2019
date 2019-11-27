@@ -208,14 +208,14 @@
               <div class="col ">
                 <div id=" " style="max-width: 10rem;" class=" row justify-content-center">
                   @if ($sublimacion->nuevaImagen!=null)
-                  <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}" class=""
-                    height="150" width="180">
+                  <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
+                    class="bg-transparent" height="150" width="180">
 
                   @else
                   @if ($sublimacion->imagen !=null)
                   <img
                     src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                    class="" height="150" width="180">
+                    class="bg-transparent" height="150" width="180">
 
                   @endif
                   @endif
@@ -286,12 +286,12 @@
 
               @if ($sublimacion->forma !=null)
               <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                class="resize-drag" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
+                class="resize-drag bg-transparent" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                 height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                 style="border-radius: {{$sublimacion->forma}}%;">
               @else
               <img src="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
-                class="resize-drag" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
+                class="resize-drag bg-transparent" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                 height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
               @endif
 
@@ -312,7 +312,7 @@
               @if ($sublimacion->imagen!=null)
               <img
                 src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                class="resize-drag" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
+                class="resize-drag bg-transparent" id="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                 height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}">
 
               <input type="hidden" name="imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}_posX"
@@ -422,7 +422,7 @@
               </label>
               <div class=" " style="max-width: 10rem; ">
                 <div id="preview_old" class=" row justify-content-center">
-                  <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150" width="180">
+                  <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="bg-transparent" height="150" width="180">
 
                 </div>
                 <div>
@@ -445,7 +445,7 @@
               </label>
               <div class=" " style="max-width: 10rem; ">
                 <div id="preview_new" class=" row justify-content-center">
-                  <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150" width="180">
+                  <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="bg-transparent" height="150" width="180">
                 </div>
 
                 <div>
@@ -514,7 +514,8 @@
               <div class="form-group">
                 <div class=" " style="max-width: 10rem; ">
                   <div id="preview_producto" class=" row justify-content-center">
-                    <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="" height="150" width="180">
+                    <img src="{{asset('/images/fondoBlanco.jpg')??'' }}" class="bg-transparent" height="150"
+                      width="180">
                   </div>
 
                   <div>
@@ -671,7 +672,7 @@
                                         let preview = document.getElementById(id);
                                         image = document.createElement('img');
                                         image.src = reader.result;
-                                        image.class = 'img-fluid';
+                                        image.class = 'img-fluid bg-transparent';
                                         image.height='150';
                                         image.width='180';
                                         preview.innerHTML = '';

@@ -83,7 +83,8 @@
                                 <tr>
                                     <th>ID Objeto</th>
                                     <th>Tabla</th>
-                                    <th>Usuario</th>
+                                    {{-- <th>Usuario</th> --}}
+                                    <th>ID Usuario</th>
                                     <th>Operacion</th>
                                     <th>Fecha</th>
                                     <th>Hora</th>
@@ -97,7 +98,8 @@
                                 <tr>
                                     <td>{{$auditoria->auditable_id}}</td>
                                     <td>{{ str_replace(['App\\', '$', ' '], '', $auditoria->auditable_type)}}</td>
-                                    <td>{{$auditoria->user->name .' '.$auditoria->user->apellido  }}</td>
+                                    {{-- <td>{{$auditoria->user->name .' '.$auditoria->user->apellido  }}</td> --}}
+                                    <td>{{$auditoria->user_id   }}</td>
                                     <td>{{$auditoria->event }}</td>
                                     <td>{{$auditoria->created_at->format('d/m/Y') }}</td>
                                     <td>{{$auditoria->created_at->format('H:m:s') }}</td>
@@ -148,19 +150,7 @@
 @endsection
 @push('scripts')
 <script>
-    $(document).ready(function(){
-                    
-                    // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
-                    //variables globales 
-                    //indices del data table que uso para el filtro
-                    var indiceNombre=2;
-                    var indiceFecha=4;
-                    var indiceTabla=1;
-                    var medidasGlobal;
-                    var modelosGlobal;
-                    const vacio='Cualquiera';
-                    
-                    var table= $('#data-table').DataTable({
+    var table= $('#data-table').DataTable({
                         "language": {
                             "sProcessing":     "Procesando...",
                             "sLengthMenu":     "Mostrar _MENU_ registros",
@@ -223,6 +213,19 @@
                                                     // }
                                                     // ]
                                                 });
+    $(document).ready(function(){
+                    
+                    // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
+                    //variables globales 
+                    //indices del data table que uso para el filtro
+                    var indiceNombre=2;
+                    var indiceFecha=4;
+                    var indiceTabla=1;
+                    var medidasGlobal;
+                    var modelosGlobal;
+                    const vacio='Cualquiera';
+                    
+                 
                                                 
                                                 //****************************************** FILTRO DE LA TABLA**************************************************************
                                                 function filtro_funcion(){
