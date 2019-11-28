@@ -112,7 +112,6 @@ class PedidoController extends Controller
         if (!is_null($pedido->pago_id)) {
             return redirect()->route('pedido.misPedidos')->withErrors('El pedido ya se encuentra pagado');
         }
-
         if ($request != null) {
 
             if (strtoupper($pedido->estado->nombre) == strtoupper($espera->nombre)) {

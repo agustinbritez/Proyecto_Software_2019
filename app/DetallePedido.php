@@ -52,4 +52,9 @@ class DetallePedido extends Model implements Auditable
         }
         return $this->updated_at->diffForHumans();
     }
+
+    public function getEstadoFinal()
+    {
+        return $this->producto->modelo->flujoTrabajo->getEstadoFinal();
+    }
 }

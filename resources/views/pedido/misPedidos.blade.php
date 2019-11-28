@@ -176,7 +176,7 @@
                                                 <th scope="col">Detalle</th>
                                                 <th scope="col">Cantidad</th>
                                                 <th scope="col">Estado</th>
-                                                <th scope="col">Verificado</th>
+                                                {{-- <th scope="col">Verificado</th> --}}
                                                 <th>&nbsp;</th>
                                             </tr>
                                         </thead>
@@ -192,207 +192,213 @@
                                                 <td>{{$detalle->detalle}}</td>
                                                 <td>{{$detalle->cantidad}}</td>
                                                 @if ($detalle->estado !=null)
-                                                <td>{{$detalle->estado->nombre}}</td>
+                                                {{-- <td>{{$detalle->estado->nombre}}</td>
 
-                                                @else
-                                                <td>Sin Estado</td>
+                                                @else --}}
+                                                <td>
+                                                    @if ($detalle->getEstadoFinal()->id == $detalle->estado->id)
+                                                    <span
+                                                        class="badge badge-danger">{{$detalle->estado->nombre ?? 'Sin Estado'}}
+                                                    </span>
+
+                                                    @else
+                                                    <span
+                                                        class="badge badge-warning">{{$detalle->estado->nombre ?? 'Sin Estado'}}
+                                                    </span>
+
+                                                    @endif
+                                                </td>
 
                                                 @endif
-                                                <td>
-                                                    @if (!is_null($pedido->pago_id))
-                                                    @if (is_null($detalle->verificado))
-                                                    <div class=" text-center "
-                                                        title="El producto esta en espera para ser revisado por la empresa">
-                                                        <i class="icon fas fa-exclamation-triangle alert-warning  p-0 m-0"
-                                                            style="font-size: 200%; border-radius: 10%"></i>
-                                                        <p class="alert-warning p-0 m-0 " style="border-radius: 10%">En
-                                                            Verificacion!</p>
-                                                    </div>
+                                                {{-- <td>
+                                                        @if (!is_null($pedido->pago_id))
+                                                        @if (is_null($detalle->verificado))
+                                                        <div class=" text-center "
+                                                            title="El producto esta en espera para ser revisado por la empresa">
+                                                            <i class="icon fas fa-exclamation-triangle alert-warning  p-0 m-0"
+                                                                style="font-size: 200%; border-radius: 10%"></i>
+                                                            <p class="alert-warning p-0 m-0 " style="border-radius: 10%">En
+                                                                Verificacion!</p>
+                                                        </div>
 
 
 
-                                                    @else
-                                                    @if ($detalle->verificado)
-                                                    <div class=" text-center "
-                                                        title="El producto fue aprobado para la produccion">
-                                                        <i class="icon fas fa-check alert-success  p-0 m-0"
-                                                            style="font-size: 200%; border-radius: 10%"></i>
-                                                        <p class="alert-success p-0 m-0 " style="border-radius: 10%">
-                                                            Aprobado!</p>
-                                                    </div>
-
-                                                    @else
-                                                    <div class=" text-center "
-                                                        title="El producto fue rechazado debe revisar las imagenes y materias primas">
-                                                        <i class="icon fas fa-ban alert-danger  p-0 m-0"
-                                                            style="font-size: 200%; border-radius: 100%"></i>
-                                                        <p class="alert-danger p-0 m-0 " style="border-radius: 10%">
-                                                            {{$detalle->aviso}}</p>
-                                                    </div>
-
-
-
-
-
-                                                    @endif
-
-                                                    @endif
-                                                    @else
-                                                    Falta Pagar
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="row">
-
-                                                        @if (!is_null($detalle->pedido))
-
-
-                                                        @if ($detalle->pedido->pago_id)
-                                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}"
-                                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                                            class="show btn btn-outline-primary btn-sm">Ver
-                                                            Producto</a>
                                                         @else
-                                                        @if ($detalle->producto->user->id==auth()->user()->id)
                                                         @if ($detalle->verificado)
-                                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}"
-                                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                                            class="show btn btn-outline-primary btn-sm">Ver
-                                                            Producto</a>
-                                                        @else
-                                                        @if ($detalle->producto->final)
-                                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}"
-                                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                                            class="show btn btn-outline-primary btn-sm">Ver
-                                                            Producto</a>
-                                                        @else
-
-                                                        <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
-                                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                                            class="show btn btn-outline-primary btn-sm">Editar
-                                                            Producto</a>
-                                                        @endif
-
-
-                                                        @endif
-                                                        <div class="col">
-                                                            <button type="button" name="edit" data-id="{{$detalle->id}}"
-                                                                class="edit btn btn-outline-info btn-sm">Editar
-                                                                detalle</button>
-
-                                                        </div>
-                                                        @if (is_null($pedido->preference_id))
-
-                                                        <div class="col">
-
-
-                                                            <button type="submit" name="delete" id="{{$detalle->id}}"
-                                                                class="deleteDetalle btn btn-outline-danger btn-sm">Eliminar</button>
-
-                                                        </div>
-                                                        @endif
-
-                                                        @else
-                                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}"
-                                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                                            class="show btn btn-outline-primary btn-sm">Ver
-                                                            Producto</a>
-
-                                                        @endif
-
-
-
-                                                        @endif
-                                                        @endif
-
-
-
-
-
-
-
-
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            @endif
-                                            @endforeach
-                                            @if (is_null($pedido->pago_id))
-                                            @if (is_null($pedido->preference_id))
-
-                                            <tr>
-                                                <th colspan="8" style="font-size: 18px">
-                                                    <div class="row">
-                                                        <div class="col">
-
-                                                            <a href="{{ route('producto.tienda') }}" class="">
-                                                                <button type="button"
-                                                                    class="btn btn-outline-success btn-sm">Añadir
-                                                                    Nuevo Producto</button>
-
-
-                                                            </a>
+                                                        <div class=" text-center "
+                                                            title="El producto fue aprobado para la produccion">
+                                                            <i class="icon fas fa-check alert-success  p-0 m-0"
+                                                                style="font-size: 200%; border-radius: 10%"></i>
+                                                            <p class="alert-success p-0 m-0 " style="border-radius: 10%">
+                                                                Aprobado!</p>
                                                         </div>
 
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                            @endif
-                                            @endif
-
-
-                                            <tr>
-                                                <th colspan="7" style="font-size: 18px">Total :
-                                                    ${{$pedido->getPrecio()}}
-                                                </th>
-                                                <th>
-                                                    @if (is_null($pedido->pago_id))
-
-                                                    @if ($pedido->estado->id
-                                                    ==$pedido->flujoTrabajo->getEstadoInicial()->id )
-                                                    <form action="{{ route('pedido.confirmarPedido', $pedido->id) }}">
-
-                                                        <button type="submit" name="confirmarPedido"
-                                                            class=" btn btn-success btn-md">Confirmar
-                                                            Pedido</button>
-                                                    </form>
-
-                                                    @else
-
-                                                    <a type="button" name="pagarPedido" class=" btn btn-success btn-md"
-                                                        href="{{$pedido->rutaDePago}}">Confirmar
-                                                        Pago</a>
-
-                                                    @endif
-
-
-                                                    @endif
-
-
-                                                </th>
-                                            </tr>
-
-                                        </tbody>
-                                    </table>
+                                                        @else
+                                                        <div class=" text-center "
+                                                            title="El producto fue rechazado debe revisar las imagenes y materias primas">
+                                                            <i class="icon fas fa-ban alert-danger  p-0 m-0"
+                                                                style="font-size: 200%; border-radius: 100%"></i>
+                                                            <p class="alert-danger p-0 m-0 " style="border-radius: 10%">
+                                                                {{$detalle->aviso}}</p>
                                 </div>
+
+
+
+
+
+                                @endif
+
+                                @endif
+                                @else
+                                Falta Pagar
+                                @endif
+                                </td> --}}
+                                <td>
+                                    <div class="row">
+
+                                        @if (!is_null($detalle->pedido))
+
+
+                                        @if ($detalle->pedido->pago_id)
+                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                            name="show" id="{{$detalle->producto->id}}"
+                                            class="show btn btn-outline-primary btn-sm">Ver
+                                            Producto</a>
+                                        @else
+                                        @if ($detalle->producto->user->id==auth()->user()->id)
+                                        @if ($detalle->verificado)
+                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                            name="show" id="{{$detalle->producto->id}}"
+                                            class="show btn btn-outline-primary btn-sm">Ver
+                                            Producto</a>
+                                        @else
+                                        @if ($detalle->producto->final)
+                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                            name="show" id="{{$detalle->producto->id}}"
+                                            class="show btn btn-outline-primary btn-sm">Ver
+                                            Producto</a>
+                                        @else
+
+                                        <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
+                                            type="button" name="show" id="{{$detalle->producto->id}}"
+                                            class="show btn btn-outline-primary btn-sm">Editar
+                                            Producto</a>
+                                        @endif
+
+
+                                        @endif
+                                        <div class="col">
+                                            <button type="button" name="edit" data-id="{{$detalle->id}}"
+                                                class="edit btn btn-outline-info btn-sm">Editar
+                                                detalle</button>
+
+                                        </div>
+                                        @if (is_null($pedido->preference_id))
+
+                                        <div class="col">
+
+
+                                            <button type="submit" name="delete" id="{{$detalle->id}}"
+                                                class="deleteDetalle btn btn-outline-danger btn-sm">Eliminar</button>
+
+                                        </div>
+                                        @endif
+
+                                        @else
+                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                            name="show" id="{{$detalle->producto->id}}"
+                                            class="show btn btn-outline-primary btn-sm">Ver
+                                            Producto</a>
+
+                                        @endif
+
+
+
+                                        @endif
+                                        @endif
+
+
+
+
+
+
+
+
+                                    </div>
+                                </td>
+                                </tr>
+                                @endif
+                                @endforeach
+                                @if (is_null($pedido->pago_id))
+                                @if (is_null($pedido->preference_id))
+
+                                <tr>
+                                    <th colspan="8" style="font-size: 18px">
+                                        <div class="row">
+                                            <div class="col">
+
+                                                <a href="{{ route('producto.tienda') }}" class="">
+                                                    <button type="button" class="btn btn-outline-success btn-sm">Añadir
+                                                        Nuevo Producto</button>
+
+
+                                                </a>
+                                            </div>
+
+                                        </div>
+                                    </th>
+                                </tr>
+                                @endif
+                                @endif
+
+
+                                <tr>
+                                    <th colspan="7" style="font-size: 18px">Total :
+                                        ${{$pedido->getPrecio()}}
+                                    </th>
+                                    <th>
+                                        @if (is_null($pedido->pago_id))
+
+                                        @if ($pedido->estado->id
+                                        ==$pedido->flujoTrabajo->getEstadoInicial()->id )
+                                        <form action="{{ route('pedido.confirmarPedido', $pedido->id) }}">
+
+                                            <button type="submit" name="confirmarPedido"
+                                                class=" btn btn-success btn-md">Pagar
+                                                Pedido</button>
+                                        </form>
+
+
+                                        @endif
+
+
+                                        @endif
+
+
+                                    </th>
+                                </tr>
+
+                                </tbody>
+                                </table>
                             </div>
                         </div>
-
-
-                        @endforeach
                     </div>
 
 
-
-
-
+                    @endforeach
                 </div>
-                <div class="card-footer text-muted">
-                    {{-- 2 days ago --}}
-                </div>
+
+
+
+
+
+            </div>
+            <div class="card-footer text-muted">
+                {{-- 2 days ago --}}
             </div>
         </div>
     </div>
+</div>
 </div>
 
 @endsection

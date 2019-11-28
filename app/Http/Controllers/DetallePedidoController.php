@@ -160,7 +160,15 @@ class DetallePedidoController extends Controller
                     $mensaje = array_merge($mensaje, ['warning' => 'No se actualizo el producto al siguiente estado.']);
                 }
             }
-
+            //si es el utlimo estado y todo los detalle de pedido estan terminados
+            if ($detalle->getEstadoFinal()->id == $estadoSiguiente->id) {
+                if ($detalle->pedido->puedeTerminar()) {
+                    $detalle->pedido->terminado = 1;
+                    $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->getEstadoFinal()->id;
+                    $detalle->pedido->update();
+                    $mensaje = array_merge($mensaje, ['final'=>true]);
+                }
+            }
 
             return response()->json($mensaje);
         }

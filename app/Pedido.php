@@ -50,4 +50,27 @@ class Pedido extends Model implements Auditable
         $fecha = Carbon::create($this->cambioEstado)->format('d/m/Y');
         return $fecha;
     }
+    public function getCantidadProductos()
+    {
+        $cantidadProductos = 0;
+
+        foreach ($this->detallePedidos as $key => $detalle) {
+            # code...
+            $cantidadProductos += $detalle->cantidad;
+        }
+
+        return $cantidadProductos;
+    }
+    //si existe algun detalle de pedido que no esta en estado final no puede terminar
+    public function puedeTerminar()
+    {
+        # code...
+        foreach ($this->detallePedidos as $key => $detalle) {
+            # code...
+            if ($detalle->getEstadoFinal()->id != $detalle->estado->id) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

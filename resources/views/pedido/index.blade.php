@@ -114,14 +114,15 @@
                                 <tr>
                                     <td>{{$pedido->id}} </td>
                                     <td align="right">
-                                        @if (!$pedido->detallePedidos->isEmpty())
+                                        {{$pedido->getCantidadProductos()}}
+                                        {{-- @if (!$pedido->detallePedidos->isEmpty())
                                         @foreach ($pedido->detallePedidos as $detalle)
                                         <input type="hidden" name="" id="{{$cantidadProductos+=$detalle->cantidad}}">
                                         @endforeach
                                         {{$cantidadProductos}}
                                         @else
                                         0
-                                        @endif
+                                        @endif --}}
 
                                     </td>
                                     <td align="right">${{$pedido->precio ?? 'No pagado'}} </td>
@@ -176,7 +177,7 @@
                                         @if ($pedido->terminado)
                                         Si
                                         @else
-                                        No 
+                                        No
                                         @endif
 
 

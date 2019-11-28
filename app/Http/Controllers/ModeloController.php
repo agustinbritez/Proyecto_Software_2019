@@ -345,17 +345,18 @@ class ModeloController extends Controller
                 // }
                 //si el modelo ya tiene el ingrediente que se desea agregar lo rechaza
                 if ($request->hidden_modelo_base != 0) {
+                    $materiaPrimis = MateriaPrima::find($request->ingredientes);
+                    if ($materiaPrimis != null) {
+                        if ($materiaPrimis->medida->id != $modelo->medida->id) {
+                            return response()->json(['errors' => ['La materia prima que se quiere agregar al modelo tiene la unidad de medida diferente, deben ser iguales']]);
+                        }
+                    }
                     foreach ($modelo->recetaPadre as $key => $receta) {
                         if ($receta->materiaPrima != null) {
                             if ($receta->materiaPrima->id == $request->ingredientes) {
                                 return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
                             }
-                            $materiaPrimis = MateriaPrima::find($request->ingredientes);
-                            if ($materiaPrimis != null) {
-                                if ($materiaPrimis->medida->id != $modelo->medida->id) {
-                                    return response()->json(['errors' => ['La materia prima que se quiere agregar al modelo tiene la unidad de medida diferente deben ser iguales']]);
-                                }
-                            }
+                            
                         }
                     }
                     //si el check esta seleccionado quiere decir que trajo una materia prima
