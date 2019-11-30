@@ -63,6 +63,17 @@ class Producto extends Model implements Auditable
     {
         return $this->hasMany(MateriaPrimaSeleccionada::class, 'producto_id');
     }
-
-  
+    public function cantidadImagenes()
+    {
+        # code...
+        if ($this->sublimaciones->isEmpty()) {
+            return 0;
+        }
+        $contar = 0;
+        foreach ($this->sublimaciones as $key => $sublimacion) {
+            # code...
+            $contar++;
+        }
+        return $contar;
+    }
 }

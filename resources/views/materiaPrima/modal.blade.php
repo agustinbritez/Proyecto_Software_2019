@@ -39,7 +39,22 @@
                             <textarea type="text" class="form-control" aria-label="With textarea" name="detalle"
                                 id="detalle"> </textarea>
                         </div>
+                        <div class="form-group">
+                            <label>Proveedores : </label>
+                            <select class="select2" multiple="multiple" id='proveedores' name="proveedores[]"
+                                data-placeholder="Seleccione Un Proveedor" style="width: 100%;">
 
+
+                                @if(sizeof($proveedores)>0)
+                                @foreach ($proveedores as $proveedor)
+                                <option value="{{$proveedor->id}}">{{$proveedor->nombre}}</option>
+                                @endforeach
+
+                                @endif
+
+
+                            </select>
+                        </div>
                         <div class="form-group " id="cantidad_nueva" style="display: none">
                             <label class="control-label">Cantidad Inicial : </label>
 
@@ -439,15 +454,27 @@
                                 $('#medidaSeleccionada').text( html.medida.nombre);
                                 //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
                                 
-                                $('#modelos').find('option').remove();
-                                html.totalModelos.forEach(modelo => {
-                                    $('#modelos').append($('<option>', {
-                                        value: modelo.id,
-                                        text: modelo.nombre,
+                                // $('#modelos').find('option').remove();
+                                // html.totalModelos.forEach(modelo => {
+                                //     $('#modelos').append($('<option>', {
+                                //         value: modelo.id,
+                                //         text: modelo.nombre,
+                                //     }));
+                                // });
+                                // html.modelos.forEach(modelo => {
+                                //     $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
+                                // });
+                                //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
+                                
+                                $('#proveedores').find('option').remove();
+                                html.totalProveedores.forEach(prove => {
+                                    $('#proveedores').append($('<option>', {
+                                        value: prove.id,
+                                        text: prove.nombre,
                                     }));
                                 });
-                                html.modelos.forEach(modelo => {
-                                    $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
+                                html.proveedores.forEach(provi => {
+                                    $('#proveedores option[value="'+provi.id+'"]').attr('selected','selected');
                                 });
                                 //*******************************Cargar el selected de Medidas SELECT SIMPLE********************************************
                                 $('#medida_id').find('option').remove();

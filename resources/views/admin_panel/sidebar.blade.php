@@ -85,6 +85,7 @@
                 <p>Tienda</p>
               </a>
             </li>
+
           </ul>
 
 
@@ -169,7 +170,12 @@
                 <p>Todos los Pedidos</p>
               </a>
             </li>
-
+            <li class="nav-item">
+              <a href="{{ route('pedido.trabajo') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Trabajos</p>
+              </a>
+            </li>
           </ul>
 
         </li>

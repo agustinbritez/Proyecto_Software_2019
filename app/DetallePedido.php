@@ -57,4 +57,15 @@ class DetallePedido extends Model implements Auditable
     {
         return $this->producto->modelo->flujoTrabajo->getEstadoFinal();
     }
+
+
+    //obtiene la cantidad de dias que estuvo el producto desde que se pago hasta que se termino
+    public function getDiasEnProduccion()
+    {
+        # code...
+        $fechaPago = new Carbon($this->pedido->fechaPago);
+        $fechaTerminado = new Carbon($this->fechaTerminado);
+        //le sumo uno porque si la diferencia es 0 significa que se hizo todo en el mismo dia
+        return $fechaPago->diffInDays($fechaTerminado) + 1;
+    }
 }

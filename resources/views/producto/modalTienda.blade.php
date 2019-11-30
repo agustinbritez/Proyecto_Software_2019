@@ -23,7 +23,7 @@
 
                                 <div class="card" style="width: 15rem; ">
                                     <img src="{{ asset('/imagenes/modelos/'.$modelo->imagenPrincipal) }}"
-                                        class="card-img-top" alt="...">
+                                        class="card-img-top" alt="..." height="250 px">
                                     <div class="card-body">
                                         <div class="text-center">
                                             <div class="text-justify"> </div>

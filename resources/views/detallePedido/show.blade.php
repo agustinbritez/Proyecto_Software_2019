@@ -184,29 +184,29 @@
 
 
                     {{-- <div class="form-group  ">
-                        <div class="col">
-
-                            <label class="control-label">Verificado: </label>
-                        </div>
-                    </div> --}}
+                            <div class="col">
+                                
+                                <label class="control-label">Verificado: </label>
+                            </div>
+                        </div> --}}
                     <div class="form-group  ">
                         <div class="col">
 
                             @if ($detallePedido->verificado)
                             {{-- <div class="row">
-
-                                <div class="form-group  ">
-                                    <div class="col">
-
-                                        <span class="badge badge-success">Verificado
-                                        </span>
+                                    
+                                    <div class="form-group  ">
+                                        <div class="col">
+                                            
+                                            <span class="badge badge-success">Verificado
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
-
-                                <div class="form-group  ">
-                                    <div class="col">
-
-                                        <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
+                                    
+                                    <div class="form-group  ">
+                                        <div class="col">
+                                            
+                                            <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
                         </div>
                     </div>
 
@@ -215,29 +215,29 @@
                 @else
                 <div class="row">
                     {{-- @if (is_null($detallePedido->verificado))
-                                <div class="col">
-
-                                    <div class="form-group  ">
-                                        <span class="badge badge-warning">Sin Verificar
-                                        </span>
-                                    </div>
-                                </div>
-
-
-                                @else
-                                <div class="row">
-                                    <div class="col">
-
-                                        <div class="form-group  ">
-                                            <span class="badge badge-danger">Rechazado
-                                            </span>
+                                        <div class="col">
+                                            
+                                            <div class="form-group  ">
+                                                <span class="badge badge-warning">Sin Verificar
+                                                </span>
+                                            </div>
                                         </div>
-
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-group  ">
-
-                                            <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
+                                        
+                                        
+                                        @else
+                                        <div class="row">
+                                            <div class="col">
+                                                
+                                                <div class="form-group  ">
+                                                    <span class="badge badge-danger">Rechazado
+                                                    </span>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="col">
+                                                <div class="form-group  ">
+                                                    
+                                                    <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
                 </div>
             </div>
 
@@ -246,23 +246,23 @@
             @endif --}}
 
             {{-- <div class="col">
-
-                                        <input type="button" name="botonVerificar" id="botonVerificar" required
-                                            placeholder="" class="btn btn-success" value="Verificar" />
-
-
-                                    </div> --}}
+                                                
+                                                <input type="button" name="botonVerificar" id="botonVerificar" required
+                                                placeholder="" class="btn btn-success" value="Verificar" />
+                                                
+                                                
+                                            </div> --}}
             {{-- <div class="col">
+                                                
+                                                <input type="submit" name="botonRechazar" id="botonRechazar" required
+                                                placeholder="" class="btn btn-danger" value="Rechazar" />
+                                                
+                                            </div> --}}
 
-                                        <input type="submit" name="botonRechazar" id="botonRechazar" required
-                                            placeholder="" class="btn btn-danger" value="Rechazar" />
-
-                                    </div> --}}
-
+            {{-- </div> --}}
         </div>
+        @endif
     </div>
-    @endif
-</div>
 
 
 </div>
@@ -295,7 +295,7 @@
 </div>
 </div>
 
-
+</div>
 <div class="card-footer">
     <div class="row justify-content-around">
 
@@ -304,8 +304,8 @@
 
         @if ($detallePedido->pedido->terminado)
         {{-- <button type="button" class="estadoAnterior btn btn-outline-danger " id="botonAnterior"><i
-                class="fad fa-arrow-left"></i>
-            Estado Anterior</button> --}}
+                                    class="fad fa-arrow-left"></i>
+                                    Estado Anterior</button> --}}
 
 
 
@@ -323,11 +323,11 @@
     </div>
 </div>
 <!-- /.card-footer -->
+
 </div>
 </div>
 <div class="col-2"></div>
 </div>
-
 
 
 
@@ -357,51 +357,51 @@
                 {{-- Se le pasa todos los modelos que tiene materia primas asociadas directamente en su recetas --}}
                 <div class="card-body">
                     {{-- <div class="container" style="margin-top:30px;">
-                                        <div class="row">
-                                            <div class="col">
-                                                
-                                                <ul id="tree3">
-                                                    <li><a href="#">TECH</a>
+                                                <div class="row">
+                                                    <div class="col">
                                                         
-                                                        <ul>
-                                                            <li>Company Maintenance</li>
-                                                            <li>Employees
+                                                        <ul id="tree3">
+                                                            <li><a href="#">TECH</a>
+                                                                
                                                                 <ul>
-                                                                    <li>Reports
+                                                                    <li>Company Maintenance</li>
+                                                                    <li>Employees
                                                                         <ul>
-                                                                            <li>Report1</li>
-                                                                            <li>Report2</li>
-                                                                            <li>Report3</li>
+                                                                            <li>Reports
+                                                                                <ul>
+                                                                                    <li>Report1</li>
+                                                                                    <li>Report2</li>
+                                                                                    <li>Report3</li>
+                                                                                </ul>
+                                                                            </li>
+                                                                            <li>Employee Maint.</li>
                                                                         </ul>
                                                                     </li>
-                                                                    <li>Employee Maint.</li>
+                                                                    <li>Human Resources</li>
                                                                 </ul>
                                                             </li>
-                                                            <li>Human Resources</li>
-                                                        </ul>
-                                                    </li>
-                                                    <li>XRP
-                                                        <ul>
-                                                            <li>Company Maintenance</li>
-                                                            <li>Employees
+                                                            <li>XRP
                                                                 <ul>
-                                                                    <li>Reports
+                                                                    <li>Company Maintenance</li>
+                                                                    <li>Employees
                                                                         <ul>
-                                                                            <li>Report1</li>
-                                                                            <li>Report2</li>
-                                                                            <li>Report3</li>
+                                                                            <li>Reports
+                                                                                <ul>
+                                                                                    <li>Report1</li>
+                                                                                    <li>Report2</li>
+                                                                                    <li>Report3</li>
+                                                                                </ul>
+                                                                            </li>
+                                                                            <li>Employee Maint.</li>
                                                                         </ul>
                                                                     </li>
-                                                                    <li>Employee Maint.</li>
+                                                                    <li>Human Resources</li>
                                                                 </ul>
                                                             </li>
-                                                            <li>Human Resources</li>
                                                         </ul>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div> --}}
+                                                    </div>
+                                                </div>
+                                            </div> --}}
 
 
                     <table class='table table-bordered table-striped table-hover '>
@@ -838,362 +838,373 @@
 @push('scripts')
 <script>
     var posx;
-                            var poxy;
-                            var alto;
-                            var ancho;
-                            var limiteImagen=6;
-                            var cantidadComponente= parseInt( "{{$cantidadComponente}}");
-                            var cantidadImagenes= 0;
-                            $(document).ready(function(){
-                                $('.cantidadImagenes_x').val(0);
-                                //*****************************cargar posiciones****************************************
-                                //  $('#componentes option:eq(0)').prop('selected', true);
-                                $('#componentes').prop('selectedIndex', 0);
-                                
-                                
-                                
-                            });
-                            interact('.resize-drag')
-                            .draggable({
-                                onmove: window.dragMoveListener,
-                                modifiers: [
-                                interact.modifiers.restrictRect({
-                                    restriction: 'parent'
-                                })
-                                ]
-                            });
-                            
-                            
-                            function dragMoveListener(event) {
-                                // var idNumeroDeImagen= event.target.getAttribute('data-id');
-                                // var idNumeroDeComponente= event.target.getAttribute('data-componente');
-                                // var comprobacion= event.target.getAttribute('data-imagen-sistema');
-                                
-                                var target = event.target;
-                                console.log($('#'+target.id+'_posX').val());
-                                if(($('#'+target.id+'_posX').val()!=null)&&($('#'+target.id+'_posX').val()!='')){
-                                    x=parseFloat($('#'+target.id+'_posX').val());
-                                }else{
-                                    x=0;
-                                }
-                                
-                                if(($('#'+target.id+'_posY').val()!=null)&&($('#'+target.id+'_posY').val()!='')){
-                                    y=parseFloat($('#'+target.id+'_posY').val());
-                                }else{
-                                    y=0;
-                                }
-                                
-                                target.style.webkitTransform =
-                                target.style.transform =
-                                'translate(' + x + 'px, ' + y + 'px)'
-                                
-                                // update the posiion attributes
-                                target.setAttribute('data-x', x)
-                                target.setAttribute('data-y', y)
-                                
-                                
-                            }
-                            
-                            // this is used later in the resizing and gesture demos
-                            window.dragMoveListener = dragMoveListener;
-                            
-                            
-                            
-                            
-                            
-                            
-                            for (let indiceComponente = 0; indiceComponente < cantidadComponente; indiceComponente++) {
-                                cantidadImagenes=document.getElementById('cantidadImagen_componente_'+indiceComponente).value;
-                                
-                                for (let index = 0; index < cantidadImagenes; index++) {
-                                    imagen=document.getElementById('imagen_'+index+'_componente_'+indiceComponente);
-                                    if(imagen!=null)
-                                    {
-                                        
-                                        
-                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val()!='')){
+                                            var poxy;
+                                            var alto;
+                                            var ancho;
+                                            var limiteImagen=6;
+                                            var cantidadComponente= parseInt( "{{$cantidadComponente}}");
+                                            var cantidadImagenes= 0;
+                                            $(document).ready(function(){
+                                                $('.cantidadImagenes_x').val(0);
+                                                //*****************************cargar posiciones****************************************
+                                                //  $('#componentes option:eq(0)').prop('selected', true);
+                                                $('#componentes').prop('selectedIndex', 0);
+                                                
+                                                
+                                                
+                                            });
+                                            interact('.resize-drag')
+                                            .draggable({
+                                                onmove: window.dragMoveListener,
+                                                modifiers: [
+                                                interact.modifiers.restrictRect({
+                                                    restriction: 'parent'
+                                                })
+                                                ]
+                                            });
                                             
-                                            // posy=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val());
-                                            ancho=imagen.style.width=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val());
                                             
-                                        }else{
-                                            ancho=  imagen.style.width=120+'px';
-                                        }
-                                        
-                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val()!='')){
-                                            posx=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val());
-                                        }else{
-                                            posx=0;
-                                        }
-                                        
-                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val()!='')){
-                                            posy=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val());
-                                        }else{
-                                            posy=0;
-                                        }
-                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val()!='')){
-                                            alto= imagen.style.height=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val());
-                                        }else{
-                                            alto= imagen.style.height=50+'px';
-                                        }
-                                        
-                                        console.log('x: '+posx+' y: '+posy+' alto:'+alto +' ancho: '+ancho);
-                                        
-                                        imagen.style.transform = 'translate(' + posx + 'px, ' + posy + 'px)';
-                                    }
-                                    // document.getElementById('imagen_'+index+'_componente_'+indiceComponente).setAttribute('value', document.getElementById(''));
-                                    // document.getElementById('imagen_'+index+'_componente_'+indiceComponente+'_alto').setAttribute('value',alto);
-                                    
-                                    
-                                }
-                                
-                            } 
-                            
-                            
-                            
-                            
-                            //*********************************cambiar los componente**********************************8
-                            function cambiar(){
-                                
-                                var select = document.getElementById("componentes"); //El <select>
-                                    
-                                    value = select.value; //El valor seleccionado
-                                    for (let index = 0; index < cantidadComponente; index++) {
-                                        document.getElementById("componente_"+index).style.display='none';
-                                        
-                                    }
-                                    numeroComponente=select.options[select.selectedIndex].getAttribute('data-componente') ;
-                                    document.getElementById("componente_"+numeroComponente).style.display='block';
-                                    
-                                    // text = select.options[select.selectedIndex].innerText; //El texto de la opción seleccionada
-                                    console.log(numeroComponente);
-                                    
-                                }
-                                
-                                $('#prueba2').click(function(){
-                                    
-                                    $('#cantidadImagenes').val(cantidadImagenes);
-                                    
-                                    console.log('pos x: '+$('#posX').val() +'\n pos y: '+$('#posY').val());
-                                });
-                                
-                                $(document).on('click', '.edit', function(){
-                                    var idSubli=$(this).attr('data-id'); 
-                                    var url="{{route('sublimacion.update',":id")}}";
-                                    url=url.replace(':id',idSubli);
-                                    $('#sample_form').attr('action',url);
-                                    $('.modal-title').text("Cambiar Imagen");
-                                    $('#formModal').modal('show');
-                                    
-                                    
-                                });   
-                                
-                                
-                                //*********************************************************cargar imagen en las sublimaciones**********************************
-                                function cargar(id){
-                                    // Creamos el objeto de la clase FileReader
-                                    
-                                    let reader = new FileReader();
-                                    // Leemos el archivo subido y se lo pasamos a nuestro fileReader
-                                    reader.readAsDataURL(this.event.target.files[0]);
-                                    
-                                    // Le decimos que cuando este listo ejecute el código interno
-                                    reader.onload = function(){
-                                        let preview = document.getElementById(id);
-                                        image = document.createElement('img');
-                                        image.src = reader.result;
-                                        image.class = 'img-fluid bg-transparent';
-                                        image.height='150';
-                                        image.width='180';
-                                        preview.innerHTML = '';
-                                        preview.append(image);
-                                        
-                                    };
-                                };
-                                
-                                $.fn.extend({
-                                    treed: function (o) {
-                                        
-                                        var openedClass = 'glyphicon-minus-sign';
-                                        var closedClass = 'glyphicon-plus-sign';
-                                        
-                                        if (typeof o != 'undefined'){
-                                            if (typeof o.openedClass != 'undefined'){
-                                                openedClass = o.openedClass;
-                                            }
-                                            if (typeof o.closedClass != 'undefined'){
-                                                closedClass = o.closedClass;
-                                            }
-                                        };
-                                        
-                                        //initialize each of the top levels
-                                        var tree = $(this);
-                                        tree.addClass("tree");
-                                        tree.find('li').has("ul").each(function () {
-                                            var branch = $(this); //li with children ul
-                                            branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
-                                            branch.addClass('branch');
-                                            branch.on('click', function (e) {
-                                                if (this == e.target) {
-                                                    var icon = $(this).children('i:first');
-                                                    icon.toggleClass(openedClass + " " + closedClass);
-                                                    $(this).children().children().toggle();
-                                                }
-                                            })
-                                            branch.children().children().toggle();
-                                        });
-                                        //fire event from the dynamically added icon
-                                        tree.find('.branch .indicator').each(function(){
-                                            $(this).on('click', function () {
-                                                $(this).closest('li').click();
-                                            });
-                                        });
-                                        //fire event to open branch if the li contains an anchor instead of text
-                                        tree.find('.branch>a').each(function () {
-                                            $(this).on('click', function (e) {
-                                                $(this).closest('li').click();
-                                                e.preventDefault();
-                                            });
-                                        });
-                                        //fire event to open branch if the li contains a button instead of text
-                                        tree.find('.branch>button').each(function () {
-                                            $(this).on('click', function (e) {
-                                                $(this).closest('li').click();
-                                                e.preventDefault();
-                                            });
-                                        });
-                                    }
-                                });
-                                
-                                //Initialization of treeviews
-                                
-                                // $('#tree1').treed();
-                                
-                                // $('#tree2').treed({openedClass:'glyphicon-folder-open', closedClass:'glyphicon-folder-close'});
-                                
-                                $('#tree3').treed({openedClass:'glyphicon-chevron-right', closedClass:'glyphicon-chevron-down'});
-                                
-                                $('#botonVerificar').click(function(){
-                                    
-                                    $('#formVerificar').attr('method','GET');
-                                    $('#formVerificar').attr('action','{{route("detallePedido.verificarDetalle",$detallePedido->id)}}')
-                                    $('#mensajeVerificacion').text('¿Esta seguro que el producto se encuentra en condiciones de ser aprobado ?');
-                                    document.getElementById('aviso_oculto').style.display='none';
-                                    document.getElementById('confirmarProducto_oculto').style.display='none';
-
-                                    $('#verificarModal').modal('show');
-                                    
-                                });
-                                $('#botonRechazar').click(function(){
-                                    
-                                    $('#formVerificar').attr('method','GET');
-                                    $('#formVerificar').attr('action','{{route("detallePedido.rechazarDetalle",$detallePedido->id)}}')
-                                    $('#mensajeVerificacion').text('¿Esta seguro que rechaza el producto para su produccion?');
-                                    document.getElementById('aviso_oculto').style.display='block';
-                                    document.getElementById('confirmarProducto_oculto').style.display='none';
-
-                                    
-                                    $('#verificarModal').modal('show');
-                                    
-                                });
-                                $('#botonConfirmarProducto').click(function(){
-                                    $('#formVerificar').attr('method','POST');
-                                    $('#formVerificar').attr('action','{{route("producto.confirmarProducto",$detallePedido->producto->id)}}')
-                                    $('#mensajeVerificacion').text('Los productos finalizados se muestran en la tienda ¿Esta seguro que desea mostrarlo?');
-                                    document.getElementById('confirmarProducto_oculto').style.display='block';
-                                    document.getElementById('aviso_oculto').style.display='none';
-                                    $('#verificarModal').modal('show');
-                                });
-                                
-                                
-                                
-                                $('#botonAnterior').click(function(){
-                                    
-                                    var idDetalle='{{$detallePedido->id}}';
-                                    url2="{{route('detallePedido.estadoAnterior',":id")}}";
-                                    
-                                    url2=url2.replace(':id',idDetalle);
-                                    
-                                    cambiarEstado(url2);
-                                });
-                                $('#botonSiguiente').click(function(){
-                                    
-                                    var idDetalle='{{$detallePedido->id}}';
-                                    url2="{{route('detallePedido.estadoSiguiente',":id")}}";
-                                    
-                                    url2=url2.replace(':id',idDetalle);
-                                    
-                                    cambiarEstado(url2);
-                                });
-
-                                
-                                function cambiarEstado(url){
-                                    
-                                    
-                                    $.ajax({
-                                        // async:false,    
-                                        
-                                        type: 'GET',
-                                        url: url,
-                                        dataType: 'json',
-                                        success: function(array) {
-                                            // console.log(data);
-                                            var html='';
-                                            if(array.final){
-                                                location.reload();
-                                            }
-                                            if(array.errors)
-                                            {
-                                                html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
-                                                    array.errors.forEach(error => {
-                                                        html+= '<li>'+error + '</li>';
-                                                    });
-                                                    html+='</ul></div>';
+                                            function dragMoveListener(event) {
+                                                // var idNumeroDeImagen= event.target.getAttribute('data-id');
+                                                // var idNumeroDeComponente= event.target.getAttribute('data-componente');
+                                                // var comprobacion= event.target.getAttribute('data-imagen-sistema');
+                                                
+                                                var target = event.target;
+                                                console.log($('#'+target.id+'_posX').val());
+                                                if(($('#'+target.id+'_posX').val()!=null)&&($('#'+target.id+'_posX').val()!='')){
+                                                    x=parseFloat($('#'+target.id+'_posX').val());
                                                 }else{
-                                                    if(array.success){
-                                                        html+='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
-                                                        
-                                                    }
-                                                    if(array.warning){
-                                                        
-                                                        html+='<div class="alert alert-warning alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.warning+'</strong></div>';
-                                                    }
-                                                    
-                                                    //si es verdadero
-                                                    if(array.estado){
-                                                        if(array.final){
-                                                            var estadoNuevo='<h3><span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>'
-                                                        +'<span class="badge badge-danger">'+array.estado.nombre
-                                                        +'</span></h3>';
-                                                        
-                                                        
-                                            }else{
-
-                                                var estadoNuevo='<h3><span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>'
-                                                +'<span class="badge badge-warning">'+array.estado.nombre
-                                                +'</span></h3>';
+                                                    x=0;
+                                                }
+                                                
+                                                if(($('#'+target.id+'_posY').val()!=null)&&($('#'+target.id+'_posY').val()!='')){
+                                                    y=parseFloat($('#'+target.id+'_posY').val());
+                                                }else{
+                                                    y=0;
+                                                }
+                                                
+                                                target.style.webkitTransform =
+                                                target.style.transform =
+                                                'translate(' + x + 'px, ' + y + 'px)'
+                                                
+                                                // update the posiion attributes
+                                                target.setAttribute('data-x', x)
+                                                target.setAttribute('data-y', y)
+                                                
                                                 
                                             }
+                                            
+                                            // this is used later in the resizing and gesture demos
+                                            window.dragMoveListener = dragMoveListener;
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            for (let indiceComponente = 0; indiceComponente < cantidadComponente; indiceComponente++) {
+                                                cantidadImagenes=document.getElementById('cantidadImagen_componente_'+indiceComponente).value;
+                                                
+                                                for (let index = 0; index < cantidadImagenes; index++) {
+                                                    imagen=document.getElementById('imagen_'+index+'_componente_'+indiceComponente);
+                                                    if(imagen!=null)
+                                                    {
                                                         
-                                                        $('#estadoTitulo').html(estadoNuevo);  
+                                                        
+                                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val()!='')){
+                                                            
+                                                            // posy=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val());
+                                                            ancho=imagen.style.width=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_ancho').val());
+                                                            
+                                                        }else{
+                                                            ancho=  imagen.style.width=120+'px';
+                                                        }
+                                                        
+                                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val()!='')){
+                                                            posx=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posX').val());
+                                                        }else{
+                                                            posx=0;
+                                                        }
+                                                        
+                                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val()!='')){
+                                                            posy=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_posY').val());
+                                                        }else{
+                                                            posy=0;
+                                                        }
+                                                        if(($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val()!=null)&&($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val()!='')){
+                                                            alto= imagen.style.height=parseFloat($('#imagen_'+index+'_componente_'+indiceComponente+'_alto').val());
+                                                        }else{
+                                                            alto= imagen.style.height=50+'px';
+                                                        }
+                                                        
+                                                        console.log('x: '+posx+' y: '+posy+' alto:'+alto +' ancho: '+ancho);
+                                                        
+                                                        imagen.style.transform = 'translate(' + posx + 'px, ' + posy + 'px)';
+                                                    }
+                                                    // document.getElementById('imagen_'+index+'_componente_'+indiceComponente).setAttribute('value', document.getElementById(''));
+                                                    // document.getElementById('imagen_'+index+'_componente_'+indiceComponente+'_alto').setAttribute('value',alto);
+                                                    
+                                                    
+                                                }
+                                                
+                                            } 
+                                            
+                                            
+                                            
+                                            
+                                            //*********************************cambiar los componente**********************************8
+                                            function cambiar(){
+                                                
+                                                var select = document.getElementById("componentes"); //El <select>
+                                                    
+                                                    value = select.value; //El valor seleccionado
+                                                    for (let index = 0; index < cantidadComponente; index++) {
+                                                        document.getElementById("componente_"+index).style.display='none';
                                                         
                                                     }
+                                                    numeroComponente=select.options[select.selectedIndex].getAttribute('data-componente') ;
+                                                    document.getElementById("componente_"+numeroComponente).style.display='block';
+                                                    
+                                                    // text = select.options[select.selectedIndex].innerText; //El texto de la opción seleccionada
+                                                    console.log(numeroComponente);
+                                                    
                                                 }
-                                                $('#avisos').html(html);
-                                                console.log(array);
-                                            },
-                                            error:function(){
-                                                alert('error');
-                                            }
-                                        });
+                                                
+                                                $('#prueba2').click(function(){
+                                                    
+                                                    $('#cantidadImagenes').val(cantidadImagenes);
+                                                    
+                                                    console.log('pos x: '+$('#posX').val() +'\n pos y: '+$('#posY').val());
+                                                });
+                                                
+                                                $(document).on('click', '.edit', function(){
+                                                    var idSubli=$(this).attr('data-id'); 
+                                                    var url="{{route('sublimacion.update',":id")}}";
+                                                    url=url.replace(':id',idSubli);
+                                                    $('#sample_form').attr('action',url);
+                                                    $('.modal-title').text("Cambiar Imagen");
+                                                    $('#formModal').modal('show');
+                                                    
+                                                    
+                                                });   
+                                                
+                                                
+                                                //*********************************************************cargar imagen en las sublimaciones**********************************
+                                                function cargar(id){
+                                                    // Creamos el objeto de la clase FileReader
+                                                    
+                                                    let reader = new FileReader();
+                                                    // Leemos el archivo subido y se lo pasamos a nuestro fileReader
+                                                    reader.readAsDataURL(this.event.target.files[0]);
+                                                    
+                                                    // Le decimos que cuando este listo ejecute el código interno
+                                                    reader.onload = function(){
+                                                        let preview = document.getElementById(id);
+                                                        image = document.createElement('img');
+                                                        image.src = reader.result;
+                                                        image.class = 'img-fluid bg-transparent';
+                                                        image.height='150';
+                                                        image.width='180';
+                                                        preview.innerHTML = '';
+                                                        preview.append(image);
+                                                        
+                                                    };
+                                                };
+                                                
+                                                $.fn.extend({
+                                                    treed: function (o) {
+                                                        
+                                                        var openedClass = 'glyphicon-minus-sign';
+                                                        var closedClass = 'glyphicon-plus-sign';
+                                                        
+                                                        if (typeof o != 'undefined'){
+                                                            if (typeof o.openedClass != 'undefined'){
+                                                                openedClass = o.openedClass;
+                                                            }
+                                                            if (typeof o.closedClass != 'undefined'){
+                                                                closedClass = o.closedClass;
+                                                            }
+                                                        };
+                                                        
+                                                        //initialize each of the top levels
+                                                        var tree = $(this);
+                                                        tree.addClass("tree");
+                                                        tree.find('li').has("ul").each(function () {
+                                                            var branch = $(this); //li with children ul
+                                                            branch.prepend("<i class='indicator glyphicon " + closedClass + "'></i>");
+                                                            branch.addClass('branch');
+                                                            branch.on('click', function (e) {
+                                                                if (this == e.target) {
+                                                                    var icon = $(this).children('i:first');
+                                                                    icon.toggleClass(openedClass + " " + closedClass);
+                                                                    $(this).children().children().toggle();
+                                                                }
+                                                            })
+                                                            branch.children().children().toggle();
+                                                        });
+                                                        //fire event from the dynamically added icon
+                                                        tree.find('.branch .indicator').each(function(){
+                                                            $(this).on('click', function () {
+                                                                $(this).closest('li').click();
+                                                            });
+                                                        });
+                                                        //fire event to open branch if the li contains an anchor instead of text
+                                                        tree.find('.branch>a').each(function () {
+                                                            $(this).on('click', function (e) {
+                                                                $(this).closest('li').click();
+                                                                e.preventDefault();
+                                                            });
+                                                        });
+                                                        //fire event to open branch if the li contains a button instead of text
+                                                        tree.find('.branch>button').each(function () {
+                                                            $(this).on('click', function (e) {
+                                                                $(this).closest('li').click();
+                                                                e.preventDefault();
+                                                            });
+                                                        });
+                                                    }
+                                                });
+                                                
+                                                //Initialization of treeviews
+                                                
+                                                // $('#tree1').treed();
+                                                
+                                                // $('#tree2').treed({openedClass:'glyphicon-folder-open', closedClass:'glyphicon-folder-close'});
+                                                
+                                                $('#tree3').treed({openedClass:'glyphicon-chevron-right', closedClass:'glyphicon-chevron-down'});
+                                                
+                                                $('#botonVerificar').click(function(){
+                                                    
+                                                    $('#formVerificar').attr('method','GET');
+                                                    $('#formVerificar').attr('action','{{route("detallePedido.verificarDetalle",$detallePedido->id)}}')
+                                                    $('#mensajeVerificacion').text('¿Esta seguro que el producto se encuentra en condiciones de ser aprobado ?');
+                                                    document.getElementById('aviso_oculto').style.display='none';
+                                                    document.getElementById('confirmarProducto_oculto').style.display='none';
+                                                    
+                                                    $('#verificarModal').modal('show');
+                                                    
+                                                });
+                                                $('#botonRechazar').click(function(){
+                                                    
+                                                    $('#formVerificar').attr('method','GET');
+                                                    $('#formVerificar').attr('action','{{route("detallePedido.rechazarDetalle",$detallePedido->id)}}')
+                                                    $('#mensajeVerificacion').text('¿Esta seguro que rechaza el producto para su produccion?');
+                                                    document.getElementById('aviso_oculto').style.display='block';
+                                                    document.getElementById('confirmarProducto_oculto').style.display='none';
+                                                    
+                                                    
+                                                    $('#verificarModal').modal('show');
+                                                    
+                                                });
+                                                $('#botonConfirmarProducto').click(function(){
+                                                    $('#formVerificar').attr('method','POST');
+                                                    $('#formVerificar').attr('action','{{route("producto.confirmarProducto",$detallePedido->producto->id)}}')
+                                                    $('#mensajeVerificacion').text('Los productos finalizados se muestran en la tienda ¿Esta seguro que desea mostrarlo?');
+                                                    document.getElementById('confirmarProducto_oculto').style.display='block';
+                                                    document.getElementById('aviso_oculto').style.display='none';
+                                                    $('#verificarModal').modal('show');
+                                                });
+                                                
+                                                
+                                                
+                                                $('#botonAnterior').click(function(){
+                                                    
+                                                    var idDetalle='{{$detallePedido->id}}';
+                                                    url2="{{route('detallePedido.estadoAnterior',":id")}}";
+                                                    
+                                                    url2=url2.replace(':id',idDetalle);
+                                                    
+                                                    cambiarEstado(url2);
+                                                });
+                                                $('#botonSiguiente').click(function(){
+                                                    
+                                                    var idDetalle='{{$detallePedido->id}}';
+                                                    url2="{{route('detallePedido.estadoSiguiente',":id")}}";
+                                                    
+                                                    url2=url2.replace(':id',idDetalle);
+                                                    
+                                                    cambiarEstado(url2);
+                                                });
+                                                
+                                                
+                                                function cambiarEstado(url){
+                                                    
+                                                    
+                                                    $.ajax({
+                                                        // async:false,    
+                                                        
+                                                        type: 'GET',
+                                                        url: url,
+                                                        dataType: 'json',
+                                                        success: function(array) {
+                                                            // console.log(data);
+                                                            var html='';
+                                                            if(array.final){
+                                                                if(array.pedidoTerminado){
+                                                                    terminoTodo="{{route('detallePedido.index',":id")}}";
+                                                                    
+                                                                    terminoTodo=terminoTodo.replace(':id',array.pedidoTerminado.id);
+                                                                    alert(terminoTodo);
+                                                                // window.location.replace(terminoTodo);
+                                                                location.replace(terminoTodo)  ;
+                                                                }else{
 
-                                        $(document).on('click', '.close', function(){
+                                                                    location.reload();
+                                                                }
+                                                                
+                                                            }
+                                                            if(array.errors)
+                                                            {
+                                                                html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                                                    array.errors.forEach(error => {
+                                                                        html+= '<li>'+error + '</li>';
+                                                                    });
+                                                                    html+='</ul></div>';
+                                                                }else{
+                                                                    if(array.success){
+                                                                        html+='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
+                                                                        
+                                                                    }
+                                                                    if(array.warning){
+                                                                        
+                                                                        html+='<div class="alert alert-warning alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.warning+'</strong></div>';
+                                                                    }
+                                                                    
+                                                                    //si es verdadero
+                                                                    if(array.estado){
+                                                                        if(array.final){
+                                                                            var estadoNuevo='<h3><span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>'
+                                                                                +'<span class="badge badge-danger">'+array.estado.nombre
+                                                                                    +'</span></h3>';
                                                                                     
-                                                                                    $('#avisos').html('');
-                                                                                }); 
-                                    }
-                                    
-                                    
+                                                                                    
+                                                                                }else{
+                                                                                    
+                                                                                    var estadoNuevo='<h3><span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>'
+                                                                                        +'<span class="badge badge-warning">'+array.estado.nombre
+                                                                                            +'</span></h3>';
+                                                                                            
+                                                                                        }
+                                                                                        
+                                                                                        $('#estadoTitulo').html(estadoNuevo);  
+                                                                                        
+                                                                                    }
+                                                                                }
+                                                                                $('#avisos').html(html);
+                                                                                console.log(array);
+                                                                            },
+                                                                            error:function(){
+                                                                                alert('error');
+                                                                            }
+                                                                        });
+                                                                        
+                                                                        $(document).on('click', '.close', function(){
+                                                                            
+                                                                            $('#avisos').html('');
+                                                                        }); 
+                                                                    }
+                                                                    
+                                                                    
 </script>
 
 @endpush

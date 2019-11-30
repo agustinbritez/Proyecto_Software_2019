@@ -13,6 +13,8 @@
 
 use Illuminate\Support\Facades\Route;
 //estadistica
+
+Route::get('veri', 'ControllerMateriaPrima@verificarStock')->name('veri.index')->middleware('permission:veri_index');
 Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index')->middleware('permission:estadistica_index');
 Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos')->middleware('permission:estadistica_productosMasVendidos');
 // Route::get('estadistica', 'EstadisticaController@productosMasVendidos');
@@ -96,6 +98,8 @@ Route::post('modelo/componente', 'ModeloController@addComponente')->name('modelo
 Route::get('modelo/getMedidaMateriaPrima/{id}', 'ModeloController@getMedidaMateriaPrima')->name('modelo.getMedidaMateriaPrima')->middleware('permission:modelo_getMedidaMateriaPrima');
 Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->name('modelo.getMedidaModelo')->middleware('permission:modelo_getMedidaModelo');
 //  Route::resource('modelo','modeloController');
+
+
 // Productos
 Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
 Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
@@ -122,6 +126,9 @@ Route::get('pedido/misPedidos', 'PedidoController@misPedidos')->name('pedido.mis
 Route::get('pedido/confirmarPedido/{id}', 'PedidoController@confirmarPedido')->name('pedido.confirmarPedido')->middleware('permission:pedido_confirmarPedido');
 Route::get('pedido/pagarPedido/{id}', 'PedidoController@pagarPedido')->name('pedido.pagarPedido')->middleware('permission:pedido_pagarPedido');
 Route::post('pedido/terminarPedido/{id}', 'PedidoController@terminarPedido')->name('pedido.terminarPedido')->middleware('permission:pedido_terminarPedido');
+Route::get('pedido/trabajo', 'PedidoController@trabajo')->name('pedido.trabajo')->middleware('permission:pedido_trabajo');
+Route::get('pedido/filtrarTrabajo', 'PedidoController@filtrarTrabajo')->name('pedido.filtrarTrabajo')->middleware('permission:pedido_filtrarTrabajo');
+Route::get('pedido/ordenamientoInteligente', 'PedidoController@ordenamientoInteligente')->name('pedido.ordenamientoInteligente')->middleware('permission:pedido_ordenamientoInteligente');
 
 // detalle de pedido
 Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
@@ -303,17 +310,19 @@ Route::post('proveedor', 'ProveedorController@store')->name('proveedor.store')->
 Route::get('proveedor/{id}/edit', 'ProveedorController@edit')->name('proveedor.edit')->middleware('permission:proveedor_edit');
 Route::post('proveedor/update', 'ProveedorController@update')->name('proveedor.update')->middleware('permission:proveedor_update');
 Route::delete('proveedor/destroy', 'ProveedorController@destroy')->name('proveedor.destroy')->middleware('permission:proveedor_delete');
+Route::get('proveedor/consultarPrecios/{id}', 'ProveedorController@consultarPrecios')->name('proveedor.consultarPrecios')->middleware('permission:proveedor_consultarPrecios');
+Route::get('proveedor/obtenerPrecios/{id}', 'ProveedorController@obtenerPrecios')->name('proveedor.obtenerPrecios')->middleware('permission:proveedor_obtenerPrecios');
 //  Route::resource('proveedor','ProveedorController');
 
 
 
 
 //prueba
-Route::resource('ajax-crud', 'AjaxCrudController');
+// Route::resource('ajax-crud', 'AjaxCrudController');
 
-Route::post('ajax-crud/update', 'AjaxCrudController@update')->name('ajax-crud.update');
+// Route::post('ajax-crud/update', 'AjaxCrudController@update')->name('ajax-crud.update');
 
-Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
+// Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
 
 //Route::get('materiaPrima/{id}/destroy','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:usuarios_delete');
 
@@ -326,6 +335,6 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::fallback(function () {
-    return view('errors.404');
-});
+// Route::fallback(function () {
+//     return view('errors.404');
+// });

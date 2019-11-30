@@ -36,6 +36,7 @@ class TipoMovimientoController extends Controller
      */
     public function store(Request $request)
     {
+        
         $request->nombre = strtoupper($request->nombre);
         //obtengo la tipos movimientos borradas si elnombre se repite la reuso
         $tipoMovimientoExistente = TipoMovimiento::where('nombre', $request->nombre)->where('deleted_at', "<>", null)->withTrashed()->first();

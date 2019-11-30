@@ -12,6 +12,7 @@ use App\Producto;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PedidoController extends Controller
 {
@@ -50,6 +51,23 @@ class PedidoController extends Controller
             if (!is_null($pedido->pago_id)) {
                 return redirect()->back()->withErrors('El pedido ya se encuentra confirmado');
             }
+            $mesajito = ['No se cuenta con las siguientes materas primas para producir'];
+            $noHayMateria = false;
+            foreach ($pedido->detallePedidos as $key => $detalle) {
+                # code...
+                $materiasPrimasSelec = $detalle->producto->modelo->comprobarResta($detalle->cantidad, $detalle->producto->materiaPrimaSeleccionadas);
+                if ($materiasPrimasSelec != []) {
+                    $noHayMateria = true;
+                    foreach ($materiasPrimasSelec as $key => $materia) {
+                        # code...
+                        $mesajito = array_merge($mesajito, [$materia->nombre . ' en el detalle con ID: ' . $detalle->id]);
+                    }
+                }
+            }
+            if ($noHayMateria) {
+                return redirect()->back()->withErrors($mesajito);
+            }
+
             // TEST-7806727451891484-112420-84bc4622e2e2695653bd6a496d4f71a8-166999392
             // $mercadoPago= ;
             //pagos en prueba
@@ -60,7 +78,7 @@ class PedidoController extends Controller
                 $item = new \MercadoPago\Item();
             } catch (Exception $th) {
                 //throw $th;
-                return view('errors.404');
+                return view('errors.internet');
             }
             $item->title = $nombre;
             $item->description = $nombre;
@@ -80,11 +98,11 @@ class PedidoController extends Controller
             // $pedido->precio = $item->unit_price;
             // $pedido->rutaDePago = $preference->sandbox_init_point;
             // $pedido->estado_id = $pedido->flujoTrabajo->siguienteEstado($pedido->estado)->id;
-            $pedido->cambioEstado = Carbon::now();
-            $pedido->save();
+            // $pedido->cambioEstado = Carbon::now();
+            $pedido->update();
             return redirect($preference->sandbox_init_point);
             // dd($preference);
-            return redirect()->back()->with('success', 'Pedido confirmado con exito!');
+            return redirect()->back()->withErrors('El pedido no se pudo confirmar');
         }
         return redirect()->back()->withErrors('El pedido no se pudo confirmar');
     }
@@ -96,6 +114,8 @@ class PedidoController extends Controller
         if (is_null($pedido)) {
             return redirect()->route('pedido.misPedidos')->withErrors('El pedido  no existe');
         }
+
+
         try {
             //code...
             \MercadoPago\SDK::setAccessToken('TEST-7806727451891484-112420-84bc4622e2e2695653bd6a496d4f71a8-166999392');
@@ -103,9 +123,12 @@ class PedidoController extends Controller
             //throw $th;
             return view('errors.404');
         }
-        // $pago = \MercadoPago\Preference::find_by_id($pedido->preference_id);
+        if (!$request->has('preference_id')) {
+            return redirect()->route('pedido.misPedidos')->withErrors('No existe el encargo del pedido');
+        }
+        $preference = \MercadoPago\Preference::find_by_id($request->preference_id);
         // dd(['UNO' => $pago, 'DOS' => $request]);
-        // $pago = \MercadoPago\Payment::find_by_id($pedido->pago_id);
+        // return $pago = \MercadoPago\Payment::find_by_id($pedido->pago_id);
         // return dd($pago);
 
         $espera = Estado::where('nombre', 'CARRITO')->first();
@@ -121,17 +144,14 @@ class PedidoController extends Controller
                     //el pago_id me sirve para 
                     $pedido->pago_id = $request->collection_id;
                     $pedido->fechaPago = Carbon::now();
-
+                    $pedido->cambioEstado = Carbon::now();
+                    $pedido->precio = $preference->items[0]->unit_price;
                     //si terminado es 0 significa que pago pero no se termino de producir el producto
                     $pedido->terminado = 0;
+                    $pedido->restarMateriaPrimas();
                     $pedido->update();
-                    if ($this->reservarPedido($pedido->id)) {
-                        //el pedido cuenta con materia prima suficiente para su produccion
-                        $pedido->reservado = 1;
-                    } else {
-                        $pedido->reservado = 0;
-                    }
-                    $pedido->update();
+                    $conMate = new ControllerMateriaPrima();
+                    $conMate->verificarStock();
                 } else {
 
                     return redirect()->route('pedido.misPedidos')->withErrors('Error al Asignar Pago');
@@ -149,24 +169,7 @@ class PedidoController extends Controller
         // view('pedido.misPedidos', compact('misPedidos', 'estados', 'productosVenta'))->with('success', 'Su pago ha sido Efectuado Correctamente, Gracias.');
         // return redirect()->route('pedido.misPedidos', $id)->with('success', 'Su pago ha sido Efectuado Correctamente, Gracias.');
     }
-    public function reservarPedido($id)
-    {
-        # code...
-        $pedido = Pedido::find($id);
-        if ($pedido != null) {
-            //las materias primas que no se pudieron restar porque su rresultado es negativo
-            $materiaPrimasNoRestadas = [];
-            foreach ($pedido->detallePedidos as $key => $detalle) {
-                $materiaPrimasNoRestadas = array_merge($materiaPrimasNoRestadas, $detalle->producto->modelo->comprobarResta($detalle->cantidad));
-            }
 
-            if ($materiaPrimasNoRestadas == []) {
-
-                return true;
-            }
-        }
-        return false;
-    }
     /**
      * Store a newly created resource in storage.
      *
@@ -282,6 +285,83 @@ class PedidoController extends Controller
         return redirect()->back()->withErrors('No existe el pedido');
     }
 
+    public function trabajo()
+    {
+        # code...
+        // $pedidos = Pedido::all()->where('pago_id', '<>', null)->where('terminado', 0);
+        $pedidos = Pedido::where('pago_id', '<>', null)->where('terminado', 0)->orderBy('fechaPago', 'asc')->get();
+        $modelos = Modelo::all()->where('venta', true);
+        return view('pedido.trabajo', compact('pedidos', 'modelos'));
+    }
+
+    public function filtrarTrabajo(Request $request)
+    {
+
+        // $pedidos = DB::table('pedidos');
+        // $pedidos = Pedido::query();
+        $pedidos = Pedido::where('pago_id', '<>', null)->where('terminado', 0);
+
+
+        if (($request->desde != '') && ($request->hasta != '')) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '>=', $request->desde)
+                ->whereDate('fechaPago', '<=', $request->hasta);
+        } else if (($request->desde != '')) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '>=', $request->desde);
+        } else if (($request->hasta != '')) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '<=', $request->hasta);
+        }
+        if ($request->has('modelo')) {
+            $pedidos = $pedidos->where('modelo_id', $request->modelo);
+        }
+        //el pedido mas nuevo tiene un valor mas grande por ejemplo 2019-12-1 < 2019-12-2
+
+        if ($request->filtro_pedido == 0) {
+            //si es 1 entonces el pedido mas antiguo primero
+            $pedidos = $pedidos->orderBy('fechaPago', 'asc');
+        } else if ($request->filtro_pedido == 1) {
+
+            $pedidos = $pedidos->orderBy('fechaPago', 'desc');
+        }
+        $pedidos = $pedidos->get();
+        $modelos = Modelo::all()->where('venta', true);
+        // return redirect()->back()->with('pedidos',$pedidos)->with('modelos',$modelos);
+        $desde = $request->desde;
+        $hasta = $request->hasta;
+        return view('pedido.trabajo', compact('pedidos', 'modelos', 'desde', 'hasta'));
+    }
+    // ordena los productos en el orden de cuales se produjeron mas rapidos hasta el dia de la fecha 
+    public function ordenamientoInteligente()
+    {
+        # code...
+        //obtenemos todos los pedidos pagados
+        $pedidos = Pedido::where('pago_id', '<>', null)->where('terminado', 0)->orderBy('fechaPago', 'asc')->get();
+        $detallesOrdenados = collect();
+
+        foreach ($pedidos as $key => $pedido) {
+            # code...
+            foreach ($pedido->detallePedidos as $key => $detalle) {
+                # code...
+                $detallesOrdenados->add($detalle);
+                // $promedioDeProduccion = $detalle->producto->modelo->promedioProduccion();
+            }
+        }
+        for ($i = 1; $i < count($detallesOrdenados); $i++) {
+            for ($j = 0; $j < count($detallesOrdenados) - $i; $j++) {
+                if ($detallesOrdenados[$j]->producto->modelo->promedioProduccion() > $detallesOrdenados[$j + 1]->producto->modelo->promedioProduccion()) {
+                    $k = $detallesOrdenados[$j + 1];
+                    $detallesOrdenados[$j + 1] = $detallesOrdenados[$j];
+                    $detallesOrdenados[$j] = $k;
+                }
+            }
+        }
+        $modelos = Modelo::all()->where('venta', true);
+
+
+        return view('pedido.trabajo', compact('pedidos', 'modelos', 'detallesOrdenados'));
+    }
     /**
      * Display the specified resource.
      *
@@ -338,18 +418,14 @@ class PedidoController extends Controller
         }
         if ($pedido->terminado) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pedido porque ha finalizado']);
-        } else {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pedido porque se ha pagado']);
         }
-        if (!$pedido->detallePedido->isEmpty()) {
-            return redirect()->back()->withErrors('No se puede eliminar el producto porque tiene detalle de pedidos');
-        }
-        if (is_null($pedido->terminado)) {
 
 
-            $pedido->delete();
-            return redirect()->back()->with('warning', 'Se elimino el pedido de manera correcta');
-        }
+
+
+        $pedido->delete();
+        return redirect()->back()->with('warning', 'Se elimino el pedido de manera correcta');
+
 
         return redirect()->back()->withErrors('No se pudo eliminar el pedido');
     }

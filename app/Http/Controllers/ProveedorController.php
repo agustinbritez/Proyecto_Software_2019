@@ -6,7 +6,10 @@ use App\Calle;
 use App\Direccion;
 use App\Documento;
 use App\Localidad;
+use App\MateriaPrima;
+use App\Medida;
 use App\Pais;
+use App\PropuestaMateriaPrima;
 use App\Proveedor;
 use App\Provincia;
 use Illuminate\Http\Request;
@@ -29,6 +32,49 @@ class ProveedorController extends Controller
         $localidades = Localidad::all();
         $calles = Calle::all();
         return view('proveedor.index', compact('proveedores', 'documentos', 'paises', 'provincias', 'localidades', 'calles'));
+    }
+
+    public function consultarPrecios($id)
+    {
+        # code...
+        $proveedor = Proveedor::find($id);
+        $medidas = Medida::all();
+        // if (is_null($proveedor)) {
+        //     return redirect()->route('home')->withErrors('No Existe El proveedor Ingresado ');
+        // }
+        return view('proveedor.consulta', compact('proveedor', 'medidas'));
+    }
+    public function obtenerPrecios(Request $request, $id)
+    {
+        # code...
+        $proveedor = Proveedor::find($id);
+        if (is_null($proveedor)) {
+            return redirect()->route('home')->withErrors('No Existe el proveedor pasado por parametros');
+        }
+        for ($i = 0; $i <= $request->input('cantidadMaterias'); $i++) {
+
+            $materiaPrima = MateriaPrima::find($request->input('materia_' . $i));
+            if (!is_null($materiaPrima)) {
+                $propuesta = PropuestaMateriaPrima::where('materiaPrima_id', $materiaPrima->id)->where('proveedor_id', $id)->get()->first();
+                if (!is_null($propuesta)) {
+                    $propuesta->precioUnitario = $request->input('precioUnitario_materia_' . $materiaPrima->id);
+                    $propuesta->detalle = $request->input('informacion_materia_' . $materiaPrima->id);
+                    $propuesta->medida_id = $request->input('medida_id_materia_' . $materiaPrima->id);
+                    $propuesta->update();
+                }
+                // $propuesta = PropuestaMateriaPrima::create([
+                //     'precioUnitario' => $request->input('precioUnitario_materia_' . $materiaPrima->id),
+                //     'detalle' => $request->input('precioUnitario_materia_' . $materiaPrima->id),
+                //     'medida_id' => $request->input('medida_id_materia_' . $materiaPrima->id),
+                //     'materiaPrima_id' => $materiaPrima->id,
+                //     'proveedor_id' => $id,
+                // ]);
+
+            }
+        }
+        $medidas = Medida::all();
+        return redirect()->route('proveedor.consultarPrecios', $id)->with('success', 'Se guardo con exito su respuestas');
+        // return view('proveedor.consulta', compact('proveedor', 'medidas'));
     }
 
     /**

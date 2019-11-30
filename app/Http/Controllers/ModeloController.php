@@ -173,6 +173,7 @@ class ModeloController extends Controller
                 'medida_id' => $request->medida_id,
                 'venta' => $venta,
                 'base' => $base,
+                'cantidadDiasProducidos' => 0,
                 //el id es del FLUJO PRODUCCION GENERAL
                 'flujoTrabajo_id' => $idFlujo
             );
@@ -356,7 +357,6 @@ class ModeloController extends Controller
                             if ($receta->materiaPrima->id == $request->ingredientes) {
                                 return response()->json(['errors' => ['La materia prima seleccionada se encuentra  relacionada']]);
                             }
-                            
                         }
                     }
                     //si el check esta seleccionado quiere decir que trajo una materia prima
@@ -745,6 +745,7 @@ class ModeloController extends Controller
                 'precioUnitario'         =>  $request->precioUnitario,
                 'medida_id' => $idMedida,
                 'base' => $base,
+                'cantidadDiasProducidos' => 0,
                 'venta' => $venta
             );
             //creamos el camino de la imagen vieja
@@ -760,6 +761,7 @@ class ModeloController extends Controller
                 'precioUnitario'         =>  $request->precioUnitario,
                 'venta' => $venta,
                 'base' => $base,
+                'cantidadDiasProducidos' => 0,
                 'medida_id' => $idMedida
             );
         }

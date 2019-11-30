@@ -3,13 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\ImagenIndividual;
+use App\Mail\ProveedorMail;
 use App\MateriaPrima;
 use App\Medida;
 use App\Modelo;
+use App\PropuestaMateriaPrima;
+use App\Proveedor;
 use App\Receta;
 use Carbon\Carbon;
 use CreateMateriaPrimasModelosTable;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Validator;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -22,16 +28,19 @@ class ControllerMateriaPrima extends Controller
      */
     public function index(Request $request)
     {
+
+
         $medidas = Medida::all();
         $modelos = Modelo::all();
         $materiaPrimas = MateriaPrima::all();
-        return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas'));
+        $proveedores = Proveedor::all();
+        return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas', 'proveedores'));
     }
     public function urgente(Request $request)
     {
         $medidas = Medida::all();
         $modelos = Modelo::all();
-        $materiaPrimas = MateriaPrima::all()->where('cantidad', '<=', 'materia_primas.stockMinimo');
+        $materiaPrimas = MateriaPrima::whereColumn('cantidad', '<=', 'stockMinimo')->get();
         //cantidad de productos que no se pueden realizar por falta de materia prima.
         // $cantidadDePedidosNoAtendidos=
         return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas'));
@@ -76,6 +85,7 @@ class ControllerMateriaPrima extends Controller
             'stockMinimo'     =>  'required|min:1',
             'precioUnitario'     =>  'required|numeric',
             'medida_id'     =>  'required',
+            'proveedores'     =>  'required',
             // 'modelos'     =>  'required'
         ];
         //transformamos la mascara de precio unitario a un valor double normal
@@ -83,6 +93,8 @@ class ControllerMateriaPrima extends Controller
         $cant = str_replace([',', '$', ' '], '', $request->cantidad);
         $stock = str_replace([',', '$', ' '], '', $request->stockMinimo);
         // $tr= str_replace('.',',',$tr);
+
+
 
         $request->precioUnitario = $tr;
         $request->cantidad = $cant;
@@ -103,6 +115,8 @@ class ControllerMateriaPrima extends Controller
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
 
             'medida_id.required' => 'Debe seleccionar una unidad de medida',
+
+            'proveedores.required' => 'Debe seleccionar un Proveedor como minimo',
 
             'modelos.required' => 'Debe seleccionar un modelo como minimo',
 
@@ -197,6 +211,33 @@ class ControllerMateriaPrima extends Controller
             }
         }
 
+        if ($request->has('proveedores')) {
+            // $syncArray = [];
+
+            foreach ($request->input('proveedores', []) as  $idProve) {
+                $provedor = Proveedor::find($idProve);
+                if (!is_null($provedor)) {
+
+                    $propuesta = PropuestaMateriaPrima::where('materiaPrima_id', $materiaPrima->id)->where('proveedor_id', $idProve)->first();
+                    if (is_null($propuesta)) {
+                        $propuesta = PropuestaMateriaPrima::create([
+                            'materiaPrima_id' => $materiaPrima->id,
+                            'proveedor_id' => $idProve,
+                            'precioUnitario' => $materiaPrima->precioUnitario,
+                        ]);
+                    } else {
+                        $propuesta->precioUnitario = $materiaPrima->precioUnitario;
+                        $propuesta->update();
+                    }
+                }
+
+                // $syncArray = array_merge($syncArray, [$idProve => ['precioUnitario' => $materiaPrima->precioUnitario]]);
+            }
+
+            // $materiaPrima->proveedores()->sync($syncArray);
+        }
+
+
         // return response()->json(['success' => 'Materia Prima Guardada Con Exito.']);
         return redirect()->back()->with('success', 'Materia Prima Creada Con Exito!');
     }
@@ -227,7 +268,8 @@ class ControllerMateriaPrima extends Controller
 
             return response()->json([
                 'data' => $data, 'medida' => $data->medida, 'modelos' => $data->modelos,
-                'totalModelos' => Modelo::all(), 'totalMedidas' => Medida::all()
+                'totalModelos' => Modelo::all(), 'totalMedidas' => Medida::all(),
+                'totalProveedores' => Proveedor::all(), 'proveedores' => $data->proveedores
             ]);
         }
     }
@@ -254,6 +296,7 @@ class ControllerMateriaPrima extends Controller
             // 'imagenPrincipal'     =>  'required|imagenPrincipal|mimes:jpeg,png,jpg,gif,svg',
             // 'cantidad'     =>  'required|integer',
             'stockMinimo'     =>  'required|min:1',
+            'proveedores'     =>  'required',
 
             'precioUnitario'     =>  'required|numeric',
             'medida_id'     =>  'required'
@@ -281,6 +324,8 @@ class ControllerMateriaPrima extends Controller
             'precioUnitario.numeric' => 'El precio debe ser un valor numerico',
 
             'medida_id.required' => 'Debe seleccionar una unidad de medida',
+
+            'proveedores.required' => 'Debe seleccionar un Proveedor como minimo',
 
             'modelos.required' => 'Debe seleccionar un modelo como minimo',
 
@@ -347,11 +392,67 @@ class ControllerMateriaPrima extends Controller
         $materiaPrima->restore();
 
         $materiaPrima->update($form_data);
+        // if ($request->has('proveedores')) {
+        //     $materiaPrima->proveedores()->sync($request->input('proveedores', []));
+        // }
+        if ($request->has('proveedores')) {
+            // $syncArray = [];
+
+            foreach ($request->input('proveedores', []) as  $idProve) {
+                $provedor = Proveedor::find($idProve);
+                if (!is_null($provedor)) {
+
+                    $propuesta = PropuestaMateriaPrima::where('materiaPrima_id', $materiaPrima->id)->where('proveedor_id', $idProve)->first();
+                    if (is_null($propuesta)) {
+                        $propuesta = PropuestaMateriaPrima::create([
+                            'materiaPrima_id' => $materiaPrima->id,
+                            'proveedor_id' => $idProve,
+                            'precioUnitario' => $materiaPrima->precioUnitario,
+                        ]);
+                    } else {
+                        $propuesta->precioUnitario = $materiaPrima->precioUnitario;
+                        $propuesta->update();
+                    }
+                }
+
+                // $syncArray = array_merge($syncArray, [$idProve => ['precioUnitario' => $materiaPrima->precioUnitario]]);
+            }
+
+            // $materiaPrima->proveedores()->sync($syncArray);
+        }
         // $materiaPrima->modelos()->detach($request->input('modelos',[]),$request->input('modelos',[]) );
 
         // $materiaPrima->modelos()->sync($request->input('modelos', []));
         // return response()->json(['success' => 'Materia Prima Actualizada Correctamente']);
         return redirect()->back()->with('success', 'Actualizado Correctamente');
+    }
+
+    //verifica el stock minimo de todo  y envia correo a los proveedores
+    //retorna flase si no existen materia prima con stock minimo
+    public function verificarStock()
+    {
+        $proveedores = MateriaPrima::join('propuesta_materia_primas', 'materia_primas.id', '=', 'propuesta_materia_primas.materiaPrima_id')
+            ->join('proveedors', 'proveedors.id', '=', 'propuesta_materia_primas.proveedor_id')
+            ->whereColumn('materia_primas.cantidad', '<=', 'materia_primas.stockMinimo')
+            ->get();
+        $ca = 0;
+        foreach ($proveedores as $proveedor) {
+            # code...
+            // new ProveedorMail($proveedor);
+            $proveedor = Proveedor::find($proveedor->id);
+            try {
+                //code...
+                $email = $proveedor->email;
+                Mail::send('mail.proveedor', ['proveedor' => $proveedor], function ($message) use ($email) {
+                    $message->to($email)
+                        ->subject('Orden de Compra');
+                });
+            } catch (Exception $th) {
+                //throw $th;
+            }
+        }
+
+        return redirect()->back();
     }
 
     /**

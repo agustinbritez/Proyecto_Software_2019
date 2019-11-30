@@ -7,6 +7,8 @@ use App\Modelo;
 use App\Pedido;
 use App\Producto;
 use App\TipoImagen;
+use Carbon\Carbon;
+
 use Illuminate\Http\Request;
 
 class DetallePedidoController extends Controller
@@ -54,6 +56,7 @@ class DetallePedidoController extends Controller
     public function show($id)
     {
         $detallePedido = DetallePedido::find($id);
+
 
         if (($detallePedido == null)) {
             return redirect()->back()->withErrors('El detalle del pedido no existe');
@@ -147,30 +150,42 @@ class DetallePedidoController extends Controller
 
         $detalle = DetallePedido::findOrFail($id);
         $mensaje = [];
-
+        $detalle->getEstadoFinal();
+        $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
+        $estadoSiguiente->id;
         if ($detalle != null) {
             $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
 
             if ($estadoSiguiente != null) {
                 $detalle->estado_id = $estadoSiguiente->id;
+
                 if ($detalle->update()) {
+                    // if (true) {
                     $mensaje = array_merge($mensaje, ['success' => 'Cambiado al siguiente estado.']);
                     $mensaje = array_merge($mensaje, ['estado' => $estadoSiguiente]);
+                    if ($detalle->getEstadoFinal()->id == $estadoSiguiente->id) {
+                        if ($detalle->pedido->puedeTerminar()) {
+                            $detalle->pedido->terminado = 1;
+
+                            $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->getEstadoFinal()->id;
+                            $detalle->pedido->update();
+                            $detalle->fechaTerminado = Carbon::now();
+                            $detalle->update();
+                            //sumamos la cantidad de dias producidos
+                            $detalle->producto->modelo->cantidadDiasProducidos += (round($detalle->getDiasEnProduccion() / $detalle->cantidad));
+                            $detalle->producto->modelo->update();
+                            $mensaje = array_merge($mensaje, ['pedidoTerminado' => $detalle->pedido]);
+                        }
+                        $mensaje = array_merge($mensaje, ['final' => true]);
+                    }
                 } else {
                     $mensaje = array_merge($mensaje, ['warning' => 'No se actualizo el producto al siguiente estado.']);
                 }
-            }
-            //si es el utlimo estado y todo los detalle de pedido estan terminados
-            if ($detalle->getEstadoFinal()->id == $estadoSiguiente->id) {
-                if ($detalle->pedido->puedeTerminar()) {
-                    $detalle->pedido->terminado = 1;
-                    $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->getEstadoFinal()->id;
-                    $detalle->pedido->update();
-                    $mensaje = array_merge($mensaje, ['final'=>true]);
-                }
-            }
 
-            return response()->json($mensaje);
+                //si es el utlimo estado y todo los detalle de pedido estan terminados
+
+                return response()->json($mensaje);
+            }
         }
 
         $mensaje = array_merge($mensaje,  ['errors' => ['El detalle del producto no existe']]);
@@ -249,9 +264,9 @@ class DetallePedidoController extends Controller
             if (!is_null($detallePedido->pedido->pago_id)) {
                 return redirect()->back()->withErrors('No puede eliminar un dealle del pedido pagado');
             }
-            if (!is_null($detallePedido->pedido->preference_id)) {
-                return redirect()->back()->withErrors('No puede eliminar un dealle del pedido confirmado para el pago');
-            }
+            // if (!is_null($detallePedido->pedido->preference_id)) {
+            //     return redirect()->back()->withErrors('No puede eliminar un dealle del pedido confirmado para el pago');
+            // }
             if (!$detallePedido->pedido->terminado) {
                 $pedido = Pedido::find($detallePedido->pedido->id);
                 // $pedido->precio -=  $detallePedido->producto->modelo->precioUnitario * $detallePedido->cantidad;

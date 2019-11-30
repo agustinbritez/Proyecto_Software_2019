@@ -45,14 +45,15 @@ class MovimientoController extends Controller
     {
         //constantes
         $proveedor_vacio = 'NINGUNO';
-
+        $tipoMovimientoAux = TipoMovimiento::find($request->tipoMovimiento_id);
         $rules = [
             'precioUnitario'        => 'required|numeric',
             'cantidad'         => 'required|integer|min:1',
-            'proveedor_id'         =>  'required',
             'materiaPrima_id'         =>  'required|exists:materia_primas,id',
             'tipoMovimiento_id'         =>  'required|exists:tipo_movimientos,id'
         ];
+
+
         //transformamos la mascara de precio unitario a un valor double normal
         $tr = str_replace([',', '$', ' '], '', $request->precioUnitario);
         // $tr= str_replace('.',',',$tr);
@@ -76,10 +77,17 @@ class MovimientoController extends Controller
             'materiaPrima_id.exists' => 'No existe la materia prima seleccionado'
 
         ];
-
+        if ($tipoMovimientoAux != null) {
+            if ($tipoMovimientoAux->operacion) {
+                $rules = array_merge($rules, [
+                    'proveedor_id'         =>  'required'
+                ]);
+            }
+        }
         $request->validate($rules, $messages);
         //segunda validacion
-        if ((($proveedor = Proveedor::find($request->proveedor_id)) == null) && ($request->proveedor_id != -1)) {
+
+        if ((($proveedor = Proveedor::find($request->proveedor_id)) == null) && ($tipoMovimientoAux->operacion)) {
             return redirect()->back()->withErrors(['message2' => 'El proveedor seleccionado no existe']);
         }
 

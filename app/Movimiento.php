@@ -15,7 +15,7 @@ class Movimiento extends Model implements Auditable
 
     public function tipoMovimiento()
     {
-        return $this->belongsTo(TipoMovimiento::class);
+        return $this->belongsTo(TipoMovimiento::class, 'tipoMovimiento_id');
     }
 
     public function proveedor()
@@ -25,7 +25,7 @@ class Movimiento extends Model implements Auditable
 
     public function materiaPrima()
     {
-        return $this->belongsTo(MateriaPrima::class);
+        return $this->belongsTo(MateriaPrima::class, 'materiaPrima_id');
     }
 
     public function getFechaMovimiento()

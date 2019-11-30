@@ -64,7 +64,7 @@ class User extends Authenticatable implements Auditable
     {
         // si el atributo pago_id es null significa que no pago
         //si es 1 finalizo el pedido
-        return DB::table('pedidos')->where('user_id', $this->id)->where('deleted_at', null)->where('pago_id', null)->where('terminado', null)->where('preference_id', null)->first();
+        return Pedido::where('user_id', $this->id)->where('deleted_at', null)->where('pago_id', null)->first();
     }
     public function productos()
     {

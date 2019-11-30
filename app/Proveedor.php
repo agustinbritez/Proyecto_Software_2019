@@ -27,6 +27,13 @@ class Proveedor extends Model implements Auditable
     }
     public function materiaPrimas()
     {
-        return $this->belongsToMany(MateriaPrima::class);
+        return $this->belongsToMany(MateriaPrima::class, 'propuesta_materia_primas', 'proveedor_id', 'materiaPrima_id')->where('propuesta_materia_primas.deleted_at', null);
+
+        // return $this->belongsToMany(MateriaPrima::class, 'materia_primas_proveedors', 'proveedor_id', 'materiaPrima_id');
+    }
+    public function propuestaMateriaPrimas()
+    {
+
+        return $this->hasMany(PropuestaMateriaPrima::class, 'proveedor_id');
     }
 }

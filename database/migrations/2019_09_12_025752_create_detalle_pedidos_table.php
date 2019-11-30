@@ -17,6 +17,8 @@ class CreateDetallePedidosTable extends Migration
             $table->bigIncrements('id');
             $table->integer('cantidad');
             $table->dateTime('fechaPago')->nullable();
+            $table->dateTime('fechaTerminado')->nullable();
+
             $table->smallInteger('verificado')->nullable();
             $table->string('detalle')->nullable();
             $table->string('aviso')->nullable();

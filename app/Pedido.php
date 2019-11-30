@@ -27,7 +27,7 @@ class Pedido extends Model implements Auditable
     }
     public function detallePedidos()
     {
-        return $this->hasMany(DetallePedido::class, 'pedido_id');
+        return $this->hasMany(DetallePedido::class, 'pedido_id')->where('deleted_at', null);
     }
     public function getPrecio()
     {
@@ -73,4 +73,12 @@ class Pedido extends Model implements Auditable
         }
         return true;
     }
+    public function restarMateriaPrimas()
+    {
+        foreach ($this->detallePedidos as $key => $detalle) {
+            $detalle->producto->modelo->restarMateriaPrima($detalle->cantidad, $detalle->producto->materiaPrimaSeleccionadas);
+        }
+        return true;
+    }
+   
 }

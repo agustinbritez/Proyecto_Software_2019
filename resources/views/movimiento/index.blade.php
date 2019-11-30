@@ -49,7 +49,7 @@
 										<span class="input-group-text">$</span>
 									</div>
 									<input type="text" class="form-control text-left" id="filtro_precioUnitarioMin"
-										name="filtro_precioUnitarioMin" data-mask 
+										name="filtro_precioUnitarioMin" data-mask
 										data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
 								</div>
 							</div>
@@ -60,7 +60,7 @@
 										<span class="input-group-text">$</span>
 									</div>
 									<input type="text" class="form-control text-left" id="filtro_precioUnitarioMax"
-										name="filtro_precioUnitarioMax" data-mask 
+										name="filtro_precioUnitarioMax" data-mask
 										data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
 								</div>
 							</div>
@@ -110,8 +110,11 @@
 							<thead style="background-color:white ; color:black;">
 								<tr>
 									<th>ID</th>
+									<th>Materia Prima</th>
 									<th>Precio</th>
 									<th>Cantidad</th>
+									<th>Operacion</th>
+
 									<th>Fecha</th>
 
 
@@ -123,13 +126,18 @@
 								@foreach ($movimientos as $movimiento)
 								<tr style="text-align: right">
 
-									<td >{{$movimiento->id}} </td>
+									<td>{{$movimiento->id}} </td>
+									<td class="text-left">
+										{{$movimiento->materiaPrima->nombre . ' (' .$movimiento->materiaPrima->medida->nombre.')' }}
+									</td>
 
 
-									<td >{{$movimiento->precioUnitario}} </td>
-									<td >{{$movimiento->cantidad}} </td>
-									<td >{{$movimiento->getFechaMovimiento()}} </td>
-								
+									<td>{{$movimiento->precioUnitario}} </td>
+									<td>{{$movimiento->cantidad}} </td>
+									<td class="text-left">
+										{{$movimiento->tipoMovimiento->operacion ? 'Suma' :'Resta'  }} </td>
+									<td>{{$movimiento->getFechaMovimiento()}} </td>
+
 
 
 								</tr>
@@ -140,8 +148,11 @@
 							<tfoot style="background-color:#ccc; color:white;">
 								<tr>
 									<th>ID</th>
+									<th>Materia Prima</th>
 									<th>Precio</th>
 									<th>Cantidad</th>
+									<th>Operacion</th>
+
 									<th>Fecha</th>
 
 								</tr>

@@ -19,10 +19,16 @@ class MateriaPrima extends Model implements Auditable
       $this->attributes['nombre'] = strtoupper($value);
    }
 
-   public function proveedors()
+   public function proveedores()
    {
 
-      return $this->belongsToMany(Proveedor::class);
+      return $this->belongsToMany(Proveedor::class, 'propuesta_materia_primas', 'materiaPrima_id', 'proveedor_id')->where('propuesta_materia_primas.deleted_at', null);
+   }
+
+   public function propuestaMateriaPrimas()
+   {
+
+      return $this->hasMany(PropuestaMateriaPrima::class, 'materiaPrima_id');
    }
 
 
@@ -69,6 +75,10 @@ class MateriaPrima extends Model implements Auditable
       # code...
       $this->cantidad = $this->cantidad - $cantidad;
       $this->update();
+   }
+   public function FunctionName(Type $var = null)
+   {
+      # code...
    }
    public function pruebaDeResta($cantidad)
    {

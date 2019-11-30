@@ -293,7 +293,7 @@
                                                 detalle</button>
 
                                         </div>
-                                        @if (is_null($pedido->preference_id))
+                                        @if (is_null($pedido->pago_id))
 
                                         <div class="col">
 
@@ -333,7 +333,7 @@
                                 @if (is_null($pedido->preference_id))
 
                                 <tr>
-                                    <th colspan="8" style="font-size: 18px">
+                                    <th colspan="7" style="font-size: 18px">
                                         <div class="row">
                                             <div class="col">
 
@@ -353,7 +353,7 @@
 
 
                                 <tr>
-                                    <th colspan="7" style="font-size: 18px">Total :
+                                    <th colspan="6" style="font-size: 18px">Total :
                                         ${{$pedido->getPrecio()}}
                                     </th>
                                     <th>

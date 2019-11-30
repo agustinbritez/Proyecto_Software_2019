@@ -64,7 +64,7 @@ class Modelo extends Model implements Auditable
         return $this->belongsTo(FlujoTrabajo::class, 'flujoTrabajo_id');
     }
 
-    public function restarMateriaPrima($cantidad)
+    public function restarMateriaPrima($cantidad, $materiaPrimaSeleccionada)
     {
 
         # code...
@@ -72,11 +72,11 @@ class Modelo extends Model implements Auditable
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
                 if ($receta->modeloHijo != null) {
-                    $receta->modeloHijo->restarMateriaPrima($cantidad * $receta->cantidad);
+                    $receta->modeloHijo->restarMateriaPrima($cantidad * $receta->cantidad, $materiaPrimaSeleccionada);
                 }
             }
         }
-        if (!$this->materiasPrimas->isEmpty()) {
+        if (!$this->materiasPrimas->isEmpty() && !$this->base) {
             # code...
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
@@ -85,8 +85,19 @@ class Modelo extends Model implements Auditable
                 }
             }
         }
+        if (!$this->materiasPrimas->isEmpty() && $this->base) {
+
+            foreach ($materiaPrimaSeleccionada as $key => $materia) {
+                # code...
+                if ($materia->recetaHijo->modeloPadre->id == $this->id) {
+
+                    $materia->recetaHijo->materiaPrima->restarMateriaPrima($cantidad * $materia->recetaHijo->cantidad);
+                    break;
+                }
+            }
+        }
     }
-    public function comprobarResta($cantidad)
+    public function comprobarResta($cantidad, $materiaPrimaSeleccionada)
     {
         $materiaPrimaSinStock = [];
         # code...
@@ -94,12 +105,13 @@ class Modelo extends Model implements Auditable
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
                 if ($receta->modeloHijo != null) {
-                    $materiaPrimaSinStock = array_merge($materiaPrimaSinStock, $receta->modeloHijo->comprobarResta($cantidad * $receta->cantidad));
+                    $materiaPrimaSinStock = array_merge($materiaPrimaSinStock, $receta->modeloHijo->comprobarResta($cantidad * $receta->cantidad, $materiaPrimaSeleccionada));
                 }
             }
         }
-        if (!$this->materiasPrimas->isEmpty()) {
+        if (!$this->materiasPrimas->isEmpty() && !$this->base) {
             # code...
+
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
                 if ($receta->materiaPrima != null) {
@@ -107,6 +119,28 @@ class Modelo extends Model implements Auditable
                 }
             }
         }
+        if (!$this->materiasPrimas->isEmpty() && $this->base) {
+
+            foreach ($materiaPrimaSeleccionada as $key => $materia) {
+                # code...
+                if ($materia->recetaHijo->modeloPadre->id == $this->id) {
+
+                    $materiaPrimaSinStock = array_merge($materiaPrimaSinStock, $materia->recetaHijo->materiaPrima->pruebaDeResta($cantidad * $materia->recetaHijo->cantidad));
+                    break;
+                }
+            }
+        }
+
+
         return $materiaPrimaSinStock;
+    }
+    public function promedioProduccion()
+    {
+        # code...
+        if (!$this->productosModelos->isEmpty()) {
+
+            return $this->cantidadDiasProducidos / $this->productosModelos->count();
+        }
+        return 0;
     }
 }

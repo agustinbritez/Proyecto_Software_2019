@@ -78,7 +78,8 @@
                                 @if (sizeof($materiaPrimas)>0)
 
                                 @foreach ($materiaPrimas as $materiaPrima)
-                                <option value="{{$materiaPrima->id}}">{{$materiaPrima->nombre}}</option>
+                                <option value="{{$materiaPrima->id}}">
+                                    {{$materiaPrima->nombre.' ('.$materiaPrima->medida->nombre.')'}}</option>
                                 @endforeach
                                 @endif
                             </select>

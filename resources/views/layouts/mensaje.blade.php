@@ -40,7 +40,7 @@
 @endif
 
 
-@if ($message = Session::get('info'))
+@if ($message = Session::get('pedidos'))
 
 <div class="alert alert-info alert-block">
 
