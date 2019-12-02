@@ -99,8 +99,12 @@
 				<div class="card-body">
 
 					<div align="left">
+						@if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
+
 						<button type="button" name="create_record" id="create_record"
 							class="btn btn-success btn-sm">Crear Nuevo Movimientos</button>
+						@endif
 
 					</div>
 
@@ -132,8 +136,18 @@
 									</td>
 
 
-									<td>{{$movimiento->precioUnitario}} </td>
-									<td>{{$movimiento->cantidad}} </td>
+									<td>
+
+										{{number_format($movimiento->precioUnitario,2)}}
+
+
+									</td>
+									<td>
+
+										{{number_format($movimiento->cantidad)}}
+
+
+									</td>
 									<td class="text-left">
 										{{$movimiento->tipoMovimiento->operacion ? 'Suma' :'Resta'  }} </td>
 									<td>{{$movimiento->getFechaMovimiento()}} </td>

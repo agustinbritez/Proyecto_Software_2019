@@ -11,8 +11,8 @@ class Provincia extends Model implements Auditable
     use \OwenIt\Auditing\Auditable;
 
     use SoftDeletes;
-    protected $guarded= [];
-  
+    protected $guarded = [];
+
     public function direcciones()
     {
         return $this->hasMany(Direccion::class);

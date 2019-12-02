@@ -12,12 +12,12 @@ class Medida extends Model implements Auditable
 
     use SoftDeletes;
     protected $guarded = [];
-    
+
     function materiaPrimas()
     {
         return $this->hasMany(MateriaPrima::class);
     }
-    
+
     function modelos()
     {
         return $this->hasMany(Modelo::class);

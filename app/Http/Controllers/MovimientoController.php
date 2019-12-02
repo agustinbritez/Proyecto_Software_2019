@@ -94,7 +94,7 @@ class MovimientoController extends Controller
 
         $materiaPrima = MateriaPrima::find($request->materiaPrima_id);
         $tipoMovimiento = TipoMovimiento::find($request->tipoMovimiento_id);
-        //si es distitno a 0 es porqu es verdadero osea suar 
+        //si es distitno a 0 es porqu es verdadero osea sumar 
         if ($tipoMovimiento->operacion != 0) {
             $materiaPrima->cantidad = $materiaPrima->cantidad + $request->cantidad;
         } else {
@@ -129,7 +129,10 @@ class MovimientoController extends Controller
         }
         $movimiento = Movimiento::create($form_data);
         //si no crea es porque hay agun atributo que no permite null que esta vacio
-
+        $verificarStock = new ControllerMateriaPrima();
+        if (!$tipoMovimiento->operacion) {
+            $verificarStock->verificarStock();
+        }
         return redirect()->back()->with('success', 'Movimiento Creado Con Exito!');
     }
 

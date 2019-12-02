@@ -374,7 +374,7 @@ class ProductoController extends Controller
         $control->agregarCarrito($producto, 1, auth()->user(), $recetaConMateriasPrimasSeleccionadas);
 
 
-        return redirect()->back()->with('success', 'Producto Creado Con Exito!');
+        return redirect()->back()->with('success', 'Se agrego a "Mis pedido" con exito');
     }
 
     /**

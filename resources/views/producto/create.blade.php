@@ -43,8 +43,16 @@
         @csrf
 
         <div class="row ">
+            {{-- @guest
+            &nbsp;&nbsp;&nbsp; <a id="prueba2" href="{{ route('login') }}" class="btn btn-success">Crear Producto</a>
+            @else
+            @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
 
             &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Crear Producto</button>
+
+            @endif
+
+            @endguest --}}
         </div>
         <br>
 
@@ -169,7 +177,7 @@
                             style="display:none;">
 
                             <div class="form-group">
-                                <label class="control-label ">Seleccionar Tipo Imagen : </label>
+                                <label class="control-label ">Seleccionar Un Tipo imagen : </label>
                                 <select class="tipoImagenSelect form-control select2 "
                                     onchange="cambiarGaleria('tipoImagen_componente_{{$cantidadComponente}}')"
                                     id="tipoImagen_componente_{{$cantidadComponente}}"
@@ -186,9 +194,8 @@
 
                             </div>
 
-                            <button type="button" id="agregarImagen_sistema" class="btn btn-success"
-                                data-componente="{{$componente->id}}">Agregar
-                                Imagen del Sistema</button>
+                            <button type="button" id="agregarImagen_sistema" class="btn btn-primary"
+                                data-componente="{{$componente->id}}">Ver Galeria</button>
 
 
                             <hr>
@@ -197,7 +204,7 @@
                                 <label for="">Subir una nueva imagen</label>
                                 <div class="row justify-content-around">
                                     <button type="button" id="agregarImagen_{{$componente->id}}"
-                                        class="agregarImagen btn btn-success"
+                                        class="agregarImagen btn btn-primary"
                                         data-componente="{{$componente->id}}">Agregar
                                         Imagen</button>
                                     <button type="button" data-componente="{{$componente->id}}"
@@ -252,11 +259,7 @@
 
                     <div class="card-header">
 
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
-                                    class="fas fa-minus"></i></button>
 
-                        </div>
                         <h3 class="text-center">Elija una ubicacion para sublimar</h3>
                         <label class="control-label ">Seleccionar componente:</label>
                         <select class="form-control select2 " id="componentes" name="componentes" onchange="cambiar();">
@@ -295,6 +298,20 @@
 
 
                     <div class="card-footer text-muted justify-content-center">
+                        <div class="row ">
+                            @guest
+                            &nbsp;&nbsp;&nbsp; <a id="prueba2" href="{{ route('login') }}"
+                                class="btn btn-success">Agregar a Mis Pedidos</a>
+                            @else
+                            @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
+
+                            &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Agregar a Mis
+                                Pedidos</button>
+
+                            @endif
+
+                            @endguest
+                        </div>
                     </div>
                 </div>
 
@@ -327,7 +344,10 @@
 
 
 
-                <div id="add_imagenes_sistema" class="row">
+                <div id="add_imagenes_sistema" class="row justify-content-center">
+                    <h4 class="alert alert-primary ">
+                        Debe seleccionar un tipo de imagen para ver su galeria
+                    </h4>
 
 
                 </div>
@@ -357,6 +377,7 @@
                     
                     $('#componentes').prop('selectedIndex', 0);                    
                     $('.tipoImagenSelect').prop('selectedIndex', 0);                    
+                    document.getElementById('componente_{{$modelo->componentes->isEmpty() ? -1: 0}}').style.display='block';
                     
                     
                 });
@@ -405,7 +426,7 @@
                             var nuevaImagen='<div class="form-group " id="add_imagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" style="margin-right:5%;" data-totalImagenes="'+cantidadTotal+'">'
                                 +'<div>'
                                     
-                                    +'<input id="'+idSlider+'" class="range_5" type="text" name="range_5" value="" onchange="cambiarSlider('+idSlider+','+idImagen+','+idDise+')" >'
+                                    +'<input id="'+idSlider+'" class="range_5" type="text" name="range_5" value="" style="display:none;" onchange="cambiarSlider('+idSlider+','+idImagen+','+idDise+')" >'
                                     +'</div>'
                                     +'<div class=" " style="max-width: 10rem; ">'
                                         +'<div id="preview_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" class=" row justify-content-center">'
@@ -440,7 +461,8 @@
                                                         step    : 1,
                                                         postfix : ' %',
                                                         prettify: false,
-                                                        hasGrid : true
+                                                        hasGrid : true,
+                                                        display:none
                                                     });
                                                 }
                                                 $('#cantidadImagenes_'+componenteSeleccionado).val(cantidadImagenes);
@@ -502,7 +524,6 @@
                                             
                                             function cambiarSlider(idSlider,idImagen,idDise){
                                                 
-                                                console.log(idSlider);
                                                 idImagen.style="border-radius: "+   idSlider.value +'%;' ;
                                                 idDise.style="border-radius: "+   idSlider.value +'%;' ;
                                                 document.getElementById(idImagen.id+'_forma').value=idSlider.value;
@@ -527,6 +548,7 @@
                                                     success: function(data) {
                                                         // console.log(data);
                                                         if(data!=null){
+                                                            $('#add_imagenes_sistema').html('');
                                                             data['imagenes'].forEach(imagen => {
                                                                 var urlSurce='{{asset("/imagenes/sublimaciones")}}'+'/'+data['tipoImagen'].nombre+'/'+ imagen.imagen;
                                                                 var nuevaImagen='<div class="form-group " id="" style="margin-left:5%;">'
@@ -581,7 +603,7 @@
                                                                         var idDise='nuevaImagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado;
                                                                         var nuevaImagen='<div class="form-group " id="add_imagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" style="margin-right:5%;" data-totalImagenes="'+cantidadTotal+'">'
                                                                             +'<div>'
-                                                                                +'<input id="'+idSlider+'" class="range_5" type="text" name="range_5" value="" onchange="cambiarSlider('+idSlider+','+idImagen+','+idDise+')" >'
+                                                                                +'<input id="'+idSlider+'" class="range_5" type="text" name="range_5" value=""style="display:none" onchange="cambiarSlider('+idSlider+','+idImagen+','+idDise+')" >'
                                                                                 +'</div>'  
                                                                                 +'<div class=" " style="max-width: 10rem; ">'
                                                                                     +'<div id="" class=" row justify-content-center">'
@@ -616,7 +638,8 @@
                                                                                                     step    : 1,
                                                                                                     postfix : ' %',
                                                                                                     prettify: false,
-                                                                                                    hasGrid : true
+                                                                                                    hasGrid : true,
+                                                                                                    display:none
                                                                                                 });
                                                                                                 
                                                                                             }
@@ -763,6 +786,7 @@
                                                                                                         preview.append(image);
                                                                                                         // alert(image.src);
                                                                                                         document.getElementById('nuevaImagen_'+idImagen+'_componente_'+componenteSeleccionado).src=image.src;
+                                                                                                        
                                                                                                         
                                                                                                         // $('.resize-drag').src(image.src);
                                                                                                     };

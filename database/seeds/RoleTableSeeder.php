@@ -14,9 +14,29 @@ class RoleTableSeeder extends Seeder
     public function run()
     {
         $rol = new Role();
-        $rol->name = 'ADMIN';
+        $rol->name = 'admin';
         $rol->slug = 'admin';
         $rol->special = 'all-access';
+        $rol->save();
+
+        $rol = new Role();
+        $rol->name = 'cliente';
+        $rol->slug = 'cliente';
+        $rol->save();
+
+        $rol = new Role();
+        $rol->name = 'empleado';
+        $rol->slug = 'empleado';
+        $rol->save();
+
+        $rol = new Role();
+        $rol->name = 'auditor';
+        $rol->slug = 'auditor';
+        $rol->save();
+
+        $rol = new Role();
+        $rol->name = 'gerente';
+        $rol->slug = 'gerente';
         $rol->save();
     }
 }

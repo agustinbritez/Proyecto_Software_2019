@@ -12,329 +12,315 @@
 */
 
 use Illuminate\Support\Facades\Route;
-//estadistica
-
-Route::get('veri', 'ControllerMateriaPrima@verificarStock')->name('veri.index')->middleware('permission:veri_index');
-Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index')->middleware('permission:estadistica_index');
-Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos')->middleware('permission:estadistica_productosMasVendidos');
 // Route::get('estadistica', 'EstadisticaController@productosMasVendidos');
 
 Route::group(['middleware' => ['guest']], function () {
     Route::get('/', 'Auth\LoginController@showLoginForm');
     Route::post('/login', 'Auth\LoginController@login')->name('login');
 });
-Route::get('/prueba', function () {
-    return view('producto.pruebaInteraccion');
-});
+//todos pueden ver
+
+Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
+Route::get('proveedor/obtenerPrecios/{id}', 'ProveedorController@obtenerPrecios')->name('proveedor.obtenerPrecios');
+Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create');
+Route::get('proveedor/consultarPrecios/{id}', 'ProveedorController@consultarPrecios')->name('proveedor.consultarPrecios');
+
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin', function () {
         return view('admin_panel.index');
     });
-    //users
-    Route::get('users', 'UserController@index')->name('usuarios.index')->middleware('permission:usuarios_index');
-    Route::get('users', 'UserController@show')->name('usuarios.show')->middleware('permission:usuarios_show');
-    Route::get('users/create', 'UserController@create')->name('usuarios.create')->middleware('permission:usuarios_create');
-    Route::get('users/{usuario}/edit', 'UserController@edit')->name('usuarios.edit')->middleware('permission:usuarios_edit');
-    Route::get('users', 'UserController@delete')->name('usuarios.delete')->middleware('permission:usuarios_delete');
-    //pdf
-    Route::get('pdf/MateriaPrima', 'PdfController@materiaPrima')->name('pdf.materiaPrima');
-    Route::get('pdf/Proveedor', 'PdfController@proveedor')->name('pdf.proveedor');
-    Route::get('pdf/Movimiento', 'PdfController@movimiento')->name('pdf.movimiento');
-    Route::get('pdf/Modelo', 'PdfController@modelo')->name('pdf.modelo');
 
-    //    Route::resource('/usuarios','UserController');
+
+
+    //todos los usuarios logeados  pueden acceder 
+    // Route::resource('/usuario', 'UserController');
+    // Route::resource('/usuario', 'UserController');
+
+
+    Route::get('usuario/editMiPerfil', 'UserController@editMiPerfil')->name('usuario.editMiPerfil');
+    Route::post('usuario/modificar', 'UserController@modificar')->name('usuario.modificar');
+    Route::post('usuario/crearDireccion', 'UserController@crearDireccion')->name('usuario.crearDireccion');
+    Route::post('usuario/cambiarPassword', 'UserController@cambiarPassword')->name('usuario.cambiarPassword');
+    Route::get('usuario/direccionEnvioPredeterminada/{id}', 'UserController@direccionEnvioPredeterminada')->name('usuario.direccionEnvioPredeterminada');
+
+    Route::get('materiaPrima/verificarStock', 'ControllerMateriaPrima@verificarStock')->name('materiaPrima.verificarStock');
+    Route::get('materiaPrima/stockMinimo', 'ControllerMateriaPrima@stockMinimo')->name('materiaPrima.stockMinimo');
+    Route::get('pedido/confirmarPedido/{id}', 'PedidoController@confirmarPedido')->name('pedido.confirmarPedido');
+    Route::get('pedido/pagarPedido/{id}', 'PedidoController@pagarPedido')->name('pedido.pagarPedido');
+    Route::get('producto/{id}/miProducto', 'ProductoController@miProducto')->name('producto.miProducto');
+    Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow');
+
+    //materia Prima
+
+
+    Route::middleware(['role:cliente'] || ['role:admin'])->group(function () {
+        Route::post('producto', 'ProductoController@store')->name('producto.store');
+        Route::get('pedido/agregarProductoFinal/{id}', 'PedidoController@agregarProductoFinal')->name('pedido.agregarProductoFinal');
+        Route::get('tipoImagen/obtenerImagenes/{id}', 'TipoImagenController@obtenerImagenes')->name('tipoImagen.obtenerImagenes');
+        Route::get('pedido/misPedidos', 'PedidoController@misPedidos')->name('pedido.misPedidos');
+        Route::get('pedido/filtrarMisPedidos', 'PedidoController@filtrarMisPedidos')->name('pedido.filtrarMisPedidos');
+        Route::get('producto/{id}/editMiProducto', 'ProductoController@editMiProducto')->name('producto.editMiProducto');
+        Route::get('detallePedido/{id}/edit', 'DetallePedidoController@edit')->name('detallePedido.edit');
+        Route::delete('detallePedido/destroy/{id}', 'DetallePedidoController@destroy')->name('detallePedido.destroy');
+        Route::delete('pedido/destroy/{id}', 'PedidoController@destroy')->name('pedido.destroy');
+        Route::post('producto/update/{id}', 'ProductoController@update')->name('producto.update');
+        Route::post('detallePedido/update/{id}', 'DetallePedidoController@update')->name('detallePedido.update');
+    });
+
+
+
+    Route::middleware(['role:empleado'] || ['role:admin'] || ['role:gerente'])->group(function () {
+        //pdf
+        Route::get('pdf/MateriaPrima', 'PdfController@materiaPrima')->name('pdf.materiaPrima');
+        Route::get('pdf/Proveedor', 'PdfController@proveedor')->name('pdf.proveedor');
+        Route::get('pdf/Movimiento', 'PdfController@movimiento')->name('pdf.movimiento');
+        Route::get('pdf/Modelo/{base}', 'PdfController@modelo')->name('pdf.modelo');
+        Route::get('pdf/Auditoria', 'PdfController@auditoria')->name('pdf.auditoria');
+        Route::get('pdf/auditoriaUnObjeto/{id}', 'PdfController@auditoriaUnObjeto')->name('pdf.auditoriaUnObjeto');
+        Route::get('pdf/Pedido', 'PdfController@pedido')->name('pdf.pedido');
+
+        //propuesta materia prima proveedor
+        Route::get('materiaPrima/propuesta/{id}', 'ControllerMateriaPrima@propuesta')->name('materiaPrima.propuesta');
+    });
+    Route::middleware(['role:admin'] || ['role:gerente'])->group(function () {
+
+        //estadistica
+
+        Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index');
+        Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos');
+    });
+
+
+
+    Route::middleware(['role:auditor'] || ['role:admin'])->group(function () {
+
+        //auditoria
+        Route::get('auditoria', 'AuditoriaController@index')->name('auditoria.index');
+        Route::get('auditoria/show/{id}', 'AuditoriaController@show')->name('auditoria.show');
+        Route::get('auditoria/historial/{id}', 'AuditoriaController@historial')->name('auditoria.historial');
+    });
+
+    Route::middleware(['role:empleado'] || ['role:admin'])->group(function () {
+        //usuario
+        Route::get('usuario', 'UserController@index')->name('usuario.index');
+        Route::post('usuario/store', 'UserController@store')->name('usuario.store');
+        Route::post('usuario/update', 'UserController@update')->name('usuario.update');
+        Route::get('usuario/{id}/edit', 'UserController@edit')->name('usuario.edit');
+        Route::delete('usuario/destroy', 'UserController@destroy')->name('usuario.destroy');
+
+        //pedido
+        Route::get('pedido/filtrarTrabajo', 'PedidoController@filtrarTrabajo')->name('pedido.filtrarTrabajo');
+
+        //materia Prima
+        Route::get('materiaPrima', 'ControllerMateriaPrima@index')->name('materiaPrima.index');
+        Route::get('materiaPrima/{materiaPrima}/show', 'ControllerMateriaPrima@show')->name('materiaPrima.show');
+        Route::get('materiaPrima/create', 'ControllerMateriaPrima@create')->name('materiaPrima.create');
+        Route::post('materiaPrima', 'ControllerMateriaPrima@store')->name('materiaPrima.store');
+        Route::get('materiaPrima/{id}/edit', 'ControllerMateriaPrima@edit')->name('materiaPrima.edit');
+        Route::get('materiaPrima/parametros', 'ControllerMateriaPrima@obtenerParametros')->name('materiaPrima.parametros');
+        Route::post('materiaPrima/update', 'ControllerMateriaPrima@update')->name('materiaPrima.update');
+        Route::delete('materiaPrima/destroy', 'ControllerMateriaPrima@destroy')->name('materiaPrima.destroy');
+
+        //receta
+        Route::delete('receta/destroy/{id}', 'RecetaController@destroy')->name('receta.destroy');
+
+        //componente
+        Route::delete('componente/destroy/{id}', 'ComponenteController@destroy')->name('componente.destroy');
+
+        //Movimientos
+        Route::get('movimiento', 'MovimientoController@index')->name('movimiento.index');
+        Route::get('movimiento/{movimiento}/show', 'MovimientoController@show')->name('movimiento.show');
+        Route::get('movimiento/create', 'MovimientoController@create')->name('movimiento.create');
+        Route::post('movimiento', 'MovimientoController@store')->name('movimiento.store');
+        Route::get('movimiento/{id}/edit', 'MovimientoController@edit')->name('movimiento.edit');
+        Route::post('movimiento/update', 'MovimientoController@update')->name('movimiento.update');
+        Route::delete('movimiento/destroy', 'MovimientoController@destroy')->name('movimiento.destroy');
+
+        //Modelos
+        Route::get('modelo', 'ModeloController@index')->name('modelo.index');
+        Route::get('modelo/indexBase', 'ModeloController@indexBase')->name('modelo.indexBase');
+        Route::get('modelo/{modelo}/show', 'ModeloController@show')->name('modelo.show');
+        Route::get('modelo/create', 'ModeloController@create')->name('modelo.create');
+        Route::get('modelo/baseCreate', 'ModeloController@baseCreate')->name('modelo.baseCreate');
+        Route::get('modelo/baseModificar/{id}', 'ModeloController@baseModificar')->name('modelo.baseModificar');
+        Route::post('modelo', 'ModeloController@store')->name('modelo.store');
+        Route::get('modelo/{id}/edit', 'ModeloController@edit')->name('modelo.edit');
+        Route::post('modelo/update', 'ModeloController@update')->name('modelo.update');
+        Route::delete('modelo/destroy/{id}', 'ModeloController@destroy')->name('modelo.destroy');
+        Route::get('modelo/{variable}', 'ModeloController@cargarListaIngrediente')->name('modelo.cargarListaIngrediente');
+        Route::post('modelo/relation', 'ModeloController@addRelation')->name('modelo.addRelation');
+        Route::get('modelo/modificar/{id}', 'ModeloController@modificar')->name('modelo.modificar');
+        Route::post('modelo/componente', 'ModeloController@addComponente')->name('modelo.addComponente');
+        Route::get('modelo/getMedidaMateriaPrima/{id}', 'ModeloController@getMedidaMateriaPrima')->name('modelo.getMedidaMateriaPrima');
+        Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->name('modelo.getMedidaModelo');
+
+        //producto
+        Route::post('producto/confirmarProducto/{id}', 'ProductoController@confirmarProducto')->name('producto.confirmarProducto');
+
+        // Pedidos
+        Route::get('pedido', 'PedidoController@index')->name('pedido.index');
+        Route::get('pedido/{pedido}/show', 'PedidoController@show')->name('pedido.show');
+        Route::get('pedido/{id}/preshow', 'PedidoController@preshow')->name('pedido.preshow');
+        Route::get('pedido/create/{id}', 'PedidoController@create')->name('pedido.create');
+        Route::post('pedido', 'PedidoController@store')->name('pedido.store');
+        Route::get('pedido/{id}/edit', 'PedidoController@edit')->name('pedido.edit');
+        Route::post('pedido/update', 'PedidoController@update')->name('pedido.update');
+        Route::post('pedido/terminarPedido/{id}', 'PedidoController@terminarPedido')->name('pedido.terminarPedido');
+        Route::get('pedido/trabajo', 'PedidoController@trabajo')->name('pedido.trabajo');
+        Route::get('pedido/ordenamientoInteligente', 'PedidoController@ordenamientoInteligente')->name('pedido.ordenamientoInteligente');
+
+        // detalle de pedido
+        Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index');
+        Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show');
+        Route::get('detallePedido/show/{id}', 'DetallePedidoController@show')->name('detallePedido.show');
+        Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create');
+        Route::post('detallePedido', 'DetallePedidoController@store')->name('detallePedido.store');
+        Route::get('detallePedido/verificarDetalle/{id}', 'DetallePedidoController@verificarDetalle')->name('detallePedido.verificarDetalle');
+        Route::get('detallePedido/rechazarDetalle/{id}', 'DetallePedidoController@rechazarDetalle')->name('detallePedido.rechazarDetalle');
+        Route::get('detallePedido/estadoSiguiente/{id}', 'DetallePedidoController@estadoSiguiente')->name('detallePedido.estadoSiguiente');
+        Route::get('detallePedido/estadoAnterior/{id}', 'DetallePedidoController@estadoAnterior')->name('detallePedido.estadoAnterior');
+
+
+        // Sublimacion
+        Route::get('sublimacion', 'SublimacionController@index')->name('sublimacion.index');
+        Route::get('sublimacion/{sublimacion}/show', 'SublimacionController@show')->name('sublimacion.show');
+        Route::get('sublimacion/{id}/preshow', 'SublimacionController@preshow')->name('sublimacion.preshow');
+        Route::get('sublimacion/create/{id}', 'SublimacionController@create')->name('sublimacion.create');
+        Route::post('sublimacion', 'SublimacionController@store')->name('sublimacion.store');
+        Route::get('sublimacion/{id}/edit', 'SublimacionController@edit')->name('sublimacion.edit');
+        Route::post('sublimacion/update/{id}', 'SublimacionController@update')->name('sublimacion.update');
+        Route::delete('sublimacion/destroy/{id}', 'SublimacionController@destroy')->name('sublimacion.destroy');
+
+        // Flujo de trabajos
+        Route::get('flujoTrabajo', 'flujoTrabajoController@index')->name('flujoTrabajo.index');
+        Route::get('flujoTrabajo/{flujoTrabajo}/show', 'flujoTrabajoController@show')->name('flujoTrabajo.show');
+        Route::get('flujoTrabajo/create/{id}', 'flujoTrabajoController@create')->name('flujoTrabajo.create');
+        Route::post('flujoTrabajo', 'flujoTrabajoController@store')->name('flujoTrabajo.store');
+        Route::get('flujoTrabajo/{id}/edit', 'flujoTrabajoController@edit')->name('flujoTrabajo.edit');
+        Route::get('flujoTrabajo/agregarEstado/{idFlujo}-{idEstado}', 'flujoTrabajoController@agregarEstado')->name('flujoTrabajo.agregarEstado');
+        Route::get('flujoTrabajo/quitarEstado/{id}', 'flujoTrabajoController@quitarEstado')->name('flujoTrabajo.quitarEstado');
+        Route::post('flujoTrabajo/update/{id}', 'flujoTrabajoController@update')->name('flujoTrabajo.update');
+        Route::delete('flujoTrabajo/destroy/{id}', 'flujoTrabajoController@destroy')->name('flujoTrabajo.destroy');
+
+        // Estados
+        Route::get('estado', 'estadoController@index')->name('estado.index');
+        Route::get('estado/{estado}/show', 'estadoController@show')->name('estado.show');
+        Route::get('estado/create/{id}', 'estadoController@create')->name('estado.create');
+        Route::post('estado', 'estadoController@store')->name('estado.store');
+        Route::get('estado/{id}/edit', 'estadoController@edit')->name('estado.edit');
+        Route::post('estado/update/{id}', 'estadoController@update')->name('estado.update');
+        Route::delete('estado/destroy/{id}', 'estadoController@destroy')->name('estado.destroy');
+        //Tipo Movimiento
+        Route::get('tipoMovimiento', 'tipoMovimientoController@index')->name('tipoMovimiento.index');
+        Route::get('tipoMovimiento/{tipoMovimiento}/show', 'tipoMovimientoController@show')->name('tipoMovimiento.show');
+        Route::get('tipoMovimiento/create', 'tipoMovimientoController@create')->name('tipoMovimiento.create');
+        Route::post('tipoMovimiento', 'tipoMovimientoController@store')->name('tipoMovimiento.store');
+        Route::get('tipoMovimiento/{id}/edit', 'tipoMovimientoController@edit')->name('tipoMovimiento.edit');
+        Route::post('tipoMovimiento/update', 'tipoMovimientoController@update')->name('tipoMovimiento.update');
+        Route::delete('tipoMovimiento/destroy', 'tipoMovimientoController@destroy')->name('tipoMovimiento.destroy');
+        //  Route::resource('tipoMovimiento','tipoMovimientoController');
+
+        //imagen
+        Route::get('imagen', 'imagenController@index')->name('imagen.index');
+        Route::get('imagen/{imagen}/show', 'imagenController@show')->name('imagen.show');
+        Route::get('imagen/create', 'imagenController@create')->name('imagen.create');
+        Route::post('imagen', 'imagenController@store')->name('imagen.store');
+        Route::get('imagen/{id}/edit', 'imagenController@edit')->name('imagen.edit');
+        Route::post('imagen/update', 'imagenController@update')->name('imagen.update');
+        Route::delete('imagen/destroy/{id}', 'imagenController@destroy')->name('imagen.destroy');
+
+        //tipo imagen
+        Route::get('tipoImagen', 'TipoImagenController@index')->name('tipoImagen.index');
+        Route::get('tipoImagen/{tipoImagen}/show', 'TipoImagenController@show')->name('tipoImagen.show');
+        Route::get('tipoImagen/create', 'TipoImagenController@create')->name('tipoImagen.create');
+        Route::post('tipoImagen', 'TipoImagenController@store')->name('tipoImagen.store');
+        Route::get('tipoImagen/{id}/edit', 'TipoImagenController@edit')->name('tipoImagen.edit');
+        Route::post('tipoImagen/update', 'TipoImagenController@update')->name('tipoImagen.update');
+        Route::delete('tipoImagen/destroy', 'TipoImagenController@destroy')->name('tipoImagen.destroy');
+
+
+        //Pais
+        Route::get('pais', 'PaisController@index')->name('pais.index');
+        Route::get('pais/{pais}/show', 'PaisController@show')->name('pais.show');
+        Route::get('pais/create', 'PaisController@create')->name('pais.create');
+        Route::post('pais', 'PaisController@store')->name('pais.store');
+        Route::get('pais/{id}/edit', 'PaisController@edit')->name('pais.edit');
+        Route::post('pais/update', 'PaisController@update')->name('pais.update');
+        Route::delete('pais/destroy', 'PaisController@destroy')->name('pais.destroy');
+
+        //Provincia
+        Route::get('provincia', 'ProvinciaController@index')->name('provincia.index');
+        Route::get('provincia/{provincia}/show', 'ProvinciaController@show')->name('provincia.show');
+        Route::get('provincia/create', 'ProvinciaController@create')->name('provincia.create');
+        Route::post('provincia', 'ProvinciaController@store')->name('provincia.store');
+        Route::get('provincia/{id}/edit', 'ProvinciaController@edit')->name('provincia.edit');
+        Route::post('provincia/update', 'ProvinciaController@update')->name('provincia.update');
+        Route::delete('provincia/destroy', 'ProvinciaController@destroy')->name('provincia.destroy');
+
+        //localidad
+        Route::get('localidad', 'LocalidadController@index')->name('localidad.index');
+        Route::get('localidad/{localidad}/show', 'LocalidadController@show')->name('localidad.show');
+        Route::get('localidad/create', 'LocalidadController@create')->name('localidad.create');
+        Route::post('localidad', 'LocalidadController@store')->name('localidad.store');
+        Route::get('localidad/{id}/edit', 'LocalidadController@edit')->name('localidad.edit');
+        Route::post('localidad/update', 'LocalidadController@update')->name('localidad.update');
+        Route::delete('localidad/destroy', 'LocalidadController@destroy')->name('localidad.destroy');
+
+        //calle
+        Route::get('calle', 'CalleController@index')->name('calle.index');
+        Route::get('calle/{calle}/show', 'CalleController@show')->name('calle.show');
+        Route::get('calle/create', 'CalleController@create')->name('calle.create');
+        Route::post('calle', 'CalleController@store')->name('calle.store');
+        Route::get('calle/{id}/edit', 'CalleController@edit')->name('calle.edit');
+        Route::post('calle/update', 'CalleController@update')->name('calle.update');
+        Route::delete('calle/destroy', 'CalleController@destroy')->name('calle.destroy');
+
+
+        //Medidas
+        Route::get('medida', 'medidaController@index')->name('medida.index');
+        Route::get('medida/{medida}/show', 'medidaController@show')->name('medida.show');
+        Route::get('medida/create', 'medidaController@create')->name('medida.create');
+        Route::post('medida', 'medidaController@store')->name('medida.store');
+        Route::get('medida/{id}/edit', 'medidaController@edit')->name('medida.edit');
+        Route::post('medida/update', 'medidaController@update')->name('medida.update');
+        Route::delete('medida/destroy', 'medidaController@destroy')->name('medida.destroy');
+        //  Route::resource('medida','medidaController');
+
+        //Direccion
+        Route::get('direccion', 'direccionController@index')->name('direccion.index');
+        Route::get('direccion/{direccion}/show', 'direccionController@show')->name('direccion.show');
+        Route::get('direccion/create', 'direccionController@create')->name('direccion.create');
+        Route::post('direccion', 'direccionController@store')->name('direccion.store');
+        Route::get('direccion/{id}/edit', 'direccionController@edit')->name('direccion.edit');
+        Route::post('direccion/update', 'direccionController@update')->name('direccion.update');
+        Route::delete('direccion/destroy', 'direccionController@destroy')->name('direccion.destroy');
+        //  Route::resource('direccion','direccionController');
+
+        //Documento
+        Route::get('documento', 'documentoController@index')->name('documento.index');
+        Route::get('documento/{documento}/show', 'documentoController@show')->name('documento.show');
+        Route::get('documento/create', 'documentoController@create')->name('documento.create');
+        Route::post('documento', 'documentoController@store')->name('documento.store');
+        Route::get('documento/{id}/edit', 'documentoController@edit')->name('documento.edit');
+        Route::post('documento/update', 'documentoController@update')->name('documento.update');
+        Route::delete('documento/destroy', 'documentoController@destroy')->name('documento.destroy');
+        //  Route::resource('documento','documentoController');
+        //Proveedor
+        Route::get('proveedor', 'ProveedorController@index')->name('proveedor.index');
+        Route::get('proveedor/{proveedor}/show', 'ProveedorController@show')->name('proveedor.show');
+        Route::get('proveedor/create', 'ProveedorController@create')->name('proveedor.create');
+        Route::post('proveedor', 'ProveedorController@store')->name('proveedor.store');
+        Route::get('proveedor/{id}/edit', 'ProveedorController@edit')->name('proveedor.edit');
+        Route::post('proveedor/update', 'ProveedorController@update')->name('proveedor.update');
+        Route::delete('proveedor/destroy', 'ProveedorController@destroy')->name('proveedor.destroy');
+    });
 });
-Route::resource('/usuarios', 'UserController');
-
-//receta
-Route::delete('receta/destroy/{id}', 'RecetaController@destroy')->name('receta.destroy')->middleware('permission:receta_delete');
-
-//componente
-Route::delete('componente/destroy/{id}', 'ComponenteController@destroy')->name('componente.destroy')->middleware('permission:componente_delete');
-
-
-//materia Prima
-Route::get('materiaPrima', 'ControllerMateriaPrima@index')->name('materiaPrima.index')->middleware('permission:materiaPrima_index');
-Route::get('materiaPrima/{materiaPrima}/show', 'ControllerMateriaPrima@show')->name('materiaPrima.show')->middleware('permission:materiaPrima_show');
-Route::get('materiaPrima/create', 'ControllerMateriaPrima@create')->name('materiaPrima.create')->middleware('permission:materiaPrima_create');
-Route::post('materiaPrima', 'ControllerMateriaPrima@store')->name('materiaPrima.store')->middleware('permission:materiaPrima_store');
-Route::get('materiaPrima/{id}/edit', 'ControllerMateriaPrima@edit')->name('materiaPrima.edit')->middleware('permission:materiaPrima_edit');
-Route::get('materiaPrima/parametros', 'ControllerMateriaPrima@obtenerParametros')->name('materiaPrima.parametros')->middleware('permission:materiaPrima_edit');
-Route::post('materiaPrima/update', 'ControllerMateriaPrima@update')->name('materiaPrima.update')->middleware('permission:materiaPrima_update');
-Route::delete('materiaPrima/destroy', 'ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:materiaPrima_delete');
-//  Route::resource('materiaPrima','materiaPrimaController');
-
-//auditoria
-Route::get('auditoria', 'AuditoriaController@index')->name('auditoria.index')->middleware('permission:auditoria_index');
-Route::get('auditoria/show/{id}', 'AuditoriaController@show')->name('auditoria.show')->middleware('permission:auditoria_show');
-Route::get('auditoria/historial/{id}', 'AuditoriaController@historial')->name('auditoria.historial')->middleware('permission:auditoria_historial');
-
-//Movimientos
-Route::get('movimiento', 'MovimientoController@index')->name('movimiento.index')->middleware('permission:movimiento_index');
-Route::get('movimiento/{movimiento}/show', 'MovimientoController@show')->name('movimiento.show')->middleware('permission:movimiento_show');
-Route::get('movimiento/create', 'MovimientoController@create')->name('movimiento.create')->middleware('permission:movimiento_create');
-Route::post('movimiento', 'MovimientoController@store')->name('movimiento.store')->middleware('permission:movimiento_store');
-Route::get('movimiento/{id}/edit', 'MovimientoController@edit')->name('movimiento.edit')->middleware('permission:movimiento_edit');
-Route::post('movimiento/update', 'MovimientoController@update')->name('movimiento.update')->middleware('permission:movimiento_update');
-Route::delete('movimiento/destroy', 'MovimientoController@destroy')->name('movimiento.destroy')->middleware('permission:movimiento_delete');
-//  Route::resource('movimiento','movimientoController');
-
-//Modelos
-Route::get('modelo', 'ModeloController@index')->name('modelo.index')->middleware('permission:modelo_index');
-Route::get('modelo/indexBase', 'ModeloController@indexBase')->name('modelo.indexBase')->middleware('permission:modelo_indexBase');
-Route::get('modelo/{modelo}/show', 'ModeloController@show')->name('modelo.show')->middleware('permission:modelo_show');
-Route::get('modelo/create', 'ModeloController@create')->name('modelo.create')->middleware('permission:modelo_create');
-Route::get('modelo/baseCreate', 'ModeloController@baseCreate')->name('modelo.baseCreate')->middleware('permission:modelo_baseCreate');
-Route::get('modelo/baseModificar/{id}', 'ModeloController@baseModificar')->name('modelo.baseModificar')->middleware('permission:modelo_baseModificar');
-Route::post('modelo', 'ModeloController@store')->name('modelo.store')->middleware('permission:modelo_store');
-Route::get('modelo/{id}/edit', 'ModeloController@edit')->name('modelo.edit')->middleware('permission:modelo_edit');
-Route::post('modelo/update', 'ModeloController@update')->name('modelo.update')->middleware('permission:modelo_update');
-Route::delete('modelo/destroy/{id}', 'ModeloController@destroy')->name('modelo.destroy')->middleware('permission:modelo_delete');
-Route::get('modelo/{variable}', 'ModeloController@cargarListaIngrediente')->name('modelo.cargarListaIngrediente');
-Route::post('modelo/relation', 'ModeloController@addRelation')->name('modelo.addRelation')->middleware('permission:modelo_addRelation');
-Route::get('modelo/modificar/{id}', 'ModeloController@modificar')->name('modelo.modificar')->middleware('permission:modelo_modificar');
-Route::post('modelo/componente', 'ModeloController@addComponente')->name('modelo.addComponente')->middleware('permission:modelo_addComponente');
-Route::get('modelo/getMedidaMateriaPrima/{id}', 'ModeloController@getMedidaMateriaPrima')->name('modelo.getMedidaMateriaPrima')->middleware('permission:modelo_getMedidaMateriaPrima');
-Route::get('modelo/getMedidaModelo/{id}', 'ModeloController@getMedidaModelo')->name('modelo.getMedidaModelo')->middleware('permission:modelo_getMedidaModelo');
-//  Route::resource('modelo','modeloController');
-
-
-// Productos
-Route::get('producto', 'ProductoController@index')->name('producto.index')->middleware('permission:producto_index');
-Route::get('producto/{producto}/show', 'ProductoController@show')->name('producto.show')->middleware('permission:producto_show');
-Route::get('producto/{id}/preshow', 'ProductoController@preshow')->name('producto.preshow')->middleware('permission:producto_preshow');
-Route::get('producto/{id}/editMiProducto', 'ProductoController@editMiProducto')->name('producto.editMiProducto')->middleware('permission:producto_editMiProducto');
-Route::get('producto/{id}/miProducto', 'ProductoController@miProducto')->name('producto.miProducto')->middleware('permission:producto_miProducto');
-Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create')->middleware('permission:producto_create');
-Route::post('producto', 'ProductoController@store')->name('producto.store')->middleware('permission:producto_store');
-Route::get('producto/{id}/edit', 'ProductoController@edit')->name('producto.edit')->middleware('permission:producto_edit');
-Route::post('producto/update/{id}', 'ProductoController@update')->name('producto.update')->middleware('permission:producto_update');
-Route::delete('producto/destroy/{id}', 'ProductoController@destroy')->name('producto.destroy')->middleware('permission:producto_delete');
-Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
-Route::post('producto/confirmarProducto/{id}', 'ProductoController@confirmarProducto')->name('producto.confirmarProducto')->middleware('permission:producto_confirmarProducto');;
-// Pedidos
-Route::get('pedido', 'PedidoController@index')->name('pedido.index')->middleware('permission:pedido_index');
-Route::get('pedido/{pedido}/show', 'PedidoController@show')->name('pedido.show')->middleware('permission:pedido_show');
-Route::get('pedido/{id}/preshow', 'PedidoController@preshow')->name('pedido.preshow')->middleware('permission:pedido_preshow');
-Route::get('pedido/create/{id}', 'PedidoController@create')->name('pedido.create')->middleware('permission:pedido_create');
-Route::post('pedido', 'PedidoController@store')->name('pedido.store')->middleware('permission:pedido_store');
-Route::get('pedido/{id}/edit', 'PedidoController@edit')->name('pedido.edit')->middleware('permission:pedido_edit');
-Route::post('pedido/update', 'PedidoController@update')->name('pedido.update')->middleware('permission:pedido_update');
-Route::delete('pedido/destroy/{id}', 'PedidoController@destroy')->name('pedido.destroy')->middleware('permission:pedido_delete');
-Route::get('pedido/misPedidos', 'PedidoController@misPedidos')->name('pedido.misPedidos')->middleware('permission:pedido_misPedidos');
-Route::get('pedido/confirmarPedido/{id}', 'PedidoController@confirmarPedido')->name('pedido.confirmarPedido')->middleware('permission:pedido_confirmarPedido');
-Route::get('pedido/pagarPedido/{id}', 'PedidoController@pagarPedido')->name('pedido.pagarPedido')->middleware('permission:pedido_pagarPedido');
-Route::post('pedido/terminarPedido/{id}', 'PedidoController@terminarPedido')->name('pedido.terminarPedido')->middleware('permission:pedido_terminarPedido');
-Route::get('pedido/trabajo', 'PedidoController@trabajo')->name('pedido.trabajo')->middleware('permission:pedido_trabajo');
-Route::get('pedido/filtrarTrabajo', 'PedidoController@filtrarTrabajo')->name('pedido.filtrarTrabajo')->middleware('permission:pedido_filtrarTrabajo');
-Route::get('pedido/ordenamientoInteligente', 'PedidoController@ordenamientoInteligente')->name('pedido.ordenamientoInteligente')->middleware('permission:pedido_ordenamientoInteligente');
-
-// detalle de pedido
-Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index')->middleware('permission:detallePedido_index');
-Route::get('detallePedido/{detallePedido}/show', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
-Route::get('detallePedido/show/{id}', 'DetallePedidoController@show')->name('detallePedido.show')->middleware('permission:detallePedido_show');
-Route::get('detallePedido/create/{id}', 'DetallePedidoController@create')->name('detallePedido.create')->middleware('permission:detallePedido_create');
-Route::post('detallePedido', 'DetallePedidoController@store')->name('detallePedido.store')->middleware('permission:detallePedido_store');
-Route::get('detallePedido/{id}/edit', 'DetallePedidoController@edit')->name('detallePedido.edit')->middleware('permission:detallePedido_edit');
-Route::get('detallePedido/verificarDetalle/{id}', 'DetallePedidoController@verificarDetalle')->name('detallePedido.verificarDetalle')->middleware('permission:detallePedido_verificarDetalle');
-Route::get('detallePedido/rechazarDetalle/{id}', 'DetallePedidoController@rechazarDetalle')->name('detallePedido.rechazarDetalle')->middleware('permission:detallePedido_rechazarDetalle');
-Route::get('detallePedido/estadoSiguiente/{id}', 'DetallePedidoController@estadoSiguiente')->name('detallePedido.estadoSiguiente')->middleware('permission:detallePedido_estadoSiguiente');
-Route::get('detallePedido/estadoAnterior/{id}', 'DetallePedidoController@estadoAnterior')->name('detallePedido.estadoAnterior')->middleware('permission:detallePedido_estadoAnterior');
-Route::post('detallePedido/update/{id}', 'DetallePedidoController@update')->name('detallePedido.update')->middleware('permission:detallePedido_update');
-Route::delete('detallePedido/destroy/{id}', 'DetallePedidoController@destroy')->name('detallePedido.destroy')->middleware('permission:detallePedido_delete');
-
-// Sublimacion
-Route::get('sublimacion', 'SublimacionController@index')->name('sublimacion.index')->middleware('permission:sublimacion_index');
-Route::get('sublimacion/{sublimacion}/show', 'SublimacionController@show')->name('sublimacion.show')->middleware('permission:sublimacion_show');
-Route::get('sublimacion/{id}/preshow', 'SublimacionController@preshow')->name('sublimacion.preshow')->middleware('permission:sublimacion_preshow');
-Route::get('sublimacion/create/{id}', 'SublimacionController@create')->name('sublimacion.create')->middleware('permission:sublimacion_create');
-Route::post('sublimacion', 'SublimacionController@store')->name('sublimacion.store')->middleware('permission:sublimacion_store');
-Route::get('sublimacion/{id}/edit', 'SublimacionController@edit')->name('sublimacion.edit')->middleware('permission:sublimacion_edit');
-Route::post('sublimacion/update/{id}', 'SublimacionController@update')->name('sublimacion.update')->middleware('permission:sublimacion_update');
-Route::delete('sublimacion/destroy/{id}', 'SublimacionController@destroy')->name('sublimacion.destroy')->middleware('permission:sublimacion_delete');
-
-// Flujo de trabajos
-Route::get('flujoTrabajo', 'flujoTrabajoController@index')->name('flujoTrabajo.index')->middleware('permission:flujoTrabajo_index');
-Route::get('flujoTrabajo/{flujoTrabajo}/show', 'flujoTrabajoController@show')->name('flujoTrabajo.show')->middleware('permission:flujoTrabajo_show');
-Route::get('flujoTrabajo/create/{id}', 'flujoTrabajoController@create')->name('flujoTrabajo.create')->middleware('permission:flujoTrabajo_create');
-Route::post('flujoTrabajo', 'flujoTrabajoController@store')->name('flujoTrabajo.store')->middleware('permission:flujoTrabajo_store');
-Route::get('flujoTrabajo/{id}/edit', 'flujoTrabajoController@edit')->name('flujoTrabajo.edit')->middleware('permission:flujoTrabajo_edit');
-Route::get('flujoTrabajo/agregarEstado/{idFlujo}-{idEstado}', 'flujoTrabajoController@agregarEstado')->name('flujoTrabajo.agregarEstado')->middleware('permission:flujoTrabajo_agregarEstado');
-Route::get('flujoTrabajo/quitarEstado/{id}', 'flujoTrabajoController@quitarEstado')->name('flujoTrabajo.quitarEstado')->middleware('permission:flujoTrabajo_quitarEstado');
-Route::post('flujoTrabajo/update/{id}', 'flujoTrabajoController@update')->name('flujoTrabajo.update')->middleware('permission:flujoTrabajo_update');
-Route::delete('flujoTrabajo/destroy/{id}', 'flujoTrabajoController@destroy')->name('flujoTrabajo.destroy')->middleware('permission:flujoTrabajo_delete');
-
-// Estados
-Route::get('estado', 'estadoController@index')->name('estado.index')->middleware('permission:estado_index');
-Route::get('estado/{estado}/show', 'estadoController@show')->name('estado.show')->middleware('permission:estado_show');
-Route::get('estado/create/{id}', 'estadoController@create')->name('estado.create')->middleware('permission:estado_create');
-Route::post('estado', 'estadoController@store')->name('estado.store')->middleware('permission:estado_store');
-Route::get('estado/{id}/edit', 'estadoController@edit')->name('estado.edit')->middleware('permission:estado_edit');
-Route::post('estado/update/{id}', 'estadoController@update')->name('estado.update')->middleware('permission:estado_update');
-Route::delete('estado/destroy/{id}', 'estadoController@destroy')->name('estado.destroy')->middleware('permission:estado_delete');
-
-
-
-//Tipo Movimiento
-Route::get('tipoMovimiento', 'tipoMovimientoController@index')->name('tipoMovimiento.index')->middleware('permission:tipoMovimiento_index');
-Route::get('tipoMovimiento/{tipoMovimiento}/show', 'tipoMovimientoController@show')->name('tipoMovimiento.show')->middleware('permission:tipoMovimiento_show');
-Route::get('tipoMovimiento/create', 'tipoMovimientoController@create')->name('tipoMovimiento.create')->middleware('permission:tipoMovimiento_create');
-Route::post('tipoMovimiento', 'tipoMovimientoController@store')->name('tipoMovimiento.store')->middleware('permission:tipoMovimiento_store');
-Route::get('tipoMovimiento/{id}/edit', 'tipoMovimientoController@edit')->name('tipoMovimiento.edit')->middleware('permission:tipoMovimiento_edit');
-Route::post('tipoMovimiento/update', 'tipoMovimientoController@update')->name('tipoMovimiento.update')->middleware('permission:tipoMovimiento_update');
-Route::delete('tipoMovimiento/destroy', 'tipoMovimientoController@destroy')->name('tipoMovimiento.destroy')->middleware('permission:tipoMovimiento_delete');
-//  Route::resource('tipoMovimiento','tipoMovimientoController');
-
-//imagen
-Route::get('imagen', 'imagenController@index')->name('imagen.index')->middleware('permission:imagen_index');
-Route::get('imagen/{imagen}/show', 'imagenController@show')->name('imagen.show')->middleware('permission:imagen_show');
-Route::get('imagen/create', 'imagenController@create')->name('imagen.create')->middleware('permission:imagen_create');
-Route::post('imagen', 'imagenController@store')->name('imagen.store')->middleware('permission:imagen_store');
-Route::get('imagen/{id}/edit', 'imagenController@edit')->name('imagen.edit')->middleware('permission:imagen_edit');
-Route::post('imagen/update', 'imagenController@update')->name('imagen.update')->middleware('permission:imagen_update');
-Route::delete('imagen/destroy/{id}', 'imagenController@destroy')->name('imagen.destroy')->middleware('permission:imagen_delete');
-
-//tipo imagen
-Route::get('tipoImagen', 'TipoImagenController@index')->name('tipoImagen.index')->middleware('permission:tipoImagen_index');
-Route::get('tipoImagen/{tipoImagen}/show', 'TipoImagenController@show')->name('tipoImagen.show')->middleware('permission:tipoImagen_show');
-Route::get('tipoImagen/create', 'TipoImagenController@create')->name('tipoImagen.create')->middleware('permission:tipoImagen_create');
-Route::post('tipoImagen', 'TipoImagenController@store')->name('tipoImagen.store')->middleware('permission:tipoImagen_store');
-Route::get('tipoImagen/{id}/edit', 'TipoImagenController@edit')->name('tipoImagen.edit')->middleware('permission:tipoImagen_edit');
-Route::post('tipoImagen/update', 'TipoImagenController@update')->name('tipoImagen.update')->middleware('permission:tipoImagen_update');
-Route::delete('tipoImagen/destroy', 'TipoImagenController@destroy')->name('tipoImagen.destroy')->middleware('permission:tipoImagen_delete');
-Route::get('tipoImagen/obtenerImagenes/{id}', 'TipoImagenController@obtenerImagenes')->name('tipoImagen.obtenerImagenes')->middleware('permission:tipoImagen_obtenerImagenes');
-
-
-//Pais
-Route::get('pais', 'PaisController@index')->name('pais.index')->middleware('permission:pais_index');
-Route::get('pais/{pais}/show', 'PaisController@show')->name('pais.show')->middleware('permission:pais_show');
-Route::get('pais/create', 'PaisController@create')->name('pais.create')->middleware('permission:pais_create');
-Route::post('pais', 'PaisController@store')->name('pais.store')->middleware('permission:pais_store');
-Route::get('pais/{id}/edit', 'PaisController@edit')->name('pais.edit')->middleware('permission:pais_edit');
-Route::post('pais/update', 'PaisController@update')->name('pais.update')->middleware('permission:pais_update');
-Route::delete('pais/destroy', 'PaisController@destroy')->name('pais.destroy')->middleware('permission:pais_delete');
-
-//Provincia
-Route::get('provincia', 'ProvinciaController@index')->name('provincia.index')->middleware('permission:provincia_index');
-Route::get('provincia/{provincia}/show', 'ProvinciaController@show')->name('provincia.show')->middleware('permission:provincia_show');
-Route::get('provincia/create', 'ProvinciaController@create')->name('provincia.create')->middleware('permission:provincia_create');
-Route::post('provincia', 'ProvinciaController@store')->name('provincia.store')->middleware('permission:provincia_store');
-Route::get('provincia/{id}/edit', 'ProvinciaController@edit')->name('provincia.edit')->middleware('permission:provincia_edit');
-Route::post('provincia/update', 'ProvinciaController@update')->name('provincia.update')->middleware('permission:provincia_update');
-Route::delete('provincia/destroy', 'ProvinciaController@destroy')->name('provincia.destroy')->middleware('permission:provincia_delete');
-
-//localidad
-Route::get('localidad', 'LocalidadController@index')->name('localidad.index')->middleware('permission:localidad_index');
-Route::get('localidad/{localidad}/show', 'LocalidadController@show')->name('localidad.show')->middleware('permission:localidad_show');
-Route::get('localidad/create', 'LocalidadController@create')->name('localidad.create')->middleware('permission:localidad_create');
-Route::post('localidad', 'LocalidadController@store')->name('localidad.store')->middleware('permission:localidad_store');
-Route::get('localidad/{id}/edit', 'LocalidadController@edit')->name('localidad.edit')->middleware('permission:localidad_edit');
-Route::post('localidad/update', 'LocalidadController@update')->name('localidad.update')->middleware('permission:localidad_update');
-Route::delete('localidad/destroy', 'LocalidadController@destroy')->name('localidad.destroy')->middleware('permission:localidad_delete');
-
-//calle
-Route::get('calle', 'CalleController@index')->name('calle.index')->middleware('permission:calle_index');
-Route::get('calle/{calle}/show', 'CalleController@show')->name('calle.show')->middleware('permission:calle_show');
-Route::get('calle/create', 'CalleController@create')->name('calle.create')->middleware('permission:calle_create');
-Route::post('calle', 'CalleController@store')->name('calle.store')->middleware('permission:calle_store');
-Route::get('calle/{id}/edit', 'CalleController@edit')->name('calle.edit')->middleware('permission:calle_edit');
-Route::post('calle/update', 'CalleController@update')->name('calle.update')->middleware('permission:calle_update');
-Route::delete('calle/destroy', 'CalleController@destroy')->name('calle.destroy')->middleware('permission:calle_delete');
-
-
-//Medidas
-Route::get('medida', 'medidaController@index')->name('medida.index')->middleware('permission:medida_index');
-Route::get('medida/{medida}/show', 'medidaController@show')->name('medida.show')->middleware('permission:medida_show');
-Route::get('medida/create', 'medidaController@create')->name('medida.create')->middleware('permission:medida_create');
-Route::post('medida', 'medidaController@store')->name('medida.store')->middleware('permission:medida_store');
-Route::get('medida/{id}/edit', 'medidaController@edit')->name('medida.edit')->middleware('permission:medida_edit');
-Route::post('medida/update', 'medidaController@update')->name('medida.update')->middleware('permission:medida_update');
-Route::delete('medida/destroy', 'medidaController@destroy')->name('medida.destroy')->middleware('permission:medida_delete');
-//  Route::resource('medida','medidaController');
-
-//Direccion
-Route::get('direccion', 'direccionController@index')->name('direccion.index')->middleware('permission:direccion_index');
-Route::get('direccion/{direccion}/show', 'direccionController@show')->name('direccion.show')->middleware('permission:direccion_show');
-Route::get('direccion/create', 'direccionController@create')->name('direccion.create')->middleware('permission:direccion_create');
-Route::post('direccion', 'direccionController@store')->name('direccion.store')->middleware('permission:direccion_store');
-Route::get('direccion/{id}/edit', 'direccionController@edit')->name('direccion.edit')->middleware('permission:direccion_edit');
-Route::post('direccion/update', 'direccionController@update')->name('direccion.update')->middleware('permission:direccion_update');
-Route::delete('direccion/destroy', 'direccionController@destroy')->name('direccion.destroy')->middleware('permission:direccion_delete');
-//  Route::resource('direccion','direccionController');
-
-//Documento
-Route::get('documento', 'documentoController@index')->name('documento.index')->middleware('permission:documento_index');
-Route::get('documento/{documento}/show', 'documentoController@show')->name('documento.show')->middleware('permission:documento_show');
-Route::get('documento/create', 'documentoController@create')->name('documento.create')->middleware('permission:documento_create');
-Route::post('documento', 'documentoController@store')->name('documento.store')->middleware('permission:documento_store');
-Route::get('documento/{id}/edit', 'documentoController@edit')->name('documento.edit')->middleware('permission:documento_edit');
-Route::post('documento/update', 'documentoController@update')->name('documento.update')->middleware('permission:documento_update');
-Route::delete('documento/destroy', 'documentoController@destroy')->name('documento.destroy')->middleware('permission:documento_delete');
-//  Route::resource('documento','documentoController');
-
-//Item
-Route::get('item', 'ItemController@index')->name('item.index')->middleware('permission:item_index');
-Route::get('item/{item}/show', 'ItemController@show')->name('item.show')->middleware('permission:item_show');
-Route::get('item/create', 'ItemController@create')->name('item.create')->middleware('permission:item_create');
-Route::post('item', 'ItemController@store')->name('item.store')->middleware('permission:item_store');
-Route::get('item/{item}/edit', 'ItemController@edit')->name('item.edit')->middleware('permission:item_edit');
-Route::put('item/{item}', 'ItemController@update')->name('item.update')->middleware('permission:item_update');
-Route::get('item/{item}', 'ItemController@destroy')->name('item.destroy')->middleware('permission:item_delete');
-
-//Categoria
-Route::get('categoria', 'CategoriaController@index')->name('categoria.index')->middleware('permission:categoria_index');
-Route::get('categoria/{categoria}/show', 'CategoriaController@show')->name('categoria.show')->middleware('permission:categoria_show');
-Route::get('categoria/create', 'CategoriaController@create')->name('categoria.create')->middleware('permission:categoria_create');
-Route::post('categoria', 'CategoriaController@store')->name('categoria.store')->middleware('permission:categoria_store');
-Route::get('categoria/{id}/edit', 'CategoriaController@edit')->name('categoria.edit')->middleware('permission:categoria_edit');
-Route::post('categoria/update', 'CategoriaController@update')->name('categoria.update')->middleware('permission:categoria_update');
-Route::get('categoria/destroy/{id}', 'CategoriaController@destroy')->name('categoria.destroy')->middleware('permission:categoria_delete');
-//  Route::resource('categoria','categoriaController');
-
-//Tipo Item
-Route::get('tipoItem', 'TipoItemController@index')->name('tipoItem.index')->middleware('permission:tipoItem_index');
-Route::get('tipoItem/{tipoItem}/show', 'TipoItemController@show')->name('tipoItem.show')->middleware('permission:tipoItem_show');
-Route::get('tipoItem/create', 'TipoItemController@create')->name('tipoItem.create')->middleware('permission:tipoItem_create');
-Route::post('tipoItem', 'TipoItemController@store')->name('tipoItem.store')->middleware('permission:tipoItem_store');
-Route::get('tipoItem/{id}/edit', 'TipoItemController@edit')->name('tipoItem.edit')->middleware('permission:tipoItem_edit');
-Route::post('tipoItem/update', 'TipoItemController@update')->name('tipoItem.update')->middleware('permission:tipoItem_update');
-Route::get('tipoItem/destroy/{id}', 'TipoItemController@destroy')->name('tipoItem.destroy')->middleware('permission:tipoItem_delete');
-//  Route::resource('categoria','categoriaController');
-
-//Proveedor
-Route::get('proveedor', 'ProveedorController@index')->name('proveedor.index')->middleware('permission:proveedor_index');
-Route::get('proveedor/{proveedor}/show', 'ProveedorController@show')->name('proveedor.show')->middleware('permission:proveedor_show');
-Route::get('proveedor/create', 'ProveedorController@create')->name('proveedor.create')->middleware('permission:proveedor_create');
-Route::post('proveedor', 'ProveedorController@store')->name('proveedor.store')->middleware('permission:proveedor_store');
-Route::get('proveedor/{id}/edit', 'ProveedorController@edit')->name('proveedor.edit')->middleware('permission:proveedor_edit');
-Route::post('proveedor/update', 'ProveedorController@update')->name('proveedor.update')->middleware('permission:proveedor_update');
-Route::delete('proveedor/destroy', 'ProveedorController@destroy')->name('proveedor.destroy')->middleware('permission:proveedor_delete');
-Route::get('proveedor/consultarPrecios/{id}', 'ProveedorController@consultarPrecios')->name('proveedor.consultarPrecios')->middleware('permission:proveedor_consultarPrecios');
-Route::get('proveedor/obtenerPrecios/{id}', 'ProveedorController@obtenerPrecios')->name('proveedor.obtenerPrecios')->middleware('permission:proveedor_obtenerPrecios');
-//  Route::resource('proveedor','ProveedorController');
-
-
-
-
-//prueba
-// Route::resource('ajax-crud', 'AjaxCrudController');
-
-// Route::post('ajax-crud/update', 'AjaxCrudController@update')->name('ajax-crud.update');
-
-// Route::get('ajax-crud/destroy/{id}', 'AjaxCrudController@destroy');
-
-//Route::get('materiaPrima/{id}/destroy','ControllerMateriaPrima@destroy')->name('materiaPrima.destroy')->middleware('permission:usuarios_delete');
-
-// Route::resource('/roles','UserController');
-// Route::resource('/usuarios','UserController');
-
-// Route::resource('/materiaPrima','ControllerMateriaPrima');
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-// Route::fallback(function () {
-//     return view('errors.404');
-// });
+Route::fallback(function () {
+    return view('errors.404');
+});

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\DireccionEnvio;
 use App\Pais;
+use App\Proveedor;
 use Illuminate\Http\Request;
 
 class PaisController extends Controller
@@ -141,10 +143,21 @@ class PaisController extends Controller
     public function destroy(Request $request)
     {
         $pais = Pais::find($request->button_delete);
-        if (!$pais->direcciones->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
+        if (!is_null($pais)) {
+            if (!$pais->direcciones->isEmpty()) {
+                # code...
+                return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais porque tiene direcciones asociadas']);
+            }
+
+            foreach ($pais->direcciones as  $direccion) {
+                # code...
+                if (!$direccion->users->isEmpty() || !$direccion->proveedores->isEmpty()) {
+                    return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones de un proveedor o usuario']);
+                }
+            }
+
+            $pais->delete();
         }
-        $pais->delete();
-        return redirect()->back();
+        return redirect()->back()->with('warning', 'No existe el pais');
     }
 }

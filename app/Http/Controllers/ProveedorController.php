@@ -51,6 +51,7 @@ class ProveedorController extends Controller
         if (is_null($proveedor)) {
             return redirect()->route('home')->withErrors('No Existe el proveedor pasado por parametros');
         }
+
         for ($i = 0; $i <= $request->input('cantidadMaterias'); $i++) {
 
             $materiaPrima = MateriaPrima::find($request->input('materia_' . $i));
@@ -72,6 +73,7 @@ class ProveedorController extends Controller
 
             }
         }
+
         $medidas = Medida::all();
         return redirect()->route('proveedor.consultarPrecios', $id)->with('success', 'Se guardo con exito su respuestas');
         // return view('proveedor.consulta', compact('proveedor', 'medidas'));

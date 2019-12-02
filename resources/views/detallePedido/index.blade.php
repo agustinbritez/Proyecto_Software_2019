@@ -2,22 +2,7 @@
 
 
 @section('content')
-@if ($message = Session::get('materiasPrimasNoRestadas'))
 
-<div class="alert alert-danger">
-
-    <button type="button" class="close" data-dismiss="alert">×</button>
-
-    <p>Las siguientes materias primas no pueden restarse (por falta de stock) por lo tanto no se finalizo el pedido</p>
-    <ul>
-        @foreach ($message as $materiaPrima)
-        <li>{{ 'id: '.$materiaPrima->id .' - nombre: '.$materiaPrima->nombre  }}</li>
-        @endforeach
-    </ul>
-
-</div>
-
-@endif
 
 
 <br>
@@ -41,11 +26,7 @@
                 <div class="card-body">
                     <form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data">
                         @csrf
-                        <div align="right">
 
-                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Detalle de
-                                Pedidos</button>
-                        </div>
                         <hr>
                         <div class="row">
 
@@ -105,27 +86,52 @@
 
 
                 <div class="card-header">
-                    <h3>Lista de Detalle de Pedido</h3>
+                    <h3>Informacion del Usuario</h3>
 
                 </div>
 
                 <div class="card-body">
-                    <div align='right'>
-                        @if ($pedido!=null)
-                        @if ($pedido->terminado)
-                        <button type="submit" class="finalizar btn btn-success" disabled>Finalizar Pedido </button>
+                    <div>
+                        <div class="row">
+                            <h4>
+                                <label for="" style="font-weight: normal;">Usuario:
+                                    {{' '.$pedido->user->name.' '.$pedido->user->appellido}}</label>
+
+
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <h4>
+                                <label for="" style="font-weight: normal;">Correo: {{' '.$pedido->user->email}}</label>
+                            </h4>
+                        </div>
+                        @if (!$pedido->user->direccionEnvios->isEmpty())
+                        <div class="row">
+                            <h4>
+                                <label for="" style="font-weight: normal;">Direccion Envio:
+                                    {{$pedido->user->direccionPredeterminada()->obtenerDireccion()}}</label>
+                            </h4>
+                        </div>
+                        <div class="row">
+                            <h4>
+                                <label for="" style="font-weight: normal;">Codigo Postal:
+                                    {{$pedido->user->direccionPredeterminada()->obtenerCodigoPostal()}}</label>
+
+                            </h4>
+                        </div>
                         @else
-                        <button type="submit" class="finalizar btn btn-success">Finalizar Pedido </button>
 
                         @endif
-                        @endif
                     </div>
+
+
                     {{-- <div align="left">
                         <button type="button" name="create_record" id="create_record"
                             class="btn btn-success btn-sm">Crear Nuevo Pedido </button>
 
                     </div> --}}
                     <hr>
+                    <h3>Lista de Detalle de Pedido</h3>
                     <div class="table-responsive ">
                         <table class='table table-bordered table-striped table-hover datatable' id='data-table'>
                             <thead style="background-color:white ; color:black;">
@@ -211,12 +217,16 @@
 
 
                                     <td>
+                                        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
+
                                         <form action="{{route('detallePedido.show',$detallePedido->id)}}">
 
                                             <button type="submit" name="edit" id="{{$detallePedido->id}}"
                                                 class="edit btn btn-outline-primary btn-sm">Ver
                                                 Producto</button>
                                         </form>
+                                        @endif
                                         {{-- &nbsp;&nbsp;
                                         <button type="button" name="delete" id="{{$detallePedido->id}}"
                                         class="delete btn btn-outline-danger btn-sm">Eliminar

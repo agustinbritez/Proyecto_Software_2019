@@ -27,13 +27,13 @@
 
                         <div class="form-group ">
                             <label class="control-label">Numero : </label>
-                            <input type="text" class="form-control text-left" name="numero" id="numero" data-mask
+                            <input required type="text" class="form-control text-left" name="domicilio" id="domicilio" data-mask
                                 data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
                         </div>
 
                         <div class="form-group  ">
                             <label class="control-label">Codigo Posta: </label>
-                            <input type="text" class="form-control text-left" name="codigoPostal" id="codigoPostal"
+                            <input required type="text" class="form-control text-left" name="codigoPostal" id="codigoPostal"
                                 data-mask data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
                         </div>
 

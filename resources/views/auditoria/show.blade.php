@@ -10,13 +10,13 @@
                 </div>
                 <div class="card-body box-profile">
                     <div class="row">
-                            <div class="col-md-4">
-                                    <div class="row">
-                                        <label for="">ID de la auditoria </label>
-                                        <p>{{': '.$auditoria->id}}</p>
-                                    </div>
-        
-                                </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <label for="">ID de la auditoria </label>
+                                <p>{{': '.$auditoria->id}}</p>
+                            </div>
+
+                        </div>
                         <div class="col-md-4">
                             <div class="row">
                                 <label for="">Tabla </label>
@@ -27,12 +27,12 @@
                         <div class="col">
                             <div align="right">
 
-                                <form action="{{route('auditoria.historial',$auditoria->id)}}" method="GET">
+                                <form action="{{route('pdf.auditoriaUnObjeto',$auditoria->id)}}" method="GET">
                                     @csrf
-                                    <button type="submit" class="btn  btn-success  btn-flat btn-sm text-white">Ver
-                                        Historial
-                                        Completo</button>
+                                    <button type="submit" class="btn  btn-success  btn-flat btn-sm text-white">Crear
+                                        Reporte Completo</button>
                                 </form>
+
                             </div>
                         </div>
 
@@ -100,7 +100,13 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="card-footer d-flex justify-content-center">
+                <div class="card-footer d-flex justify-content-around">
+                    <form action="{{route('auditoria.historial',$auditoria->id)}}" method="GET">
+                        @csrf
+                        <button type="submit" class="btn  btn-success  btn-flat btn-sm text-white">Ver
+                            Historial
+                            Completo</button>
+                    </form>
                     <a href="javascript:history.back()" class="btn btn-primary btn-sm">Volver</a>
                 </div>
             </div>

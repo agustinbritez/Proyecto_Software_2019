@@ -49,7 +49,7 @@
 
                     <!-- Remind Passowrd -->
                     <div id="formFooter">
-                        <a class="underlineHover" href="#">Ir a la tienda</a>
+                        <a class="underlineHover" href="{{ route('producto.tienda') }}">Ir a la tienda</a>
                     </div>
 
                 </div>

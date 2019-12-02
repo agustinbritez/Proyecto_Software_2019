@@ -49,11 +49,11 @@ class User extends Authenticatable implements Auditable
 
     public function documento()
     {
-        return $this->hasOne(Documento::class);
+        return $this->belongsTo(Documento::class, 'documento_id');
     }
-    public function direccions()
+    public function direcciones()
     {
-        return $this->belongsToMany(Direccion::class);
+        return $this->belongsToMany(Direccion::class, 'direccion_envios', 'user_id', 'direccion_id');
     }
     public function pedidos()
     {
@@ -73,5 +73,28 @@ class User extends Authenticatable implements Auditable
     public function roles()
     {
         return $this->belongsToMany(Role::class);
+    }
+    public function direccionPredeterminada()
+    {
+        # code...
+        foreach ($this->direccionEnvios as $key => $direcEnv) {
+            # code...
+            if ($direcEnv->predeterminado) {
+                return $direcEnv->direccion;
+            }
+        }
+        return null;
+    }
+    public function direccionEnvios()
+    {
+        # code...
+        return $this->hasMany(DireccionEnvio::class, 'user_id');
+    }
+    public function getDocumento()
+    {
+        if (is_null($this->documento) || is_null($this->numeroDocumento)) {
+            return 'Sin Registrar';
+        }
+        return $this->documento->nombre . ': ' . $this->numeroDocumento;
     }
 }

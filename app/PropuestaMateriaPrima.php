@@ -21,4 +21,8 @@ class PropuestaMateriaPrima extends Model implements Auditable
     {
         return $this->belongsTo(Proveedor::class,  'proveedor_id');
     }
+    public function medida()
+    {
+        return $this->belongsTo(Medida::class,  'medida_id');
+    }
 }

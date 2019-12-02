@@ -93,7 +93,7 @@ class MedidaController extends Controller
             $data = Medida::findOrFail($id);
 
             return response()->json([
-                'data' => $data, 
+                'data' => $data,
             ]);
         }
     }
@@ -127,7 +127,7 @@ class MedidaController extends Controller
         $medida = Medida::withTrashed()->find($request->hidden_id);
         $medida->restore();
         $medida->update($form_data);
-    
+
         return redirect()->back()->with('success', 'Actualizado Correctamente');
     }
 
@@ -141,6 +141,12 @@ class MedidaController extends Controller
     {
         //el boton_delete guarda el id de la medida a borrar
         $medida = Medida::find($request->boton_delete);
+        if (!is_null($medida)) {
+            if (!($medida->materiaPrimas)->isEmpty() || !($medida->modelos)->isEmpty()) {
+
+                return redirect()->back()->withErrors('No se puede eliminar la unidad de medida esta relacionada a productos');
+            }
+        }
         $medida->delete();
         return redirect()->back();
     }

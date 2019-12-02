@@ -34,6 +34,11 @@
 
 <div class="container">
 
+    <div id="avisos">
+
+    </div>
+
+
 
     <div class="row">
         <div class="col">
@@ -49,6 +54,8 @@
                         <button type="submit" id="create_record" class="btn btn-success btn-sm">Crear Mi
                             Producto</button>
                     </div>
+
+
 
 
                 </div>
@@ -108,20 +115,41 @@
 
     <div class="row">
         @foreach ($productos as $producto)
-        <div class="col">
 
-            <div class="form-group">
+        <div class="form-group">
+            <div class="col">
                 <div class="card" style="width: 18rem;">
                     <img src="{{ asset('/imagenes/productos/'.$producto->imagenPrincipal) }}" class="card-img-top"
-                        alt="...">
+                        alt="..." height="250px">
                     <div class="card-body">
                         <div class="text-center">
 
-                            <h5 class="text-orange">{{$producto->modelo->nombre}}</h5>
+                            <h5 class="text-cyan">{{$producto->modelo->nombre}}</h5>
 
 
                         </div>
-                        <div>
+                        <div class="text-center">
+                            @guest
+                            <a class="btn bg-gradient-teal btn-pill pt-1 pb-1 " href="{{ route('login') }}"
+                                type="button" data-id="{{$producto->id}}">
+                                Agregar
+                            </a>
+                            @else
+                            @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
+
+                            <button class="btn bg-gradient-teal btn-pill pt-1 pb-1 agregarCarrito" type="button"
+                                data-id="{{$producto->id}}">
+                                Agregar
+                            </button>
+                            @endif
+
+                            @endguest
+
+
+
+
+                            {{-- <button type="button" class="btn btn-warning" id="agregarCarrito"
+                                data-id="{{$producto->id}}">Agregar</button> --}}
                             {{-- botones --}}
                         </div>
                     </div>

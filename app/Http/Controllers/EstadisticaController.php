@@ -31,16 +31,17 @@ class EstadisticaController extends Controller
         $nombreProducto = collect();
         // modelo->productos->pago_id != null pagado
         $modelos = Modelo::all();
-        foreach ($modelos as $key => $modelo) {
+        foreach ($modelos as  $modelo) {
             $cantidad = 0;
             # code...
-            foreach ($modelo->productosModelos as $key => $producto) {
+            foreach ($modelo->productosModelos as  $producto) {
                 # code...
                 // return $producto->detallePedido;
                 if ($producto != null) {
 
-                    foreach ($producto->detallePedido as $key => $detalle) {
-                        if (!is_null($detalle->pedido->pago_id)) {
+                    foreach ($producto->detallePedido as  $detalle) {
+
+                        if (!is_null($detalle->pedido['pago_id'])) {
                             # code...
                             $cantidad += $detalle->cantidad;
                         }

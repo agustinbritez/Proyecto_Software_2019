@@ -86,8 +86,12 @@
 				<div class="card-body">
 
 					<div align="left">
+						@if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
+
 						<button type="button" name="create_record" id="create_record"
 							class="btn btn-success btn-sm">Crear Nueva Materia Prima</button>
+						@endif
 
 					</div>
 
@@ -120,14 +124,11 @@
 									<td><img src="{{asset("/imagenes/materia_primas/".$materia->imagenPrincipal)}}"
 											alt="" width='70px' height='70px'></td>
 									<td>{{$materia->nombre}} </td>
-									<td>{{$materia->precioUnitario}} </td>
-									<td>
-										<p for="" data-mask
-											{{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
-											data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
-										'digitsOptional': false, 'placeholder': '0'">
-											{{$materia->cantidad}}
-										</p>
+									<td class="text-right">{{number_format($materia->precioUnitario,2)}} </td>
+									<td class="text-right">
+
+										{{number_format($materia->cantidad) }}
+
 									</td>
 									@if ($materia->medida!=null)
 									<td>{{$materia->medida->nombre}} </td>
@@ -150,12 +151,16 @@
 									</td>
 									{{-- <td>Imagen Principal</td> --}}
 									<th>
+										@if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
+
 										<button type="button" name="edit" id="{{$materia->id}}"
 											class="edit btn btn-outline-primary btn-sm">Editar</button>
 										&nbsp;&nbsp;
 										<button type="button" name="delete" id="{{$materia->id}}"
 											class="delete btn btn-outline-danger btn-sm">Eliminar</button>
 
+										@endif
 										</td>
 
 

@@ -79,7 +79,11 @@
 
                                 @foreach ($materiaPrimas as $materiaPrima)
                                 <option value="{{$materiaPrima->id}}">
-                                    {{$materiaPrima->nombre.' ('.$materiaPrima->medida->nombre.')'}}</option>
+                                    {{$materiaPrima->nombre.' ('.$materiaPrima->medida->nombre.') Cantidad: ' }}
+
+                                    {{  number_format ($materiaPrima->cantidad)}}
+
+                                </option>
                                 @endforeach
                                 @endif
                             </select>

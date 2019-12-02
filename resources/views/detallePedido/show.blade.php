@@ -161,9 +161,11 @@
                         @if($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==$detallePedido->estado->id)
 
                         <div class="form-group  ">
+                            @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
                             <button type="button" class="etadoSiguiente btn btn-success " id="botonConfirmarProducto">
                                 Confirmar Producto Terminado</button>
+                            @endif
                         </div>
                         @endif
                         {{-- @endif --}}
@@ -301,20 +303,19 @@
 
 
 
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
-        @if ($detallePedido->pedido->terminado)
+        @if (!$detallePedido->pedido->terminado)
         {{-- <button type="button" class="estadoAnterior btn btn-outline-danger " id="botonAnterior"><i
                                     class="fad fa-arrow-left"></i>
                                     Estado Anterior</button> --}}
-
-
-
         @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id!=$detallePedido->estado->id)
 
         <button type="button" class="etadoSiguiente btn btn-outline-success " id="botonSiguiente">
             Siguiente Estado</button>
         @endif
 
+        @endif
         @endif
 
 
@@ -1144,7 +1145,6 @@
                                                                     terminoTodo="{{route('detallePedido.index',":id")}}";
                                                                     
                                                                     terminoTodo=terminoTodo.replace(':id',array.pedidoTerminado.id);
-                                                                    alert(terminoTodo);
                                                                 // window.location.replace(terminoTodo);
                                                                 location.replace(terminoTodo)  ;
                                                                 }else{

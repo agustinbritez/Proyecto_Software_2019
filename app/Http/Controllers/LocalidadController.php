@@ -149,10 +149,20 @@ class LocalidadController extends Controller
     public function destroy(Request $request)
     {
         $localidad = Localidad::find($request->button_delete);
-        if (!$localidad->direcciones->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
+        if (!is_null($localidad)) {
+            if (!$localidad->direcciones->isEmpty()) {
+                # code...
+                return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la localidad porque tiene direcciones asociadas']);
+            }
+            foreach ($localidad->direcciones as  $direccion) {
+                # code...
+
+                if (!$direccion->users->isEmpty() || !$direccion->proveedores->isEmpty()) {
+                    return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la localidad por estar relacionado a direcciones de un proveedor o usuario']);
+                }
+            }
+            $localidad->delete();
         }
-        $localidad->delete();
-        return redirect()->back()->with('modalAviso', 'Actualizado Correctamente');
+        return redirect()->back()->withErrors(['message2' => 'No exste la localidad']);
     }
 }

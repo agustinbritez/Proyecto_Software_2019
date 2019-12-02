@@ -10,6 +10,7 @@ use App\Estado;
 use App\FlujoTrabajo;
 use App\Localidad;
 use App\MateriaPrima;
+use App\Medida;
 use App\Modelo;
 use App\Movimiento;
 use App\Pais;
@@ -22,11 +23,22 @@ use App\TipoMovimiento;
 use App\Transicion;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use OwenIt\Auditing\Auditable;
 use OwenIt\Auditing\Models\Audit;
 
 class AuditoriaController extends Controller
 {
+    // 'Tabla' => 'Modelo'
+    public $modelosAuditoria = [
+        'movimientos' => 'Movimiento', 'calles' => 'Calle', 'componentes' => 'Componente', 'detalle_pedidos' => 'DetallePedido',
+        'direccions' => 'Direccion', 'direccion_envios' => 'DireccionEnvio', 'documentos' => 'Documento',
+        'estados' => 'Estado', 'flujo_trabajos' => 'FlujoTrabajo', 'imagens' => 'Imagen', 'tipo_imagens' => 'TipoImagen', 'localidads' => 'Localidad',
+        'materia_primas' => 'MateriaPrima', 'materia_prima_seleccionadas' => 'MateriaPrimaSeleccionada', 'medidas' => 'Medida',
+        'modelos' => 'Modelo', 'pais' => 'Pais', 'pedidos' => 'Pedido', 'productos' => 'Producto', 'propuesta_materia_primas' => 'PropuestaMateriaPrima',
+        'roveeedors' => 'Proveeedor', 'provincias' => 'Provincia', 'recetas' => 'Receta', 'sublimacions' => 'Sublimacion',
+        'tipo_movimientos' => 'TipoMovimiento', 'transicions' => 'Transicion', 'users' => 'User'
+    ];
     public function index()
     {
         // if (request()->ajax()) {
@@ -48,8 +60,11 @@ class AuditoriaController extends Controller
         //         ->make(true);
         // }
 
+        $modelosAuditoria = $this->modelosAuditoria;
+        $usuarios = User::all();
         $auditorias = Audit::latest()->get();
-        return view('auditoria.index', compact('auditorias'));
+
+        return view('auditoria.index', compact('auditorias', 'modelosAuditoria', 'usuarios'));
 
         $auditoriasMovimientos = Movimiento::withTrashed()->get();
         $auditoriasModelos = Modelo::withTrashed()->get();
@@ -102,85 +117,95 @@ class AuditoriaController extends Controller
 
     public function historial($id)
     {
+
         $auditoria = Audit::find($id);
+        $tabla = str_replace(['App\\', '$', ' '], '', $auditoria->auditable_type);
+        $objetoAuditable = $auditoria->auditable_type::find($auditoria->auditable_id);
+        $auditorias = $objetoAuditable->audits()->latest()->get();
+
+
         //no es el nombre de la tabla sino el nombre del modelo
-        $tabla = '';
-        $auditorias = [new Audit()];
-        if ($auditoria != null) {
-            $tabla = str_replace(['App\\', '$', ' '], '', $auditoria->auditable_type);
-            if (strtoupper($tabla) == strtoupper('Movimiento')) {
-                $movimiento = Movimiento::find($auditoria->auditable_id);
-                $auditorias = $movimiento->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('modelo')) {
-                $modelo = Modelo::find($auditoria->auditable_id);
-                $auditorias = $modelo->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('materiaPrima')) {
-                $materiaPrima = MateriaPrima::find($auditoria->auditable_id);
-                $auditorias = $materiaPrima->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('tipoMovimiento')) {
-                $tipoMovimiento = TipoMovimiento::find($auditoria->auditable_id);
-                $auditorias = $tipoMovimiento->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('pais')) {
-                $pais = Pais::find($auditoria->auditable_id);
-                $auditorias = $pais->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('provincia')) {
-                $provincia = Provincia::find($auditoria->auditable_id);
-                $auditorias = $provincia->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('localidad')) {
-                $localidad = Localidad::find($auditoria->auditable_id);
-                $auditorias = $localidad->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('calle')) {
-                $calle = Calle::find($auditoria->auditable_id);
-                $auditorias = $calle->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('proveedor')) {
-                $proveedor = Proveedor::find($auditoria->auditable_id);
-                $auditorias = $proveedor->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('user')) {
-                $user = User::find($auditoria->auditable_id);
-                $auditorias = $user->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('producto')) {
-                $producto = Producto::find($auditoria->auditable_id);
-                $auditorias = $producto->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('componente')) {
-                $componente = Componente::find($auditoria->auditable_id);
-                $auditorias = $componente->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('direccion')) {
-                $direccion = Direccion::find($auditoria->auditable_id);
-                $auditorias = $direccion->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('pedido')) {
-                $pedido = Pedido::find($auditoria->auditable_id);
-                $auditorias = $pedido->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('detallePedido')) {
-                $detallePedido = DetallePedido::find($auditoria->auditable_id);
-                $auditorias = $detallePedido->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('flujoTrabajo')) {
-                $flujoTrabajo = FlujoTrabajo::find($auditoria->auditable_id);
-                $auditorias = $flujoTrabajo->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('transicion')) {
-                $transicion = Transicion::find($auditoria->auditable_id);
-                $auditorias = $transicion->audits()->latest()->get();
-            }
-            if (strtoupper($tabla) == strtoupper('estado')) {
-                $estado = Estado::find($auditoria->auditable_id);
-                $auditorias = $estado->audits()->latest()->get();
-            }
-        }
+        // $tabla = '';
+        // $auditorias = [new Audit()];
+        // if ($auditoria != null) {
+        //     $tabla = str_replace(['App\\', '$', ' '], '', $auditoria->auditable_type);
+        //     if (strtoupper($tabla) == strtoupper('Movimiento')) {
+        //         $movimiento = Movimiento::find($auditoria->auditable_id);
+        //         $auditorias = $movimiento->audits()->latest()->get();
+        //     }
+        //     // if (strtoupper($tabla) == strtoupper('medida')) {
+        //     //     $medida = Medida::find($auditoria->auditable_id);
+        //     //     $auditorias = $medida->audits()->latest()->get();
+        //     // }
+        //     if (strtoupper($tabla) == strtoupper('modelo')) {
+        //         $modelo = Modelo::find($auditoria->auditable_id);
+        //         $auditorias = $modelo->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('materiaPrima')) {
+        //         $materiaPrima = MateriaPrima::find($auditoria->auditable_id);
+        //         $auditorias = $materiaPrima->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('tipoMovimiento')) {
+        //         $tipoMovimiento = TipoMovimiento::find($auditoria->auditable_id);
+        //         $auditorias = $tipoMovimiento->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('pais')) {
+        //         $pais = Pais::find($auditoria->auditable_id);
+        //         $auditorias = $pais->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('provincia')) {
+        //         $provincia = Provincia::find($auditoria->auditable_id);
+        //         $auditorias = $provincia->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('localidad')) {
+        //         $localidad = Localidad::find($auditoria->auditable_id);
+        //         $auditorias = $localidad->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('calle')) {
+        //         $calle = Calle::find($auditoria->auditable_id);
+        //         $auditorias = $calle->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('proveedor')) {
+        //         $proveedor = Proveedor::find($auditoria->auditable_id);
+        //         $auditorias = $proveedor->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('user')) {
+        //         $user = User::find($auditoria->auditable_id);
+        //         $auditorias = $user->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('producto')) {
+        //         $producto = Producto::find($auditoria->auditable_id);
+        //         $auditorias = $producto->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('componente')) {
+        //         $componente = Componente::find($auditoria->auditable_id);
+        //         $auditorias = $componente->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('direccion')) {
+        //         $direccion = Direccion::find($auditoria->auditable_id);
+        //         $auditorias = $direccion->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('pedido')) {
+        //         $pedido = Pedido::find($auditoria->auditable_id);
+        //         $auditorias = $pedido->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('detallePedido')) {
+        //         $detallePedido = DetallePedido::find($auditoria->auditable_id);
+        //         $auditorias = $detallePedido->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('flujoTrabajo')) {
+        //         $flujoTrabajo = FlujoTrabajo::find($auditoria->auditable_id);
+        //         $auditorias = $flujoTrabajo->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('transicion')) {
+        //         $transicion = Transicion::find($auditoria->auditable_id);
+        //         $auditorias = $transicion->audits()->latest()->get();
+        //     }
+        //     if (strtoupper($tabla) == strtoupper('estado')) {
+        //         $estado = Estado::find($auditoria->auditable_id);
+        //         $auditorias = $estado->audits()->latest()->get();
+        //     }
+        // }
 
 
 

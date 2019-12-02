@@ -21,6 +21,8 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ControllerMateriaPrima extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      *
@@ -36,14 +38,35 @@ class ControllerMateriaPrima extends Controller
         $proveedores = Proveedor::all();
         return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas', 'proveedores'));
     }
-    public function urgente(Request $request)
+    public function stockMinimo(Request $request)
     {
         $medidas = Medida::all();
+
         $modelos = Modelo::all();
         $materiaPrimas = MateriaPrima::whereColumn('cantidad', '<=', 'stockMinimo')->get();
+        $propuestasJoin = MateriaPrima::join('propuesta_materia_primas', 'propuesta_materia_primas.materiaPrima_id', '=', 'materia_primas.id')
+            ->whereColumn('materia_primas.cantidad', '<=', 'materia_primas.stockMinimo')
+            ->get();
+        $propuestas = collect();
+
+        foreach ($propuestasJoin as $key => $propuestaJoin) {
+            # code...
+            $propuestas->add(PropuestaMateriaPrima::find($propuestaJoin['id']));
+        }
+
         //cantidad de productos que no se pueden realizar por falta de materia prima.
         // $cantidadDePedidosNoAtendidos=
-        return view('materiaPrima.index', compact('medidas', 'modelos', 'materiaPrimas'));
+        return view('materiaPrima.stockMinimo', compact('medidas', 'modelos', 'materiaPrimas', 'propuestas'));
+    }
+    //recibe una propuesta
+    public function propuesta($id)
+    {
+        $propuesta = PropuestaMateriaPrima::find($id);
+        if (is_null($propuesta)) {
+            # code...
+            return redirect()->back()->withErrors('No existe la propuesta');
+        }
+        return view('materiaPrima.propuesta', compact('propuesta'));
     }
 
 
@@ -445,7 +468,7 @@ class ControllerMateriaPrima extends Controller
                 $email = $proveedor->email;
                 Mail::send('mail.proveedor', ['proveedor' => $proveedor], function ($message) use ($email) {
                     $message->to($email)
-                        ->subject('Orden de Compra');
+                        ->subject('Pedido de Lista de Precios');
                 });
             } catch (Exception $th) {
                 //throw $th;

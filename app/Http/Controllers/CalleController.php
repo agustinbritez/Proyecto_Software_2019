@@ -143,10 +143,20 @@ class CalleController extends Controller
     public function destroy(Request $request)
     {
         $calle = Calle::find($request->button_delete);
-        if (!$calle->direcciones->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el pais por estar relacionado a direcciones']);
+        if (!is_null($calle)) {
+            if (!$calle->direcciones->isEmpty()) {
+                # code...
+                return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la calle porque tiene direcciones asociadas']);
+            }
+            foreach ($calle->direcciones as  $direccion) {
+                # code...
+
+                if (!$direccion->users->isEmpty() || !$direccion->proveedores->isEmpty()) {
+                    return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la calle por estar relacionado a direcciones de un proveedor o usuario']);
+                }
+            }
+            $calle->delete();
         }
-        $calle->delete();
-        return redirect()->back();
+        return redirect()->back()->withErrors(['message2' => 'No exste la calle']);
     }
 }

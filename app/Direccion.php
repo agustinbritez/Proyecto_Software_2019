@@ -15,9 +15,9 @@ class Direccion extends Model implements Auditable
     protected $guarded = [];
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'direccion_envios', 'direccion_id', 'user_id');
     }
-    public function proveedors()
+    public function proveedores()
     {
         return $this->hasMany(Proveedor::class);
     }
@@ -37,5 +37,20 @@ class Direccion extends Model implements Auditable
     public function calle()
     {
         return $this->belongsTo(Calle::class);
+    }
+    public function direccionEnvios()
+    {
+        # code...
+        return $this->hasMany(DireccionEnvio::class);
+    }
+    public function obtenerDireccion()
+    {
+        # code...
+        return $this->pais->nombre . ' - ' . $this->provincia->nombre . ' - ' . $this->localidad->nombre . ' - ' . $this->calle->nombre . '  (' . $this->numero . ')';
+    }
+    public function obtenerCodigoPostal()
+    {
+        # code...
+        return $this->localidad->codigoPostal;
     }
 }

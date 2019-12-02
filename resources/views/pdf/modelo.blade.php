@@ -7,15 +7,23 @@
 </div>
 
 <div style="margin-bottom: 5px"><strong> Filtros Aplicados: </strong> </div>
-<div style="margin-bottom: 5px">Numero de movimiento: {{$filtro_nombre_modelo ?? 'No aplicado'}}.</div>
-<div style="margin-bottom: 5px">Precio Unitario Minimo: {{$filtro_precio_unitario_minimo?? 'No aplicado' }}.</div>
-<div style="margin-bottom: 5px">Precio Unitario Maximo: {{$filtro_precio_unitario_maximo?? 'No aplicado' }}.</div>
+<div style="margin-bottom: 5px">Numero de movimiento:
+    {{' '}}<strong>{{$filtro_nombre_modelo ?? ' No aplicado '}}</strong>.</div>
+<div style="margin-bottom: 5px">Precio Unitario Minimo:
+    {{' '}}<strong>{{$filtro_precio_unitario_minimo?? ' No aplicado' }}</strong>.</div>
+<div style="margin-bottom: 5px">Precio Unitario Maximo:
+    {{' '}}<strong>{{$filtro_precio_unitario_maximo?? ' No aplicado' }}</strong> .</div>
+<hr>
+<div style="margin-bottom: 5px">
+    <p>Cantidad Total de Registrados:<strong> {{($cantidadRegistros)}}
+        </strong> </p>.
+</div>
 
 
 
 
 {{-- <div> <h5>Lista de Materias Primas</h5></div> --}}
-<br>
+
 <div class="table" style="font-family: Arial, Helvetica, sans-serif;">
 
     <table class='table table-bordered table-striped table-hover datatable' id='data-table'>
@@ -50,13 +58,12 @@
                     <span class="badge badge-info"
                         id="{{$receta->id}}">{{$receta->modeloHijo->nombre}}</span>&nbsp;&nbsp;
 
-                    @else
+                @else
 
-                    <span class="badge badge-info"
-                        id="{{$receta->id}}">{{$receta->materiaPrima->nombre}}</span>&nbsp;&nbsp;
-                    @endif
-                    @endforeach
-                    @endif
+                <span class="badge badge-info" id="{{$receta->id}}">{{$receta->materiaPrima->nombre}}</span>&nbsp;&nbsp;
+                @endif
+                @endforeach
+                @endif
 
                 </td> --}}
 

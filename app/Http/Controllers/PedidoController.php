@@ -9,6 +9,7 @@ use App\MateriaPrimaSeleccionada;
 use App\Modelo;
 use App\Pedido;
 use App\Producto;
+use App\User;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -23,9 +24,10 @@ class PedidoController extends Controller
      */
     public function index()
     {
-        $pedidos = Pedido::all();
-        $modelos = Modelo::all();
-        return view('pedido.index', compact('pedidos', 'modelos'));
+        $pedidos = Pedido::all()->where('pago_id', '<>', null);
+        $modelos = Modelo::all()->where('venta', true);
+        $estados = Estado::all();
+        return view('pedido.index', compact('pedidos', 'modelos', 'estados'));
     }
 
     /**
@@ -45,6 +47,9 @@ class PedidoController extends Controller
         $pedido = Pedido::find($id);
         $nombre = 'Pedro';
         if ($pedido != null) {
+            if ($pedido->user->direccionEnvios->isEmpty()) {
+                return redirect()->route('usuario.editMiPerfil')->withErrors('Debe tener asignado una direccion de envio');
+            }
             if ($pedido->detallePedidos->isEmpty()) {
                 return redirect()->back()->withErrors('El pedido no tienen ningun producto');
             }
@@ -222,7 +227,7 @@ class PedidoController extends Controller
                     $materiaSeleccionada = MateriaPrimaSeleccionada::create([
                         'recetaPadre_id' => $padreEHijo[0],
                         'recetaHijo_id' => $padreEHijo[1],
-                        'producto_id' => $detallePedido->id
+                        'producto_id' => $detallePedido->producto->id
                     ]);
                 }
             }
@@ -235,13 +240,110 @@ class PedidoController extends Controller
         return 0;
     }
 
+    public function agregarProductoFinal($id)
+    {
+
+        $producto = Producto::find($id);
+        if (is_null($producto)) {
+            return ['errors' => 'No existe el producto'];
+        }
+        $flujoTrabajo = FlujoTrabajo::where('nombre', 'FLUJO PEDIDOS')->first();
+
+        if (is_null(auth()->user()->pedidoAPagar())) {
+            $pedido = Pedido::create([
+                'precio' => 0,
+                //termiando null cuando el pedido se creo y no se pago
+                //terminado 0 cuando el pedido se pago y no se verifico
+                //terminado 1 cuando se finalizo la venta
+                'terminado' => null,
+                'flujoTrabajo_id' => 1,
+                'estado_id' => $flujoTrabajo->getEstadoInicial()->id,
+                'user_id' => auth()->user()->id
+            ]);
+        }
+        $usuario = User::find(auth()->user()->id);
+        $estado = $producto->modelo->flujoTrabajo->getEstadoInicial()->id;
+        if ($usuario->pedidoAPagar() != null) {
+
+            $pedido = Pedido::find($usuario->pedidoAPagar()->id);
+            foreach ($pedido->detallePedidos as $detalle) {
+                # code...
+                if ($detalle->producto->id == $producto->id) {
+                    return ['warning' => 'El producto ya se encuentra en el pedido'];
+                }
+            }
+
+            $detallePedido = DetallePedido::create([
+                'cantidad' => 1,
+                'verificado' => 1,
+                'pedido_id' => $pedido->id,
+                'producto_id' => $producto->id,
+                'estado_id'         =>  $estado,
+
+            ]);
+        }
+        return ['success' => 'Se agrego a "Mis pedido" con exito'];
+    }
+
     public function misPedidos()
     {
         $misPedidos = auth()->user()->pedidos;
         $estados = (FlujoTrabajo::find(1))->getEstados();
-        $productosVenta = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
+        $modelos = Modelo::all()->where('base', false)->where('venta', true);
+        return view('pedido.misPedidos', compact('misPedidos', 'estados', 'modelos'));
+    }
+    public function filtrarMisPedidos(Request $request)
+    {
 
-        return view('pedido.misPedidos', compact('misPedidos', 'estados', 'productosVenta'));
+        $pedidos = Pedido::where('user_id', auth()->user()->id);
+
+        if (($request->desde != '') && ($request->hasta != '') && ($request->desde != null) && ($request->hasta != null)) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '>=', $request->desde)
+                ->whereDate('fechaPago', '<=', $request->hasta);
+        } else if (($request->desde != '') && ($request->desde != null)) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '>=', $request->desde);
+        } else if (($request->hasta != '') && ($request->hasta != null)) {
+            $pedidos = $pedidos
+                ->whereDate('fechaPago', '<=', $request->hasta);
+        }
+        // if ($request->has('filtro_modelo')) {
+        //     $pedidos = $pedidos->where('modelo_id', $request->filtro_modelo);
+        // }
+        if ($request->has('filtro_estado') && ($request->filtro_estado != '-1')) {
+            $pedidos = $pedidos->where('estado_id', $request->filtro_estado);
+        }
+        //el pedido mas nuevo tiene un valor mas grande por ejemplo 2019-12-1 < 2019-12-2
+
+        $pedidos = $pedidos->orderBy('fechaPago', 'desc');
+
+        $pedidos = $pedidos->get();
+        $filtroPedido = collect();
+        if ($request->has('filtro_modelo') && ($request->filtro_modelo != '-1')) {
+            foreach ($pedidos as $key => $pedido) {
+                # code...
+                foreach ($pedido->detallePedidos as  $detalle) {
+                    # code...
+                    if ($detalle->producto->modelo->id == $request->filtro_modelo) {
+                        $filtroPedido->add($pedido);
+                    }
+                }
+            }
+            $pedidos = $filtroPedido;
+        }
+
+
+
+
+        $modelos = Modelo::all()->where('base', false)->where('venta', true);
+        // return redirect()->back()->with('pedidos',$pedidos)->with('modelos',$modelos);
+        $desde = $request->desde;
+        $hasta = $request->hasta;
+        $misPedidos = $pedidos;
+        $estados = (FlujoTrabajo::find(1))->getEstados();
+
+        return view('pedido.misPedidos', compact('misPedidos', 'estados', 'modelos'));
     }
     //el pedido finaliza por completo con su produccion
     public function terminarPedido($id)
@@ -348,6 +450,7 @@ class PedidoController extends Controller
                 // $promedioDeProduccion = $detalle->producto->modelo->promedioProduccion();
             }
         }
+
         for ($i = 1; $i < count($detallesOrdenados); $i++) {
             for ($j = 0; $j < count($detallesOrdenados) - $i; $j++) {
                 if ($detallesOrdenados[$j]->producto->modelo->promedioProduccion() > $detallesOrdenados[$j + 1]->producto->modelo->promedioProduccion()) {

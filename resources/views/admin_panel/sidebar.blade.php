@@ -9,9 +9,21 @@
   <!-- Sidebar -->
   <div class="sidebar ">
     <!-- Sidebar user panel (optional) -->
+    @guest
+
+    @else
+
+
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="{{asset('admin_panel/dist/img/user6-128x128.jpg')}}" class="img-circle elevation-2" alt="User Image">
+        @if (!is_null(auth()->user()->imagenPrincipal))
+        <img src="{{  asset('imagenes/usuarios/'.auth()->user()->imagenPrincipal)}}" class="img-circle elevation-3"
+          alt="User Image">
+
+        @else
+        <img src="{{  asset('images/userIcon.jpg')}}" class="img-circle elevation-2" alt="User Image">
+
+        @endif
       </div>
       <div class="info">
         <a href="#" class="d-block">{{ auth()->user()->name }}</a>
@@ -24,6 +36,52 @@
         <!-- Add icons to the links using the .nav-icon class
                    with font-awesome or any other icon font library -->
 
+
+
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
+
+
+        <li class="nav-item">
+          <a href="{{ route('pedido.trabajo') }}" class="nav-link">
+            <i class="fas  nav-icon"></i>
+            <p>Trabajos</p>
+          </a>
+        </li>
+        @endif
+        <li class="nav-item has-treeview  ">
+          <a href="#" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+
+            <p>
+              Pedidos
+              <i class="right fas fa-angle-left"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
+
+            <li class="nav-item">
+              <a href="{{ route('pedido.misPedidos',auth()->user()->id) }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Mis Pedidos</p>
+              </a>
+            </li>
+            @endif
+            @if(auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
+            <li class="nav-item">
+              <a href="{{ route('pedido.index') }}" class="nav-link">
+                <i class="fas  nav-icon"></i>
+                <p>Listar Pedidos</p>
+              </a>
+            </li>
+            @endif
+
+
+
+          </ul>
+
+        </li>
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
         <li class="nav-item has-treeview  ">
           {{-- <a href="#" class="nav-link active"> --}}
           <a href="#" class="nav-link">
@@ -36,12 +94,7 @@
           </a>
           <ul class="nav nav-treeview">
 
-            <li class="nav-item">
-              <a href="{{ route('proveedor.index') }}" class="nav-link">
-                <i class="fas fa-people-carry nav-icon"></i>
-                <p>Proveedores</p>
-              </a>
-            </li>
+
             <li class="nav-item">
               <a href="{{ route('movimiento.index') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
@@ -68,6 +121,10 @@
             </li>
           </ul>
         </li>
+        @endif
+
+
+
         <li class="nav-item has-treeview  ">
           <a href="#" class="nav-link">
             <i class="far fa-circle nav-icon"></i>
@@ -85,42 +142,50 @@
                 <p>Tienda</p>
               </a>
             </li>
-
           </ul>
-
-
-
         </li>
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
+
+        <li class="nav-item">
+          <a href="{{ route('usuario.index') }}" class="nav-link">
+            <i class="fas  nav-icon"></i>
+            <p>Gestion Usuarios</p>
+          </a>
+        </li>
+        @endif
+
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
+
         <li class="nav-item has-treeview  ">
           <a href="#" class="nav-link">
             <i class="far fa-circle nav-icon"></i>
 
             <p>
-              Imagenes
+              Proveedores
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
 
           <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="{{ route('imagen.index') }}" class="nav-link">
-                <i class="fas  nav-icon"></i>
-                <p>Imagenes</p>
+              <a href="{{ route('proveedor.index') }}" class="nav-link">
+                <i class="fas fa-people-carry nav-icon"></i>
+                <p>Listar Proveedores</p>
               </a>
             </li>
             <li class="nav-item">
-              <a href="{{ route('tipoImagen.index') }}" class="nav-link">
+              <a href="{{ route('materiaPrima.stockMinimo') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
-                <p>Tipo de Imagenes</p>
+                <p>Propuestas de Proveedores</p>
               </a>
-            </li>
+
+
           </ul>
-
-
-
-
-
         </li>
+        @endif
+
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
+
         <li class="nav-item has-treeview  ">
           <a href="#" class="nav-link">
             <i class="far fa-circle nav-icon"></i>
@@ -138,48 +203,23 @@
                 <p>Ver flujos</p>
               </a>
             </li>
+            @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
             <li class="nav-item">
               <a href="{{ route('estado.index') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
                 <p>Ver estados</p>
               </a>
             </li>
+            @endif
+
           </ul>
 
         </li>
-        <li class="nav-item has-treeview  ">
-          <a href="#" class="nav-link">
-            <i class="far fa-circle nav-icon"></i>
+        @endif
 
-            <p>
-              Pedidos
-              <i class="right fas fa-angle-left"></i>
-            </p>
-          </a>
 
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="{{ route('pedido.misPedidos',auth()->user()->id) }}" class="nav-link">
-                <i class="fas  nav-icon"></i>
-                <p>Mis Pedidos</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('pedido.index') }}" class="nav-link">
-                <i class="fas  nav-icon"></i>
-                <p>Todos los Pedidos</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="{{ route('pedido.trabajo') }}" class="nav-link">
-                <i class="fas  nav-icon"></i>
-                <p>Trabajos</p>
-              </a>
-            </li>
-          </ul>
-
-        </li>
-
+        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
         <li class="nav-item has-treeview  ">
           <a href="#" class="nav-link">
@@ -192,6 +232,31 @@
           </a>
 
           <ul class="nav nav-treeview">
+            <li class="nav-item has-treeview  ">
+              <a href="#" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+
+                <p>
+                  Imagenes
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="{{ route('imagen.index') }}" class="nav-link">
+                    <i class="fas  nav-icon"></i>
+                    <p>Listar Imagenes</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{{ route('tipoImagen.index') }}" class="nav-link">
+                    <i class="fas  nav-icon"></i>
+                    <p>Listar Tipo de Imagenes</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li class="nav-item">
               <a href="{{ route('direccion.index') }}" class="nav-link">
                 <i class="fas  nav-icon"></i>
@@ -251,7 +316,9 @@
 
           </ul>
         </li>
+        @endif
 
+        @if (auth()->user()->hasRole('auditor')||auth()->user()->hasRole('admin'))
 
         <li class="nav-item">
           <a href="{{ route('auditoria.index') }}" class="nav-link">
@@ -263,6 +330,9 @@
             </p>
           </a>
         </li>
+        @endif
+        @if (auth()->user()->hasRole('gerente')||auth()->user()->hasRole('admin'))
+
         <li class="nav-item">
           <a href="{{ route('estadistica.index') }}" class="nav-link">
             {{-- <i class="far fa-circle nav-icon"></i> --}}
@@ -273,47 +343,12 @@
             </p>
           </a>
         </li>
+        @endif
 
-        @can('usuarios_index')
-
-
-        {{-- <li class="nav-item has-treeview ">
-                <a href="#" class="nav-link active">
-                    <i class="nav-icon fas fa-users-cog"></i>
-                    <p>
-                      Gestion Usuarios
-                      <i class="right fas fa-angle-left"></i>
-                    </p>
-                  </a>
-                      <ul class="nav nav-treeview">
-                        <li class="nav-item">
-                          <a href="{{ route('usuarios.index') }}" class="nav-link">
-        <i class="far fa-user nav-icon"></i>
-        <p>Usuarios</p>
-        </a>
-        </li>
-      </ul>
-      <ul class="nav nav-treeview">
-        <li class="nav-item">
-          <a href="/" class="nav-link">
-            <i class="fas fa-user-lock nav-icon"></i>
-            <p>Roles</p>
-          </a>
-        </li>
-      </ul>
-      <ul class="nav nav-treeview">
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="fas fa-user-tag nav-icon"></i>
-            <p>Permisos</p>
-          </a>
-        </li>
-      </ul>
-      </li> --}}
-      @endcan
       </ul>
 
     </nav>
+    @endguest
     <!-- /.sidebar-menu -->
   </div>
   <!-- /.sidebar -->

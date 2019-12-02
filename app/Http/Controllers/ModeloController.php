@@ -749,10 +749,13 @@ class ModeloController extends Controller
                 'venta' => $venta
             );
             //creamos el camino de la imagen vieja
-            $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
-            if (file_exists($file_path)) {
-                //borramos la imagen vieja
-                unlink($file_path);
+            if (!is_null($modelo->imagenPrincipal)) {
+
+                $file_path = public_path() . '/imagenes/modelos/' . $modelo->imagenPrincipal;
+                if (file_exists($file_path)) {
+                    //borramos la imagen vieja
+                    unlink($file_path);
+                }
             }
         } else {
             $form_data = array(

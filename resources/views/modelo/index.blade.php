@@ -24,45 +24,53 @@
 
 
                 <div class="card-body">
-                    <form action="{{route('pdf.modelo')}}" method="GET" enctype="multipart/form-data">
-                        @csrf
-                        <div align="right">
 
-                            <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Modelos</button>
-                        </div>
-                        <hr>
-                        <div class="row">
+                    @if ($modeloBase)
+                    <form action="{{route('pdf.modelo',1)}}" method="GET" enctype="multipart/form-data">
 
-                            <div class="form-group col">
-                                <label>Nombre : </label>
-                                <input class="form-control" type="text" name="filtro_nombre" id="filtro_nombre"
-                                    data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+                        @else
+                        <form action="{{route('pdf.modelo',0)}}" method="GET" enctype="multipart/form-data">
+
+                            @endif
+
+                            @csrf
+                            <div align="right">
+
+                                <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Modelos</button>
                             </div>
-                            <div class="form-group col ">
-                                <label class="control-label">Precio Unitario Minimo : </label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
+                            <hr>
+                            <div class="row">
+
+                                <div class="form-group col">
+                                    <label>Nombre : </label>
+                                    <input class="form-control" type="text" name="filtro_nombre" id="filtro_nombre"
+                                        data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+                                </div>
+                                <div class="form-group col ">
+                                    <label class="control-label">Precio Unitario Minimo : </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">$</span>
+                                        </div>
+                                        <input type="text" class="form-control text-left" id="filtro_precioUnitarioMin"
+                                            name="filtro_precioUnitarioMin" data-mask
+                                            data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
                                     </div>
-                                    <input type="text" class="form-control text-left" id="filtro_precioUnitarioMin"
-                                        name="filtro_precioUnitarioMin" data-mask
-                                        data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
+                                </div>
+                                <div class="form-group col ">
+                                    <label class="control-label">Precio Unitario Maximo : </label>
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text">$</span>
+                                        </div>
+                                        <input type="text" class="form-control text-left" id="filtro_precioUnitarioMax"
+                                            name="filtro_precioUnitarioMax" data-mask
+                                            data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group col ">
-                                <label class="control-label">Precio Unitario Maximo : </label>
-                                <div class="input-group">
-                                    <div class="input-group-prepend">
-                                        <span class="input-group-text">$</span>
-                                    </div>
-                                    <input type="text" class="form-control text-left" id="filtro_precioUnitarioMax"
-                                        name="filtro_precioUnitarioMax" data-mask
-                                        data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
-                                </div>
-                            </div>
-                        </div>
 
-                    </form>
+                        </form>
                 </div>
                 <div class="card-footer text-muted">
                     <div class="text-center">
@@ -84,6 +92,7 @@
                 <div class="card-body">
 
 
+                    @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
                     @if ($modeloBase)
 
@@ -93,6 +102,7 @@
                     <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
                         class="btn btn-success btn-sm">Crear Modelo</a>
 
+                    @endif
                     @endif
 
 
@@ -158,6 +168,9 @@
 
                                     <td>
                                         <div class="row">
+
+                                            @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
                                             @if ($modeloBase)
                                             <a href="{{route('modelo.baseModificar',$modelo->id)}}" type="button"
                                                 name="edit" id="{{$modelo->id}}"
@@ -180,6 +193,7 @@
                                                     class="delete btn btn-outline-danger btn-sm">Eliminar</button>
                                             </form>
 
+                                            @endif
                                         </div>
 
                                     </td>

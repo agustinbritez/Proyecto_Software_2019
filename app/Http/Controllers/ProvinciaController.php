@@ -141,10 +141,23 @@ class ProvinciaController extends Controller
     public function destroy(Request $request)
     {
         $provincia = Provincia::find($request->button_delete);
-        if (!$provincia->direcciones->isEmpty()) {
-            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el provincia por estar relacionado a direcciones']);
+
+        if (!is_null($provincia)) {
+            if (!$provincia->direcciones->isEmpty()) {
+                # code...
+                return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la provincia porque tiene direcciones asociadas']);
+            }
+
+
+            foreach ($provincia->direcciones as  $direccion) {
+                # code...
+
+                if (!$direccion->users->isEmpty() || !$direccion->proveedores->isEmpty()) {
+                    return redirect()->back()->withErrors(['message2' => 'No se puede eliminar la provincia por estar relacionado a direcciones de un proveedor o usuario']);
+                }
+            }
+            $provincia->delete();
         }
-        $provincia->delete();
-        return redirect()->back();
+        return redirect()->back()->withErrors(['message2' => 'No exste la provincia']);
     }
 }

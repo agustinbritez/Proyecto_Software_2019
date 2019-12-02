@@ -228,7 +228,7 @@
                                         <img src="
                                         {{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
                                             class="bg-transparent" height="150" width="180"
-                                            data-id="{{$cantidadImagenSistema}}"
+                                            data-id="{{$cantidadImagenesSistema}}"
                                             data-componente="{{$sublimacion->componente->id}} " data-imagen-sistema="1"
                                             id="nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}">
 
@@ -366,7 +366,7 @@
                                     height="{{(float)($sublimacion->alto)}}" width="{{(float)($sublimacion->ancho)}}"
                                     style="border-radius: {{$sublimacion->forma}}%;"
                                     data-x="{{(float) ($sublimacion->posX)}}" data-y="{{(float) ($sublimacion->posY)}}"
-                                    data-id="{{$cantidadImagenSistema}}" data-componente="{{$cantidadComponente}}"
+                                    data-id="{{$cantidadImagenesSistema}}" data-componente="{{$cantidadComponente}}"
                                     data-imagen-sistema="1">
 
                                 <input type="hidden"

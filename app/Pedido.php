@@ -80,5 +80,4 @@ class Pedido extends Model implements Auditable
         }
         return true;
     }
-   
 }

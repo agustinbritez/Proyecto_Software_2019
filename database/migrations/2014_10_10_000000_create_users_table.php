@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('apellido')->nullable();
             $table->string('numeroDocumento')->nullable();
+            $table->string('imagenPrincipal')->nullable();
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

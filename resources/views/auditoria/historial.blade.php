@@ -39,15 +39,33 @@
                             <tr>
                                 <td>{{$auditoria->id}}</td>
                                 <td>{{$auditoria->auditable_id}}</td>
+                                @if (!is_null($auditoria->user))
                                 <td>{{$auditoria->user->name .' '.$auditoria->user->apellido  }}</td>
+
+                                @else
+                                <td>{{'-1' }}</td>
+
+                                @endif
                                 <td>{{$auditoria->event }}</td>
+                                @if (!is_null($auditoria->created_at))
+
                                 <td>{{$auditoria->created_at->format('d/m/Y ( H:m:s )') }}</td>
+                                @else
+                                <td>{{$auditoria->created_at }}</td>
+
+                                @endif
+                                @if (is_null($auditoria->id))
+                                <td>No existe el usuario en el sistema</td>
+                                @else
+
                                 <td>
+
                                     <form action="{{route('auditoria.show',$auditoria->id)}}">
                                         <button type="submit" name="show" id="{{$auditoria->id}}"
                                             class=" btn btn-outline-info btn-sm">Ver Detalles</button>
                                     </form>
                                 </td>
+                                @endif
 
                             </tr>
                             @endforeach

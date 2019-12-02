@@ -21,10 +21,41 @@ class UsersTableSeeder extends Seeder
 
         $user->password = Hash::make('12345678');
         $user->save();
-        $rol = Role::where('name', 'ADMIN')->first()->get();
-        DB::table('role_user')->insert(
-            ['user_id' => $user->id, 'role_id' => 1]
-        );
+        $user->assignRoles('ADMIN');
+
+        $user = new User();
+        $user->name = 'empleado';
+        $user->apellido = 'empleado';
+        $user->email = 'empleado@empleado.com';
+
+        $user->password = Hash::make('12345678');
+        $user->save();
+        $user->assignRoles('empleado');
+
+        $user = new User();
+        $user->name = 'gerente';
+        $user->apellido = 'gerente';
+        $user->email = 'gerente@gerente.com';
+
+        $user->password = Hash::make('12345678');
+        $user->save();
+        $user->assignRoles('gerente');
+
+
+        $user = new User();
+        $user->name = 'auditor';
+        $user->apellido = 'auditor';
+        $user->email = 'auditor@auditor.com';
+
+        $user->password = Hash::make('12345678');
+        $user->save();
+        $user->assignRoles('auditor');
+
+
+        // $rol = Role::where('name', 'ADMIN')->first()->get();
+        // DB::table('role_user')->insert(
+        //     ['user_id' => $user->id, 'role_id' => 1]
+        // );
         // User::create([
         //     'nombre' => 'admin',
         //     'email' => 'admin@admin.com',

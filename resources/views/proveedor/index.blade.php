@@ -72,8 +72,12 @@
 				<div class="card-body">
 
 					<div align="left">
+						@if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
 						<button type="button" name="create_record" id="create_record"
 							class="btn btn-success btn-sm">Crear Nuevo Proveedor</button>
+
+						@endif
 
 					</div>
 
@@ -121,12 +125,15 @@
 
 									<td>
 										<div class="row">
+											@if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
+
 
 											<button type="button" name="edit" id="{{$proveedor->id}}"
 												class="edit btn btn-outline-primary btn-sm">Editar</button>
 											&nbsp;&nbsp;
 											<button type="button" name="delete" id="{{$proveedor->id}}"
 												class="delete btn btn-outline-danger btn-sm">Eliminar</button>
+											@endif
 
 										</div>
 									</td>

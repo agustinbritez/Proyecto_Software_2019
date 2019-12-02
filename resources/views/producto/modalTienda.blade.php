@@ -30,10 +30,10 @@
                                             <h5 class="text-dark contenido" title="{{$modelo->nombre}}">
                                                 {{$modelo->nombre}}</h5>
 
-
                                             <input type="submit" name="action_button" id="action_button"
                                                 class="btn btn-info btn-sm" value="Diseñar Producto" />
                                         </div>
+
 
                                     </div>
 
@@ -63,19 +63,62 @@
 @push('scripts')
 <script>
     $(document).ready(function(){
-        
-        
-        
-        
-        //mascaras******************************************************************************
-        
-        //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
-        $('#create_record').click(function(){
-            $('.modal-title').text("Modelos para el producto");
             
-            $('#formModal').modal('show');
+            
+            
+            
+            //mascaras******************************************************************************
+            
+            //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
+            $('#create_record').click(function(){
+                $('.modal-title').text("Modelos para el producto");
+                
+                $('#formModal').modal('show');
+            });
+            
         });
-        
-    });
+        $('.agregarCarrito').click(function(){
+            var id= $(this).attr('data-id');
+            url2="{{route('pedido.agregarProductoFinal',":id")}}";
+            
+            url2=url2.replace(':id',id);
+            
+            $.ajax({
+                // async:false,
+                
+                type: 'GET',
+                url: url2,
+                success: function(data) {
+                    // console.log(data);
+                    var mensaje='';
+                    $('#avisos').html('');
+                    if(data!=null){
+                        if(data['errors']){
+                            mensaje='<div class="alert alert-danger alert-dismissible">'
+                            +'<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+                            +data['errors']
+                            +'</div>';
+                        }
+                        if(data['success']){
+                            mensaje='<div class="alert alert-success alert-dismissible">'
+                            +'<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+                            +data['success']
+                            +'</div>';  
+                        }
+                        if(data['warning']){
+                            mensaje='<div class="alert alert-warning alert-dismissible">'
+                            +'<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'
+                            +data['warning']
+                            +'</div>';   
+                        }
+                        $('#avisos').html(mensaje);
+                        
+                    }
+                },
+                error:function(){
+                    alert('error');
+                }
+            });
+        });
 </script>
 @endpush

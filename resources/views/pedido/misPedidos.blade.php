@@ -23,9 +23,9 @@
                 </div>
 
 
-                <div class="card-body">
-                    <form action="{{route('pdf.proveedor')}}" method="GET" enctype="multipart/form-data">
-                        @csrf
+                <form action="{{route('pedido.filtrarMisPedidos')}}" method="GET" enctype="multipart/form-data">
+                    @csrf
+                    <div class="card-body">
 
 
                         <div class="row">
@@ -35,7 +35,7 @@
                                 <select class="select2 form-control" name="filtro_estado" id="filtro_estado"
                                     data-placeholder="Seleccione Un Modelo">
                                     {{-- <option value="" selected>Cualquiera</option> --}}
-                                    <option value="-1">Cualquiera</option>
+                                    <option value="-1" selected>Cualquiera</option>
                                     @if(sizeof($estados)>0)
                                     @foreach ($estados as $estado)
                                     @if ($estado!=null)
@@ -48,45 +48,45 @@
                                 </select>
                             </div>
                             <div class="form-group col">
-                                <label>Estado Actual : </label>
-                                <select class="select2 form-control" name="filtro_estado" id="filtro_estado"
+                                <label>Producto : </label>
+                                <select class="select2 form-control" name="filtro_modelo" id="filtro_modelo"
                                     data-placeholder="Seleccione Un Modelo">
                                     {{-- <option value="" selected>Cualquiera</option> --}}
-                                    <option value="-1">Cualquiera</option>
-                                    @if(sizeof($estados)>0)
-                                    @foreach ($estados as $estado)
-                                    @if ($estado!=null)
+                                    <option value="-1" selected>Cualquiera</option>
+                                    @if(sizeof($modelos)>0)
+                                    @foreach ($modelos as $modelo)
+                                    @if ($modelo!=null)
 
-                                    <option value="{{$estado->id}}">{{$estado->nombre}}</option>
+                                    <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
                                     @endif
                                     @endforeach
 
                                     @endif
                                 </select>
                             </div>
-                            <div class="form-group col-md-3">
-                                <label>Numero de Documento : </label>
-                                <input class="form-control" type="text" name="filtro_documento" id="filtro_documento"
-                                    data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+
+                            <div class="form-group col">
+                                <label>Pagados Desde</label>
+                                <input type="date" id="min" name="desde" value="" class="form-control">
                             </div>
-                            <div class="form-group col-md-3">
-                                <label>Email : </label>
-                                <input class="form-control" type="text" name="filtro_email" id="filtro_email"
-                                    data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+                            <div class="form-group col">
+                                <label>Pagados Hasta</label>
+                                <input type="date" id="max" name="hasta" value="{{$hasta ?? ''}}" class="form-control">
                             </div>
 
                         </div>
-                    </form>
-                </div>
-                <div class="card-footer text-muted">
-                    <div class="text-center">
-                        <button type="button" name="filtrar" id="filtrar"
-                            class="btn btn-success btn-sm">Filtrar</button>
-                        <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
-                            Tabla</button>
                     </div>
+                    <div class="card-footer text-muted">
+                        <div class="text-center">
+                            <button type="submit" name="filtrar" id="filtrar"
+                                class="btn btn-success btn-sm">Filtrar</button>
+                            <a type="button" href="{{ route('pedido.misPedidos') }}" name="reiniciar" id="reiniciar"
+                                class="btn btn-info btn-sm">Reiniciar
+                            </a>
+                        </div>
 
-                </div>
+                    </div>
+                </form>
             </div>
 
             <div class="card text-left">
@@ -266,27 +266,21 @@
                                             Producto</a>
                                         @else
                                         @if ($detalle->producto->user->id==auth()->user()->id)
-                                        @if ($detalle->verificado)
-                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
-                                            name="show" id="{{$detalle->producto->id}}"
-                                            class="show btn btn-outline-primary btn-sm">Ver
-                                            Producto</a>
-                                        @else
                                         @if ($detalle->producto->final)
                                         <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
                                             name="show" id="{{$detalle->producto->id}}"
                                             class="show btn btn-outline-primary btn-sm">Ver
                                             Producto</a>
                                         @else
-
                                         <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
                                             type="button" name="show" id="{{$detalle->producto->id}}"
                                             class="show btn btn-outline-primary btn-sm">Editar
                                             Producto</a>
-                                        @endif
 
 
                                         @endif
+
+
                                         <div class="col">
                                             <button type="button" name="edit" data-id="{{$detalle->id}}"
                                                 class="edit btn btn-outline-info btn-sm">Editar

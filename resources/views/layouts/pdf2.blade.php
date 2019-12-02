@@ -50,11 +50,11 @@
         }
 
         p {
-            page-break-after: always;
+            /* page-break-after: always; */
         }
 
         p:last-child {
-            page-break-after: never;
+            /* page-break-after: never; */
         }
     </style>
 </head>

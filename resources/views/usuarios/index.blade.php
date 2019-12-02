@@ -1,70 +1,144 @@
 @extends('admin_panel.index')
 
+
 @section('content')
-<div class="card">
 
-    <div class="card-body">
-        <div class="table-responsive">
-            <table id="usuarios" class="table table-bordered table-striped table-hover datatable">
-                    <thead>
-                    <tr>
-                      <th>Usuario</th>
-                      <th>Email</th>
-                      <th>Rol</th>
-                      <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($users as $user)
-                            <tr>
-                                <td>{{$user->name}}</td>
-                                <td>{{$user->email}}</td>
-                                <td>
-                                    @foreach($user->roles as $rol)
-                                        <span class="badge badge-info">{{ $rol->name }}</span>
-                                    @endforeach
-                                </td>
-                                <td>
-                                    @can('usuarios_show')
-                                        <a class="btn btn-xs btn-primary" href="{{ route('admin.users.show', $user->id) }}">
-                                            Ver
-                                        </a>
-                                    @endcan
 
-                                    @can('user_edit')
-                                        <a class="btn btn-xs btn-info" href="{{ route('admin.users.edit', $user->id) }}">
-                                            {{ trans('global.edit') }}
-                                        </a>
-                                    @endcan
 
-                                    @can('user_delete')
-                                        <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                        </form>
-                                    @endcan
+<br>
 
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                  </table>
+<div class="container">
+
+    <div class="row">
+        <div class="col-sm-12">
+            {{-- <div class="card text-left">
+
+                <div class="card-header">
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
+                                class="fas fa-minus"></i></button>
+                    </div>
+                    <h3>Filtro de Usuarios</h3>
                 </div>
+
+
+                <div class="card-body">
+                    <div class="row">
+
+                        <div class="form-group col">
+                            <label>Nombre : </label>
+                            <input class="form-control" type="text" name="filtro_nombre" id="filtro_nombre"
+                                data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    <div class="text-center">
+                        <button type="button" name="filtrar" id="filtrar"
+                            class="btn btn-success btn-sm">Filtrar</button>
+                        <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
+                            Tabla</button>
+                    </div>
+
+                </div>
+            </div> --}}
+
+            <div class="card text-left">
+
+
+                <div class="card-header">
+                    <h3>Lista de Usuarios</h3>
+                </div>
+                <div class="card-body">
+
+                    <div align="left">
+                        <button type="button" name="create_record" id="create_record"
+                            class="btn btn-success btn-sm">Crear Nuevo Usuario</button>
+
+                    </div>
+
+                    <hr>
+                    <div class="table-responsive ">
+                        <table class='table table-bordered table-striped table-hover datatable' id='data-table'>
+                            <thead style="background-color:white ; color:black;">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Documento</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>&nbsp; </th>
+
+                                </tr>
+                            </thead>
+                            <tbody style="background-color:white ; color:black;">
+                                @if (sizeof($usuarios)>0)
+
+                                @foreach ($usuarios as $usuario)
+                                <tr>
+
+                                    <td>{{$usuario->name}} </td>
+                                    <td>{{$usuario->apellido}} </td>
+                                    <td>{{$usuario->getDocumento()}} </td>
+                                    <td>{{$usuario->email}} </td>
+                                    <td>
+                                        @if (!$usuario->roles->isEmpty())
+                                        @foreach ($usuario->roles as $rol)
+                                        <div class="form-group">
+                                            <span class="badge badge-info"
+                                                id="modelo_{{$rol->id}}">{{$rol->name}}</span>
+                                        </div>
+                                        @endforeach
+
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button type="button" name="edit" id="{{$usuario->id}}"
+                                            class="edit btn btn-outline-primary btn-sm">Editar</button>
+                                        &nbsp;&nbsp;
+                                        <button type="button" name="delete" id="{{$usuario->id}}"
+                                            class="delete btn btn-outline-danger btn-sm">Eliminar</button>
+
+                                    </td>
+
+
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+
+                            <tfoot style="background-color:#ccc; color:white;">
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Apellido</th>
+                                    <th>Documento</th>
+                                    <th>Email</th>
+                                    <th>Rol</th>
+                                    <th>&nbsp; </th>
+
+                                </tr>
+                            </tfoot>
+
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    {{-- 2 days ago --}}
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
-@endsection
-@push('scripts')
-<script>
-        $(function () {
-          $('#usuarios').DataTable({
-            "paging": true,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": true,
-            "info": false,
-            "autoWidth": false,
-          });
-        });
-</script>
-@endpush
+
+    @endsection
+
+    @push('scripts')
+
+    @endpush
+
+    @section('htmlFinal')
+    @include('usuarios.modal')
+    @endsection
