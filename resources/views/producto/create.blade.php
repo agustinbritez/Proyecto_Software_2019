@@ -454,16 +454,16 @@
                                                     // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
                                                     // $('#contenedor_'+componenteSeleccionado).append('<img src="{{asset("/images/fondoBlanco.jpg")??'' }}" class="resize-drag" id="nuevaImagen_'+cantidadImagenes+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenes+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema=""0"">');
                                                     
-                                                    $('.range_5').ionRangeSlider({
+                                                    $('.range_6').ionRangeSlider({
                                                         min     : 0,
                                                         max     : 100,
                                                         type    : 'single',
                                                         step    : 1,
                                                         postfix : ' %',
                                                         prettify: false,
-                                                        hasGrid : true,
-                                                        display:none
+                                                        hasGrid : true
                                                     });
+                                                    $('.range_5').display='none';
                                                 }
                                                 $('#cantidadImagenes_'+componenteSeleccionado).val(cantidadImagenes);
                                             });
@@ -631,17 +631,16 @@
                                                                                                 //agrega muchas imagenes con el append
                                                                                                 // $('#add_imagen_componente_'+componenteSeleccionado).append(nuevaImagen);
                                                                                                 // $('#contenedor_'+componenteSeleccionado).append('<img src="'+ruta+'" class="resize-drag" id="nuevaImagen_sistema_'+cantidadImagenesSistema+'_componente_'+componenteSeleccionado+'" data-id="'+cantidadImagenesSistema+'" data-componente="'+componenteSeleccionado+'" data-imagen-sistema="1" >');
-                                                                                                $('.range_5').ionRangeSlider({
+                                                                                                $('.range_6').ionRangeSlider({
                                                                                                     min     : 0,
                                                                                                     max     : 100,
                                                                                                     type    : 'single',
                                                                                                     step    : 1,
                                                                                                     postfix : ' %',
                                                                                                     prettify: false,
-                                                                                                    hasGrid : true,
-                                                                                                    display:none
+                                                                                                    hasGrid : true
                                                                                                 });
-                                                                                                
+                                                                                                $('.range_5').display='none';
                                                                                             }
                                                                                             $('#cantidadImagenes_sistema_'+componenteSeleccionado).val(cantidadImagenesSistema);
                                                                                             

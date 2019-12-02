@@ -4,7 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Charts\Estadistica;
 use App\Modelo;
+use App\Movimiento;
+use App\TipoMovimiento;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class EstadisticaController extends Controller
@@ -12,7 +16,10 @@ class EstadisticaController extends Controller
 
     public function index()
     {
-        return view('estadistica.index');
+        // return $start = new Carbon('last day of this month');
+        $productosMasVendidos = $this->productosMasVendidos();
+        $materiaPrimasMasConsumidas = $this->materiaPrimasMasConsumidas();
+        return view('estadistica.index', compact('productosMasVendidos', 'materiaPrimasMasConsumidas'));
     }
 
     public function prueba()
@@ -56,7 +63,7 @@ class EstadisticaController extends Controller
         }
         $estadistica = new Estadistica();
         $estadistica->labels($nombreProducto);
-        $estadistica->title('Productos Vendidos');
+        // $estadistica->title('Productos Vendidos');
         $estadistica->dataset('Estadistica Productos Mas Vendidos', 'bar', $cantidadProductosVendidos)->color("rgba(54, 162, 235)")->backgroundColor("rgba(54, 162, 235, 0.2)");
 
         // $estadistica->dataset('Frecuencia', 'bar', $cantidad)->color("rgba(54, 162, 235)")->backgroundColor("rgba(54, 162, 235, 0.2)");
@@ -84,7 +91,77 @@ class EstadisticaController extends Controller
                 ],
             ],
         ]);
+        return $productosMasVendidosTotal = $estadistica;
+        return View('estadistica.index', compact('estadistica'));
+    }
+    public function materiaPrimasMasConsumidas()
+    {
+        $primerDia = new Carbon('first day of this month');
+        $ultimoDia = new Carbon('last day of this month');
 
-        return View('estadistica.productosMasVendidos', compact('estadistica'));
+        $cantidadMateriaPrimaConsumida = collect();
+        $nombreMateriaPrima = collect();
+
+        //************************************************************************************************* */
+        // si quiero obtener los datos de una tabla debo ponerlo como el ultimo JOIN asi ell pisa el id de las otras tablas
+        $movimientos = DB::table('materia_primas')->whereBetween('movimientos.created_at', [$primerDia, $ultimoDia])
+            ->join('movimientos', 'movimientos.materiaPrima_id', '=', 'materia_primas.id')
+            ->join('tipo_movimientos', 'movimientos.tipoMovimiento_id', '=', 'tipo_movimientos.id')
+            ->where('tipo_movimientos.operacion', 0)
+            ->select('movimientos.*', 'materia_primas.nombre')->get();
+        // $materiaPrimasContadas = [];
+
+        $materiaPrimasContadas = collect();
+        //inicializamos cada posciion de la collecion en 0, cada indice de la coleccion es el ID de la materia prima
+        foreach ($movimientos as $key => $movimiento) {
+            $materiaPrimasContadas->put($movimiento->materiaPrima_id, 0);
+            $nombreMateriaPrima->put($movimiento->materiaPrima_id, $movimiento->nombre);
+        }
+        foreach ($movimientos as  $movimiento) {
+            $materiaPrimasContadas->put($movimiento->materiaPrima_id, $materiaPrimasContadas[$movimiento->materiaPrima_id] + $movimiento->cantidad);
+        }
+        $materiaContadaFinal = collect();
+        $nombreMateriaFinal = collect();
+
+        foreach ($materiaPrimasContadas as $key => $conta) {
+            # code...
+            $materiaContadaFinal->add($materiaPrimasContadas[$key]);
+            $nombreMateriaFinal->add($nombreMateriaPrima[$key]);
+        }
+
+
+        $estadistica = new Estadistica();
+        $estadistica->labels($nombreMateriaFinal);
+        // $estadistica->title('Materia Prima Mas Consumidas');
+        $estadistica->dataset('Venta de materia prima ', 'bar', $materiaContadaFinal)->color("rgba(54, 162, 235)")->backgroundColor("rgba(54, 162, 235, 0.2)");
+
+        // $estadistica->dataset('Frecuencia', 'bar', $cantidad)->color("rgba(54, 162, 235)")->backgroundColor("rgba(54, 162, 235, 0.2)");
+
+        $estadistica->options([
+            'scales'              => [
+                'xAxes' => [
+                    [
+                        'scaleLabel' => [
+                            'display' => true,
+                            'labelString' => 'Materia Primas',
+                        ]
+                    ]
+                ],
+                'yAxes' => [
+                    [
+                        'ticks' => [
+                            'beginAtZero' => true,
+                        ],
+                        'scaleLabel' => [
+                            'display' => true,
+                            'labelString' => 'Cantidad Vendida',
+                        ]
+                    ],
+                ],
+            ],
+        ]);
+        return $estadistica;
+        // return $productosMasVendidosTotal = $estadistica;
+        return View('estadistica.index', compact('estadistica'));
     }
 }

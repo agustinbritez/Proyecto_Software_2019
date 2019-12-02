@@ -89,6 +89,7 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index');
         Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos');
+        Route::get('estadistica/materiaPrimasMasConsumidas', 'EstadisticaController@materiaPrimasMasConsumidas')->name('estadistica.materiaPrimasMasConsumidas');
     });
 
 

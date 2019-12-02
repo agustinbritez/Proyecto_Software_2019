@@ -400,11 +400,12 @@
                                 console.log(array);
                                 if(array.errors)
                                 {
-                                    html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
-                                        array.errors.forEach(error => {
-                                            html+= '<li>'+error + '</li>';
-                                        });
-                                        html+='</ul></div>';
+                                     html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                                                        array.errors.forEach(error => {
+                                                                            html+= '<li>'+error + '</li>';
+                                                                        });
+                                                                        html+='</ul></div>';
+                             
                                     }else{
                                         html='<div class="alert alert-success alert-block"><button type="button" class="close" array-dismiss="alert">×</button><strong>'+array.success+'</strong></div>';
                                         

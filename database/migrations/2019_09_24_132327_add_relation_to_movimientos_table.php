@@ -22,6 +22,9 @@ class AddRelationToMovimientosTable extends Migration
 
             $table->unsignedBigInteger('materiaPrima_id');
             $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

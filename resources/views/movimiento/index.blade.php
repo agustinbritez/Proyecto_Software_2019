@@ -115,9 +115,10 @@
 								<tr>
 									<th>ID</th>
 									<th>Materia Prima</th>
-									<th>Precio</th>
+									<th>Precio Unitario</th>
 									<th>Cantidad</th>
 									<th>Operacion</th>
+									<th>Tipo Movimiento</th>
 
 									<th>Fecha</th>
 
@@ -150,6 +151,8 @@
 									</td>
 									<td class="text-left">
 										{{$movimiento->tipoMovimiento->operacion ? 'Suma' :'Resta'  }} </td>
+									<td class="text-left">
+										{{$movimiento->tipoMovimiento->nombre  }} </td>
 									<td>{{$movimiento->getFechaMovimiento()}} </td>
 
 
@@ -163,9 +166,10 @@
 								<tr>
 									<th>ID</th>
 									<th>Materia Prima</th>
-									<th>Precio</th>
+									<th>Precio Unitario</th>
 									<th>Cantidad</th>
 									<th>Operacion</th>
+									<th>Tipo Movimiento</th>
 
 									<th>Fecha</th>
 

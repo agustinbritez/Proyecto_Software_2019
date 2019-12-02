@@ -114,6 +114,7 @@ class MovimientoController extends Controller
                 'fecha'         =>  Carbon::now(),
                 'cantidad'         =>  $request->cantidad,
                 'proveedor_id'         =>  $proveedor->id,
+                'user_id'         =>  auth()->user()->id,
                 'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
                 'materiaPrima_id'         =>  $request->input('materiaPrima_id')
             );
@@ -122,7 +123,7 @@ class MovimientoController extends Controller
                 'precioUnitario'        =>  $request->precioUnitario,
                 'fecha'         =>  Carbon::now(),
                 'cantidad'         =>  $request->cantidad,
-                'proveedor_id'         =>  null,
+                'user_id'         =>  auth()->user()->id,
                 'tipoMovimiento_id'         =>  $request->input('tipoMovimiento_id'),
                 'materiaPrima_id'         =>  $request->input('materiaPrima_id')
             );

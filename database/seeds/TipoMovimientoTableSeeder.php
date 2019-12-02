@@ -24,5 +24,11 @@ class TipoMovimientoTableSeeder extends Seeder
         //se resta la materia prima
         $tipoMov->operacion = 0;
         $tipoMov->save();
+        $tipoMov = new TipoMovimiento();
+        $tipoMov->nombre = 'VENTA';
+        $tipoMov->detalle = 'Materia Primas que salen por venta';
+        //se resta la materia prima
+        $tipoMov->operacion = 0;
+        $tipoMov->save();
     }
 }

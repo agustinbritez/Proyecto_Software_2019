@@ -277,7 +277,9 @@ class UserController extends Controller
         if (request()->ajax()) {
             $data = User::findOrFail($id);
             return response()->json([
-                'data' => $data
+                'data' => $data, 'totalRoles' => Role::all(),
+                'roles' => $data->roles, 'totalDocumentos' => Documento::all()
+
             ]);
         }
     }
@@ -353,9 +355,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $usuario)
+    public function destroy(Request $request)
     {
-        $usuario->delete();
-        return redirect('/usuarios');
+        $usuario = User::find($request->button_delete);
+        if (!is_null($usuario)) {
+            if (!$usuario->pedidos->isEmpty()) {
+                return redirect()->back()->withErrors('El usuario tiene pedidos asociados');
+            }
+            if (!$usuario->productos->isEmpty()) {
+                return redirect()->back()->withErrors('El usuario tiene productos asociados');
+            }
+            $usuario->delete();
+            return redirect()->back()->with('warning', 'Se elimino correctamente');
+        }
+        return redirect()->back()->with('warning', 'No existe el usuario');
     }
 }

@@ -70,6 +70,10 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasMany(Producto::class);
     }
+    public function movimientos()
+    {
+        return $this->hasMany(Movimiento::class);
+    }
     public function roles()
     {
         return $this->belongsToMany(Role::class);

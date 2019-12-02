@@ -87,10 +87,13 @@
 
 
                 <div class="card-header">
-                    <h3>Lista de Productos a realizar</h3>
-                    <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
-                            class="btn btn-primary ">Ordenamiento Inteligente</button>
-                    </form>
+                    <div class="row justify-content-between">
+                        <h3>Lista de Productos a realizar</h3>
+
+                        <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
+                                class="btn btn-primary ">Optimizacion</button>
+                        </form>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="row">

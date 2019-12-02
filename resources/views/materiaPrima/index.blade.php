@@ -105,6 +105,7 @@
 									<th>Nombre</th>
 									<th>Precio Unitario</th>
 									<th>Cantidad</th>
+									<th>Stock Minimo</th>
 									<th>Medida </th>
 									<th>Modelos </th>
 									{{-- <th>Imagen Principal</th> --}}
@@ -128,6 +129,11 @@
 									<td class="text-right">
 
 										{{number_format($materia->cantidad) }}
+
+									</td>
+									<td class="text-right">
+
+										{{number_format($materia->stockMinimo) }}
 
 									</td>
 									@if ($materia->medida!=null)
@@ -176,6 +182,8 @@
 									<th>Nombre</th>
 									<th>Precio Unitario</th>
 									<th>Cantidad</th>
+									<th>Stock Minimo</th>
+
 									<th>Medida </th>
 									<th>Modelos </th>
 									{{-- <th>Imagen Principal</th> --}}

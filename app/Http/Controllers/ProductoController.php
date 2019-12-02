@@ -48,7 +48,12 @@ class ProductoController extends Controller
     }
     public function tienda()
     {
-        $productos = Producto::where('final', '<>', 0)->where('final', '<>', null)->get();
+        $productos = Producto::where('final', true)
+            ->join('modelos', 'modelos.id', '=', 'productos.modelo_id')
+            ->where('modelos.venta', true)
+            ->select('productos.*')
+            ->get();
+
         $imagenes = Imagen::all();
         $tipoImagenes = TipoImagen::all();
         //modelos para la venta

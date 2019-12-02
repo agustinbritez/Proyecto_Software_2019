@@ -31,6 +31,11 @@ class MedidaTableSeeder extends Seeder
         $medida->nombre='GRAMOS';
         $medida->detalle='GRAMOS';
         $medida->save();
+        
+        $medida= new Medida();
+        $medida->nombre='KILO GRAMOS';
+        $medida->detalle='KILO GRAMOS';
+        $medida->save();
 
         $medida= new Medida();
         $medida->nombre='UNIDAD';

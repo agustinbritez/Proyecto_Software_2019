@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Http\Controllers\MovimientoController;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use OwenIt\Auditing\Contracts\Auditable;
@@ -70,9 +72,19 @@ class MateriaPrima extends Model implements Auditable
    {
       $this->cantidad;
    }
-   public function restarMateriaPrima($cantidad)
+   public function restarMateriaPrima($cantidad, $detallePedido)
    {
       # code...
+      $tipo = TipoMovimiento::where('nombre', 'VENTA')->first();
+      $movimiento = new Movimiento();
+      $movimiento->cantidad = $cantidad;
+      $movimiento->precioUnitario = $this->precioUnitario;
+      $movimiento->fecha = Carbon::now();
+      $movimiento->user_id = $detallePedido->pedido->user_id;
+      $movimiento->tipoMovimiento_id = $tipo->id;
+      $movimiento->materiaPrima_id = $this->id;
+      $movimiento->save();
+
       $this->cantidad = $this->cantidad - $cantidad;
       $this->update();
    }

@@ -209,8 +209,7 @@
                             <div class="col">
                                 <label class="control-label">Numero de Domicilio: </label>
                                 <input type="text" class="form-control text-left" name="domicilio" id="domicilio"
-                                    data-mask required
-                                    data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
+                                    data-mask data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': true">
 
                             </div>
 
@@ -402,12 +401,12 @@
                             </div>
 
                         </div>
-                    </form>
                 </div>
                 <div class="card-footer">
                     <button type="submit" class="btn btn-primary">Crear Direccion</button>
 
                 </div>
+                </form>
             </div>
 
             <div class="card">

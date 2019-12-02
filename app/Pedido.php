@@ -76,7 +76,7 @@ class Pedido extends Model implements Auditable
     public function restarMateriaPrimas()
     {
         foreach ($this->detallePedidos as $key => $detalle) {
-            $detalle->producto->modelo->restarMateriaPrima($detalle->cantidad, $detalle->producto->materiaPrimaSeleccionadas);
+            $detalle->producto->modelo->restarMateriaPrima($detalle->cantidad, $detalle->producto->materiaPrimaSeleccionadas, $detalle);
         }
         return true;
     }

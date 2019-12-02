@@ -36,7 +36,7 @@ class TipoMovimientoController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $request->nombre = strtoupper($request->nombre);
         //obtengo la tipos movimientos borradas si elnombre se repite la reuso
         $tipoMovimientoExistente = TipoMovimiento::where('nombre', $request->nombre)->where('deleted_at', "<>", null)->withTrashed()->first();
@@ -59,7 +59,7 @@ class TipoMovimientoController extends Controller
         ];
 
         $this->validate($request, $rules, $messages);
-        
+
         //si el check box es verdadero se le asigna un valor distinto a '0' 
         if ($request->has('operacion')) {
             $da = 1;
@@ -114,6 +114,7 @@ class TipoMovimientoController extends Controller
     public function update(Request $request)
     {
 
+
         $rules = [
             'nombre'    =>  'required|unique:tipo_movimientos,nombre,' . $request->hidden_id
 
@@ -142,6 +143,19 @@ class TipoMovimientoController extends Controller
 
         //si el id que crea es uno borrado lo revivimos
         $tipoMovimiento = TipoMovimiento::withTrashed()->find($request->hidden_id);
+        $aux = TipoMovimiento::where('nombre', 'INGRESO')->first();
+        if ($tipoMovimiento->id == $aux->id) {
+            return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+        }
+        $aux = TipoMovimiento::where('nombre', 'EGRESO')->first();
+        if ($tipoMovimiento->id == $aux->id) {
+            return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+        }
+        $aux = TipoMovimiento::where('nombre', 'VENTA')->first();
+        if ($tipoMovimiento->id == $aux->id) {
+            return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+        }
+
         //revive a la materia prima borrada anteriormente.
         $tipoMovimiento->restore();
         $tipoMovimiento->update($form_data);
@@ -156,8 +170,29 @@ class TipoMovimientoController extends Controller
      */
     public function destroy(Request $request)
     {
+
         $tipoMovimiento = TipoMovimiento::find($request->button_delete);
-        $tipoMovimiento->delete();
-        return redirect()->back();
+        if ($tipoMovimiento != null) {
+            $aux = TipoMovimiento::where('nombre', 'INGRESO')->first();
+            if ($tipoMovimiento->id == $aux->id) {
+                return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+            }
+            $aux = TipoMovimiento::where('nombre', 'EGRESO')->first();
+            if ($tipoMovimiento->id == $aux->id) {
+                return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+            }
+            $aux = TipoMovimiento::where('nombre', 'VENTA')->first();
+            if ($tipoMovimiento->id == $aux->id) {
+                return redirect()->back()->withErrors('No se puede eliminar un tipo movimiento del sistema');
+            }
+
+            if (!$tipoMovimiento->movimientos->isEmpty()) {
+                return redirect()->back()->withErrors('No se puede eliminar un tipo de movimiento asociado');
+            }
+
+            $tipoMovimiento->delete();
+            return redirect()->back()->with('warning', 'Se elimino correctamente');
+        }
+        return redirect()->back()->withErrors('No existe');
     }
 }

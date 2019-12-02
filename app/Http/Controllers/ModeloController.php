@@ -247,12 +247,13 @@ class ModeloController extends Controller
                 //validamos
                 $validator = Validator::make(
                     $request->all(),
-                    ['nombreComponente' => 'required', 'imagenComponente'     =>  'required|mimes:jpeg,png,jpg,gif,svg,webp|max:2048'],
+                    ['nombreComponente' => 'required', 'imagenComponente'     =>  'required|mimes:jpeg,png,jpg,gif,svg,webp|max:2048|dimensions:min_width=400,min_height=400,max_width=600,max_height=500'],
                     [
                         'nombreComponente.required' => 'Agrega el nombre del componente.',
                         'imagenComponente.required'     => 'La imagen es obligatoria',
                         'imagenComponente.mimes'     => 'El tipo de la imagen debe ser cualquiera de los siguientes tipos peg,png,jpg,gif,svg',
                         'imagenComponente.max'     => 'La resolucion maxima de la imagen es 2048',
+                        'imagenComponente.dimensions'     => 'Las dimensiones minimas deben ser alto:400 ancho:400 y las maximas alto:600 ancho:500',
                     ]
                 );
 

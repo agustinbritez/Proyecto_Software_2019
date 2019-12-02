@@ -76,4 +76,9 @@ class Producto extends Model implements Auditable
         }
         return $contar;
     }
+
+    public function materiaPrimasProduccion(Type $var = null)
+    {
+       
+    }
 }

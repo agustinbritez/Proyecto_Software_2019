@@ -40,5 +40,16 @@ class ProveedorTableSeeder extends Seeder
         $proveedor->numeroDocumento = '30-70152070-1';
         $proveedor->direccion_id = $direccion->id;
         $proveedor->save();
+        $proveedor = new Proveedor();
+        $proveedor->nombre = 'Agus';
+        $proveedor->email = 'agusbritez97@gmail.com';
+        $proveedor->razonSocial = 'Sociedad Anonima';
+        if ($documento != null) {
+
+            $proveedor->documento_id = $documento->id;
+        }
+        $proveedor->numeroDocumento = '30-70152077-1';
+        $proveedor->direccion_id = $direccion->id;
+        $proveedor->save();
     }
 }

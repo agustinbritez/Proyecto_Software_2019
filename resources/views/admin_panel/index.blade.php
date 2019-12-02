@@ -37,6 +37,7 @@
       background-color: #56baed;
 
     } */
+    
 
     .btn-pill {
       border-radius: 40px;

@@ -64,7 +64,7 @@ class Modelo extends Model implements Auditable
         return $this->belongsTo(FlujoTrabajo::class, 'flujoTrabajo_id');
     }
 
-    public function restarMateriaPrima($cantidad, $materiaPrimaSeleccionada)
+    public function restarMateriaPrima($cantidad, $materiaPrimaSeleccionada, $detallePedido)
     {
 
         # code...
@@ -72,7 +72,7 @@ class Modelo extends Model implements Auditable
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
                 if ($receta->modeloHijo != null) {
-                    $receta->modeloHijo->restarMateriaPrima($cantidad * $receta->cantidad, $materiaPrimaSeleccionada);
+                    $receta->modeloHijo->restarMateriaPrima($cantidad * $receta->cantidad, $materiaPrimaSeleccionada, $detallePedido);
                 }
             }
         }
@@ -81,7 +81,7 @@ class Modelo extends Model implements Auditable
             foreach ($this->recetaPadre as $key => $receta) {
                 # code...
                 if ($receta->materiaPrima != null) {
-                    $receta->materiaPrima->restarMateriaPrima($cantidad * $receta->cantidad);
+                    $receta->materiaPrima->restarMateriaPrima($cantidad * $receta->cantidad, $detallePedido);
                 }
             }
         }
@@ -91,7 +91,7 @@ class Modelo extends Model implements Auditable
                 # code...
                 if ($materia->recetaHijo->modeloPadre->id == $this->id) {
 
-                    $materia->recetaHijo->materiaPrima->restarMateriaPrima($cantidad * $materia->recetaHijo->cantidad);
+                    $materia->recetaHijo->materiaPrima->restarMateriaPrima($cantidad * $materia->recetaHijo->cantidad, $detallePedido);
                     break;
                 }
             }

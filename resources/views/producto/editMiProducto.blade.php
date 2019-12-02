@@ -184,16 +184,16 @@
                                     <div>
                                         @if ($sublimacion->nuevaImagen!=null)
 
-                                        <input id="slider_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
+                                        {{-- <input id="slider_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
                                             class="range_5" type="text" name="range_5" value=""
-                                            onchange="cambiarSlider(this,document.getElementById('imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'))">
+                                            onchange="cambiarSlider(this,document.getElementById('imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'))"> --}}
                                         @else
                                         @if ($sublimacion->imagen !=null)
 
-                                        <input
+                                        {{-- <input
                                             id="slider_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}"
                                             class="range_5" type="text" name="range_5" value=""
-                                            onchange="cambiarSlider(this,document.getElementById('imagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'))">
+                                            onchange="cambiarSlider(this,document.getElementById('imagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'))"> --}}
                                         @endif
 
                                         @endif
@@ -461,7 +461,7 @@
 
              
                 
-                $('.range_5').ionRangeSlider({
+                $('.range_6').ionRangeSlider({
                     min     : 0,
                     max     : 100,
                     type    : 'single',

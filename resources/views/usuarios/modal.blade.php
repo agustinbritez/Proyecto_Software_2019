@@ -315,19 +315,28 @@
                         //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
                         $('#nombre').val(html.data.name);
                         $('#apellido').val(html.data.apellido);
-                        $('#documento_id').val(html.data.documento_id);
+                        $('#numeroDocumento').val(html.data.numeroDocumento);
+                        $('#email').val(html.data.email);
                         //**************************************************
                         $('#rol_id').find('option').remove();
-                                html.totalProveedores.forEach(prove => {
+                                html.totalRoles.forEach(roli => {
                                     $('#rol_id').append($('<option>', {
-                                        value: prove.id,
-                                        text: prove.nombre,
+                                        value: roli.id,
+                                        text: roli.name,
                                     }));
                                 });
-                                html.proveedores.forEach(provi => {
-                                    $('#proveedores option[value="'+provi.id+'"]').attr('selected','selected');
+                                html.roles.forEach(rol => {
+                                    $('#rol_id option[value="'+rol.id+'"]').attr('selected','selected');
                                 });     
-
+                                //******************************
+                                $('#documento_id').find('option').remove();
+                                html.totalDocumentos.forEach(documn => {
+                                    $('#documento_id').append($('<option>', {
+                                        value: documn.id,
+                                        text: documn.nombre,
+                                    }));
+                                });
+                                $('#documento_id option[value="'+html.data.documento_id+'"]').attr('selected','selected');
 
                         $('#hidden_id').val(html.data.id);
                         $('.modal-title').text("Editar Usuario");
