@@ -11,7 +11,6 @@ use App\Receta;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 
@@ -183,9 +182,8 @@ class ModeloController extends Controller
             // if ($request->has('modelos')) {
             //     $modelo->modelos()->sync($request->input('modelos', []));
             // }
-            return response()->json(['success' => 'Modelo creado correctamente.', 'modelo' => $modelo]);
+            return response()->json(['success' => 'Creado correctamente.', 'modelo' => $modelo]);
 
-            return redirect()->back()->with('success', 'Materia Prima Creada Con Exito!');
         }
     }
 
@@ -455,13 +453,6 @@ class ModeloController extends Controller
                         return response()->json($mensaje);
                     }
                 }
-
-
-
-
-
-
-
 
                 // $modelo->$modelo->modelos()->sync($request->input('modelos', []));
 
@@ -776,7 +767,7 @@ class ModeloController extends Controller
         //Actualizamos
         // $modelo->fill($request->all());
         $modelo->update($form_data);
-        $mensaje = array_merge($mensaje, ['success' => 'Modelo Actualizado Exitosamente!', 'modelo' => $modelo]);
+        $mensaje = array_merge($mensaje, ['success' => ' Actualizado Exitosamente!', 'modelo' => $modelo]);
 
 
         return response()->json($mensaje);
@@ -809,6 +800,6 @@ class ModeloController extends Controller
         }
 
         $modelo->delete();
-        return redirect()->back()->with('warning', 'Se elimino el modelo de manera correcta');
+        return redirect()->back()->with('warning', 'Se elimino  de manera correcta');
     }
 }

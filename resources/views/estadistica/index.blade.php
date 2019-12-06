@@ -52,7 +52,7 @@
                 <div class="row justify-content-center">
 
                     <form action="{{ route('estadistica.productosMasVendidos') }}" method="GET">
-                        <button type="submit" class="btn btn-success">Filtrar Grafico</button>
+                        {{-- <button type="submit" class="btn btn-success">Filtrar Grafico</button> --}}
                     </form>
                 </div>
             </div>
@@ -77,7 +77,7 @@
                 <div class="row justify-content-center">
 
                     <form action="" method="GET">
-                        <button type="submit" class="btn btn-success">Filtrar Grafico</button>
+                        {{-- <button type="submit" class="btn btn-success">Filtrar Grafico</button> --}}
                     </form>
                 </div>
             </div>

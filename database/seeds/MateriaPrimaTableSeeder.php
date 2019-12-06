@@ -70,7 +70,7 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->stockMinimo = 50;
         $materiaP->precioUnitario = 2;
         $materiaP->medida_id = $unidad->id;
-        $materiaP->imagenPrincipal = 'telablanca.jpg';
+        $materiaP->imagenPrincipal = 'cierreazul.jpg';
         $materiaP->save();
 
 

@@ -3,11 +3,17 @@
 
 @section('content')
 <div class="row" style="margin-bottom: 5px">
-    <h5 class="text-center"><strong><u style="color:black"> Reporte de Modelos</u></strong></h5>
+    @if ($base)
+        
+    <h5 class="text-center"><strong><u style="color:black"> Reporte de Opciones de Productos</u></strong></h5>
+    @else
+    <h5 class="text-center"><strong><u style="color:black"> Reporte de Productos Bases</u></strong></h5>
+        
+    @endif
 </div>
 
 <div style="margin-bottom: 5px"><strong> Filtros Aplicados: </strong> </div>
-<div style="margin-bottom: 5px">Numero de movimiento:
+<div style="margin-bottom: 5px">Nombre:
     {{' '}}<strong>{{$filtro_nombre_modelo ?? ' No aplicado '}}</strong>.</div>
 <div style="margin-bottom: 5px">Precio Unitario Minimo:
     {{' '}}<strong>{{$filtro_precio_unitario_minimo?? ' No aplicado' }}</strong>.</div>

@@ -133,7 +133,7 @@
 
                                         </div>
                                         <div class="col-2">
-                                            <button class="btn btn-primary" type="button" data-toggle="collapse"
+                                            <button class="btn btn-flat btn-primary" type="button" data-toggle="collapse"
                                                 data-target="#collapse_{{$pedido->id}}" aria-expanded="true"
                                                 aria-controls="collapse_{{$pedido->id}}">
                                                 Ver detalle del pedido
@@ -168,7 +168,7 @@
                                     </div>
 
                                     <table class="table table-bordered">
-                                        <thead>
+                                        <thead class="thead-light">
                                             <tr>
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Producto</th>
@@ -188,9 +188,11 @@
                                             <tr>
                                                 <th scope="row">{{$detalle->id}}</th>
                                                 <td>{{$detalle->producto->modelo->nombre}}</td>
-                                                <td align="right">${{$detalle->producto->modelo->precioUnitario}}</td>
+                                                <td align="right">
+                                                    ${{' '.number_format($detalle->producto->modelo->precioUnitario,2)}}
+                                                </td>
                                                 <td>{{$detalle->detalle}}</td>
-                                                <td>{{$detalle->cantidad}}</td>
+                                                <td align="right">{{number_format($detalle->cantidad)}}</td>
                                                 @if ($detalle->estado !=null)
                                                 {{-- <td>{{$detalle->estado->nombre}}</td>
 
@@ -348,7 +350,7 @@
 
                                 <tr>
                                     <th colspan="6" style="font-size: 18px">Total :
-                                        ${{$pedido->getPrecio()}}
+                                        ${{number_format($pedido->getPrecio(),2)}}
                                     </th>
                                     <th>
                                         @if (is_null($pedido->pago_id))

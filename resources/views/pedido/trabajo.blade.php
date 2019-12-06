@@ -76,8 +76,8 @@
                     <div class="text-center">
                         <button type="submit" name="filtrar" id="filtrar"
                             class="btn btn-success btn-sm">Filtrar</button>
-                        <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
-                            Tabla</button>
+                        {{-- <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
+                            Tabla</button> --}}
                     </div>
                 </div>
                 </form>
@@ -91,7 +91,7 @@
                         <h3>Lista de Productos a realizar</h3>
 
                         <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
-                                class="btn btn-primary ">Optimizacion</button>
+                                class="btn btn-primary "> <i class="far fa-chart-network"></i>&nbsp;  Optimizacion</button>
                         </form>
                     </div>
                 </div>

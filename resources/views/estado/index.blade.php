@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="card text-left">
+            {{-- <div class="card text-left">
 
                 <div class="card-header">
 
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-            </div>
+            </div> --}}
 
             <div class="card text-left">
 

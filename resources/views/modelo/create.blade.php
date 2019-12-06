@@ -25,11 +25,11 @@
                                     class="fas fa-minus"></i></button>
 
                         </div>
-                        <h3>Crear Modelo</h3>
+                        <h3>Crear Producto Base</h3>
                         <div align="left">
 
                             <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
-                                class="btn btn-success btn-sm">Crear Nuevo Modelo</a>
+                                class="btn btn-success btn-sm">Crear Nuevo Producto Base</a>
 
 
                         </div>
@@ -180,7 +180,7 @@
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                         class="fas fa-minus"></i></button>
                             </div>
-                            <h3>Crear Recetas Para el Modelo</h3>
+                            <h3>Crear Recetas Para el Producto Base</h3>
                         </div>
 
                         <div class="card-body">
@@ -192,7 +192,7 @@
 
 
 
-                                    <div class="form-group clearfix ">
+                                    {{-- <div class="form-group clearfix ">
                                         <label for="">Mostrar solo materia prima: </label>
                                         <div class="icheck-success d-inline">
 
@@ -201,7 +201,7 @@
 
                                         </div>
                                         </label>
-                                    </div>
+                                    </div> --}}
 
 
 

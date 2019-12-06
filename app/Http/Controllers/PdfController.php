@@ -606,7 +606,8 @@ class PdfController extends Controller
 
         $modelos = $modelos->get();
         $filtro = $filtro->union(['modelos' => $modelos]);
-        $filtro = $filtro->union(['cantidadRegistros' => sizeof($modelos),]);
+        $filtro = $filtro->union(['cantidadRegistros' => sizeof($modelos)]);
+        $filtro = $filtro->union(['base' => $base]);
 
         if (sizeof($filtro['modelos']) == 0) {
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');

@@ -24,13 +24,15 @@
 
 
                 <div class="card-body">
-                    <form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data">
-                        @csrf
-                        <div align="right">
+                    {{-- <form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data"> --}}
+                       
+                       <form action="">
+                            @csrf
+                        {{-- <div align="right">
 
                             <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte de FLujos de
                                 Trabajos</button>
-                        </div>
+                        </div> --}}
                         <hr>
                         <div class="row">
 

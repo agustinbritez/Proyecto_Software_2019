@@ -426,7 +426,7 @@
                             </tr>
 
                             @endforeach
-                            
+
                         </tbody>
 
 
@@ -834,6 +834,32 @@
         </div>
     </div>
 </div>
+<div id="verificarModalEstado" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Confirmacion</h2>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <h4 align="center" style="margin:0;" id="mensajeVerificacion">¿Esta seguro que desea pasar al
+                    siguiente estado ?
+                </h4>
+
+                <hr>
+
+            </div>
+            <div class="modal-footer justify-content-around">
+
+                {{-- Paso el id de la materia  aborrar en button_delete--}}
+                <button type="button" name="ok_button" id="ok_button_siguiente" class="btn btn-primary">OK</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+</div>
 
 @endsection
 
@@ -1120,13 +1146,22 @@
                                                 });
                                                 $('#botonSiguiente').click(function(){
                                                     
-                                                    var idDetalle='{{$detallePedido->id}}';
-                                                    url2="{{route('detallePedido.estadoSiguiente',":id")}}";
-                                                    
-                                                    url2=url2.replace(':id',idDetalle);
-                                                    
-                                                    cambiarEstado(url2);
+                                                  
+                                                    $('#verificarModalEstado').modal('show');
                                                 });
+                                                $(document).ready(function(){
+
+                                                    $('#ok_button_siguiente').click(function(){
+                                                        var idDetalle='{{$detallePedido->id}}';
+                                                        
+                                                        url2="{{route('detallePedido.estadoSiguiente',":id")}}";
+                                                        
+                                                        url2=url2.replace(':id',idDetalle);
+                                                        cambiarEstado(url2);
+                                                        $('#verificarModalEstado').modal('hide');
+    
+                                                    });
+                                                })
                                                 
                                                 
                                                 function cambiarEstado(url){

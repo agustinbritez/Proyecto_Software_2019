@@ -118,7 +118,7 @@
 
                             <div class="form-group">
 
-                                <label class="control-label "> Ingredientes estaticos:</label>
+                                {{-- <label class="control-label "> Ingredientes estaticos:</label> --}}
 
                             </div>
                         </div>

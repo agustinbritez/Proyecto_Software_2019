@@ -55,6 +55,18 @@
 
                             </select>
                         </div>
+                        <div class="form-group">
+                            <label class="control-label ">Unidad de medida : </label>
+                            <select class="form-control select2 " id="medida_id" name="medida_id" style="width: 100%;">
+                                @if (sizeof($medidas)>0)
+
+                                @foreach ($medidas as $medida)
+                                <option value="{{$medida->id}}">{{$medida->nombre}}</option>
+                                @endforeach
+                                @endif
+                            </select>
+
+                        </div>
                         <div class="form-group " id="cantidad_nueva" style="display: none">
                             <label class="control-label">Cantidad Inicial : </label>
 
@@ -91,18 +103,7 @@
 
                         </div>
 
-                        <div class="form-group">
-                            <label class="control-label ">Medida Asignada: : </label>
-                            <select class="form-control select2 " id="medida_id" name="medida_id" style="width: 100%;">
-                                @if (sizeof($medidas)>0)
 
-                                @foreach ($medidas as $medida)
-                                <option value="{{$medida->id}}">{{$medida->nombre}}</option>
-                                @endforeach
-                                @endif
-                            </select>
-
-                        </div>
 
 
                         {{-- <div class="form-group">

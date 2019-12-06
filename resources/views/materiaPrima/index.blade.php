@@ -24,12 +24,13 @@
 
 
 				<div class="card-body">
-					<form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data">
+					{{-- <form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data"> --}}
+					<form action="">
 						@csrf
 						<div align="right">
 
-							<button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Materia
-								Prima</button>
+							{{-- <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Materia
+								Prima</button> --}}
 						</div>
 						<hr>
 						<div class="row">
@@ -49,7 +50,7 @@
 
 							</div>
 							<div class="form-group col">
-								<label>Modelo : </label>
+								<label>Opciones de Productos : </label>
 								<select class="select2" name="filtro_modelo" id="filtro_modelo"
 									data-placeholder="Seleccione Un Modelo" style="width: 100%;">
 									{{-- <option value="" selected>Cualquiera</option> --}}
@@ -107,7 +108,7 @@
 									<th>Cantidad</th>
 									<th>Stock Minimo</th>
 									<th>Medida </th>
-									<th>Modelos </th>
+									<th>Opciones de Productos </th>
 									{{-- <th>Imagen Principal</th> --}}
 									<th>&nbsp; </th>
 
@@ -185,7 +186,7 @@
 									<th>Stock Minimo</th>
 
 									<th>Medida </th>
-									<th>Modelos </th>
+									<th>Opciones de Productos </th>
 									{{-- <th>Imagen Principal</th> --}}
 									<th>&nbsp; </th>
 

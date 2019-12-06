@@ -21,7 +21,9 @@
 
     <ul class="navbar-nav">
       <li class="nav-item ">
-        <a href="{{route('producto.tienda')}}" class="btn btn-success " style="border-radius:0%"> Tienda </a>
+
+        <a href="{{route('producto.tienda')}}" class="btn btn-success " style="border-radius:0%"><i
+            class="far fa-shopping-bag nav-icon"></i> Tienda </a>
       </li>
 
     </ul>
@@ -52,7 +54,9 @@
   <div class="col-2">
     <ul class="navbar-nav ml-auto">
       <li class="nav-item ">
-        <a href="{{route('pedido.misPedidos',auth()->user()->id)}}" class="btn btn-info  " style="border-radius:0%"> Mis
+        <a href="{{route('pedido.misPedidos',auth()->user()->id)}}" class="btn btn-info  " style="border-radius:0%">
+           <i class="far fa-shopping-cart nav-icon"></i>
+          Mis
           Pedidos</a>
 
       </li>

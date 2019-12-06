@@ -96,11 +96,24 @@
                                         @endif
                                     </td>
                                     <td>
+                                        @if (auth()->user()->hasRole('empleado'))
+                                        @if (!$usuario->hasRole('empleado'))
                                         <button type="button" name="edit" id="{{$usuario->id}}"
                                             class="edit btn btn-outline-primary btn-sm">Editar</button>
                                         &nbsp;&nbsp;
                                         <button type="button" name="delete" id="{{$usuario->id}}"
                                             class="delete btn btn-outline-danger btn-sm">Eliminar</button>
+
+                                        @endif
+
+                                        @else
+                                        <button type="button" name="edit" id="{{$usuario->id}}"
+                                            class="edit btn btn-outline-primary btn-sm">Editar</button>
+                                        &nbsp;&nbsp;
+                                        <button type="button" name="delete" id="{{$usuario->id}}"
+                                            class="delete btn btn-outline-danger btn-sm">Eliminar</button>
+                                        @endif
+
 
                                     </td>
 
@@ -132,13 +145,14 @@
 
         </div>
     </div>
+</div>
 
-    @endsection
+@endsection
 
-    @push('scripts')
+@push('scripts')
 
-    @endpush
+@endpush
 
-    @section('htmlFinal')
-    @include('usuarios.modal')
-    @endsection
+@section('htmlFinal')
+@include('usuarios.modal')
+@endsection

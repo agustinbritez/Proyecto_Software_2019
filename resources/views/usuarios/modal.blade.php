@@ -81,8 +81,8 @@
                     <div class="form-group">
                         <label>Roles : </label>
 
-                        @if (auth()->user()->hasRole('admin')||auth()->user()->hasRole('empleado'))
-                        @if (auth()->user()->hasRole('admin'))
+                        @if(auth()->user()->hasRole('admin')||auth()->user()->hasRole('empleado')||auth()->user()->hasRole('gerente'))
+                        @if (auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
                         <select class="select2" multiple="multiple" id='rol_id' name="rol_id[]"
                             data-placeholder="Seleccione Un Rol" style="width: 100%;">
 
@@ -98,19 +98,22 @@
                         </select>
 
                         @else
-                        <select class="select2" id='rol_id' name="rol_id" data-placeholder="Seleccione Un Rol"
-                            style="width: 100%;">
+                        <div id="roles_oculto" style="display: none">
+                            <select class="select2" id='rol_id' name="rol_id" data-placeholder="Seleccione Un Rol"
+                                style="width: 100%;">
 
 
-                            @if(sizeof($roles)>0)
-                            @foreach ($roles as $rol)
-                            <option value="{{$rol->id}}">{{$rol->nombre}}</option>
-                            @endforeach
+                                @if(sizeof($roles)>0)
+                                @foreach ($roles as $rol)
+                                <option value="{{$rol->id}}">{{$rol->name}}</option>
+                                @endforeach
 
-                            @endif
+                                @endif
 
 
-                        </select>
+                            </select>
+                        </div>
+
                         @endif
 
                         @endif
@@ -295,6 +298,10 @@
                 $('#action').val("Add");
                 $('#formModal').modal('show');
                 $('#nombre').val('');
+                if(!document.getElementById('roles_oculto')!=null){
+
+                document.getElementById('roles_oculto').style.display='block';
+                }
                 
                 $('#hidden_id').val('');
             });
@@ -303,6 +310,11 @@
             //el boton edit en el index que mostrara el modal
             $(document).on('click', '.edit', function(){
                 var id = $(this).attr('id');
+            
+                if(document.getElementById('roles_oculto')!=null){
+
+                document.getElementById('roles_oculto').style.display='none';
+}
                 $("#sample_form").attr("action","{{route('usuario.update')}}");
                 $('#form_result').html('');
                 $.ajax({

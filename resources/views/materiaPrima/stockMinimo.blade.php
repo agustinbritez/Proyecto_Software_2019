@@ -11,7 +11,7 @@
 
     <div class="row">
         <div class="col">
-            <div class="card text-left">
+            {{-- <div class="card text-left">
 
                 <div class="card-header">
 
@@ -52,7 +52,6 @@
                                 <label>Materia Prima : </label>
                                 <select class="select2" name="filtro_materiaPrima" id="filtro_materiaPrima"
                                     data-placeholder="Seleccione Un Modelo" style="width: 100%;">
-                                    {{-- <option value="" selected>Cualquiera</option> --}}
                                     <option value="-1">Cualquiera</option>
                                     @if(sizeof($materiaPrimas)>0)
                                     @foreach ($materiaPrimas as $materia)
@@ -75,7 +74,7 @@
                     </div>
                 </div>
 
-            </div>
+            </div> --}}
 
             <div class="card text-left">
 

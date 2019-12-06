@@ -55,9 +55,9 @@
                                     <th>{{$direccion->provincia->nombre}}</th>
                                     <th>{{$direccion->pais->nombre}}</th>
                                     <th>
-                                        <button type="button" name="edit" id="{{$direccion->id}}"
+                                        {{-- <button type="button" name="edit" id="{{$direccion->id}}"
                                             class="edit btn btn-outline-primary btn-sm">Editar</button>
-                                        &nbsp;&nbsp;
+                                        &nbsp;&nbsp; --}}
                                         <button type="button" name="delete" id="{{$direccion->id}}"
                                             class="delete btn btn-outline-danger btn-sm">Eliminar</button>
                                     </th>

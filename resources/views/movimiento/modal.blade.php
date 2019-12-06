@@ -34,10 +34,12 @@
                         <div class="form-group ">
                             <label class="control-label">Cantidad : </label>
 
+
                             <input type="text" class="form-control text-left" name="cantidad" id="cantidad"
                                 placeholder="Cantidad de materia prima inicial" data-mask
-                                data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false">
-
+                                {{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
+                                data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
+                                'digitsOptional': false, 'placeholder': '0'">
                         </div>
 
                         <div class="form-group">

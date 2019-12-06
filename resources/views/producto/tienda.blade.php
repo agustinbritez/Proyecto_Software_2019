@@ -125,6 +125,7 @@
                         <div class="text-center">
 
                             <h5 class="text-cyan">{{$producto->modelo->nombre}}</h5>
+                            <h5 class="text-dark">{{'$ '.number_format($producto->modelo->precioUnitario,2)}}</h5>
 
 
                         </div>

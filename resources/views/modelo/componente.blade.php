@@ -7,7 +7,7 @@
 
                 <div class="modal-header">
 
-                    <h4 class="modal-title"> TITULO</h4>
+                    <h4 class="modal-title">  Componentes</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
@@ -90,7 +90,7 @@
 
                 <div class="modal-footer justify-content-around">
 
-                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Cancelar</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="cancelar">Atras</button>
 
                     <input type="hidden" name="hidden_id_modelo_componente" id="hidden_id_modelo_componente"
                         value="{{$modelo->id??''}}" />

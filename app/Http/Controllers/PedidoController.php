@@ -309,11 +309,15 @@ class PedidoController extends Controller
                 ->whereDate('fechaPago', '<=', $request->hasta);
         }
         // if ($request->has('filtro_modelo')) {
-        //     $pedidos = $pedidos->where('modelo_id', $request->filtro_modelo);
+        //     $pedidos = $pedidos->join('detalle_pedidos','detalle_pedido')
+        //     where('modelo_id', $request->filtro_modelo);
         // }
         if ($request->has('filtro_estado') && ($request->filtro_estado != '-1')) {
             $pedidos = $pedidos->where('estado_id', $request->filtro_estado);
         }
+        // if ($request->has('filtro_modelo') && ($request->filtro_estado != '-1')) {
+        //     $pedidos = $pedidos->where('modelo_id', $request->filtro_modelo);
+        // }
         //el pedido mas nuevo tiene un valor mas grande por ejemplo 2019-12-1 < 2019-12-2
 
         $pedidos = $pedidos->orderBy('fechaPago', 'desc');
@@ -332,8 +336,6 @@ class PedidoController extends Controller
             }
             $pedidos = $filtroPedido;
         }
-
-
 
 
         $modelos = Modelo::all()->where('base', false)->where('venta', true);

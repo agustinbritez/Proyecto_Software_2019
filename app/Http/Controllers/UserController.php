@@ -26,6 +26,26 @@ class UserController extends Controller
     public function index()
     {
         $usuarios = User::all();
+        if (!(auth()->user()->hasRole('admin')) && !(auth()->user()->hasRole('gerente'))) {
+           
+             # code...
+            
+             $admin = Role::where('name', 'admin')->first();
+             $gerente = Role::where('name', 'gerente')->first();
+             $auditor = Role::where('name', 'auditor')->first();
+             $aux=collect();
+             foreach ($usuarios as $usuario) {
+                 # code...
+                 if(!$usuario->hasRole('admin')&&!$usuario->hasRole('gerente')&&!$usuario->hasRole('auditor'))
+                 {
+                     $aux->add($usuario);
+                 }
+             }
+             $usuarios =$aux;
+        } 
+           
+        
+
         $documentos = Documento::all();
         $roles = Role::all();
 
@@ -63,7 +83,8 @@ class UserController extends Controller
             'numeroDocumento.max' => 'Max 70 caracteres',
             'apellido.required' => 'Apellido requerido',
 
-            'email.required' => 'Email requerido',
+            'email.unique' => 'Email debe ser unico',
+            'email.required' => 'Email es requerido',
 
 
         ];
@@ -77,6 +98,10 @@ class UserController extends Controller
         }
 
         $this->validate($request, $rules, $messages);
+        $existe= User::where('email',$request->email)->where('id','<>',$usuario->id)->first();
+        if($existe!=null){
+            return redirect()->back()->withErrors('email','El email ya existe');
+        }
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
             $file = $request->file('imagenPrincipal');
@@ -294,12 +319,7 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'nombre'    =>  'required',
-            'apellido'    =>  'required',
-            'email' => 'required|unique:users,email,NULL,deleted_at',
-            'documento_id'    =>  'required|exists:documentos,id',
-            'rol_id'    =>  'required|exists:roles,id',
-            'numeroDocumento'    =>  'required'
+            'email'    =>  'required|unique:users,email,' . $request->hidden_id, 
 
         ];
 
@@ -336,12 +356,13 @@ class UserController extends Controller
         $usuario = User::find($request->hidden_id);
 
         $usuario->update($form_data);
+        return 0;
         if (auth()->user()->hasRole('admin')) {
             # code...
             $usuario->roles()->sync($request->rol_id);
         } else {
-
             $usuario->assignRoles($request->rol_id);
+
         }
 
         return redirect()->back()->with('success', 'Usuario Actualizado con exito!');
@@ -360,10 +381,13 @@ class UserController extends Controller
         $usuario = User::find($request->button_delete);
         if (!is_null($usuario)) {
             if (!$usuario->pedidos->isEmpty()) {
-                return redirect()->back()->withErrors('El usuario tiene pedidos asociados');
+                return redirect()->back()->withErrors('El usuario tiene pedidos asociados no se pudo eliminar');
             }
             if (!$usuario->productos->isEmpty()) {
-                return redirect()->back()->withErrors('El usuario tiene productos asociados');
+                return redirect()->back()->withErrors('El usuario tiene productos asociados no se pudo eliminar');
+            }
+            if (!$usuario->movimientos->isEmpty()) {
+                return redirect()->back()->withErrors('El usuario tiene movimientos asociados no se pudo eliminar');
             }
             $usuario->delete();
             return redirect()->back()->with('warning', 'Se elimino correctamente');

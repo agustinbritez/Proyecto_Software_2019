@@ -171,7 +171,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Cantidad de Productos</th>
-                                    <th>Precio Total</th>
+                                    <th>Precio Por Pedido</th>
                                     <th>Fecha de Pago</th>
                                     <th>Estado</th>
                                     <th>Fecha de Cambio de Estado</th>
@@ -182,6 +182,7 @@
                                 </tr>
                             </thead>
                             <tbody style="background-color:white ; color:black;">
+                                <input type="hidden" value="{{$totalGanancia=0}}">
                                 @if (sizeof($pedidos)>0)
 
                                 @foreach ($pedidos as $pedido)
@@ -259,21 +260,37 @@
                                                 class="btn btn-outline-primary btn-sm">Ver Detalles</button>
                                         </form>
                                         {{-- &nbsp;&nbsp;
-                                                    <button type="button" name="delete" id="{{$pedido->id}}"
+                                                <button type="button" name="delete" id="{{$pedido->id}}"
                                         class="delete btn btn-outline-danger btn-sm">Eliminar</button> --}}
                                         </td>
 
 
                                 </tr>
+                                <input type="hidden" value="{{$totalGanancia+=$pedido->precio}}">
                                 @endforeach
                                 @endif
+
                             </tbody>
 
-                            <tfoot style="background-color:#ccc; color:white;">
+                            <tfoot style="background-color:forestgreen; color:white;">
                                 <tr>
+
+                                    <td colspan="8">
+                                        <div id="totalGanancias">
+
+                                            <label for="">Precio Total
+                                                {{' : '.number_format($totalGanancia,2)}}
+                                            </label>
+                                        </div>
+                                        <input type="hidden" value="0.0" id="totalPedidosGanancias">
+                                        <input type="hidden" value="0" id="cantidadPedidos">
+                                    </td>
+
+                                </tr>
+                                <tr style="background-color:#ccc; color:white;">
                                     <th>ID</th>
                                     <th>Cantidad de Productos</th>
-                                    <th>Precio Total</th>
+                                    <th>Precio Por Pedido</th>
                                     <th>Fecha de Pago</th>
                                     <th>Estado</th>
                                     <th>Fecha de Cambio de Estado</th>
@@ -306,243 +323,275 @@
 
 @push('scripts')
 <script>
+    var totalPrecio=   '{{$totalGanancia}}';
+                    
     var table= $('#data-table').DataTable({
-                        "language": {
-                            "sProcessing":     "Procesando...",
-                            "sLengthMenu":     "Mostrar _MENU_ registros",
-                            "sZeroRecords":    "No se encontraron resultados",
-                            "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
-                            "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
-                            "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
-                            "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
-                            "sInfoPostFix":    "",
-                            "sSearch":         "Buscar:",
-                            "sUrl":            "",
-                            "sInfoThousands":  ",",
-                            "sLoadingRecords": "Cargando...",
-                            "oPaginate": {
-                                "sFirst":    "Primero",
-                                "sLast":     "Último",
-                                "sNext":     "Siguiente",
-                                "sPrevious": "Anterior"
-                            },
-                            "oAria": {
-                                "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
-                                "sSortDescending": ": Activar para ordenar la columna de manera descendente"
-                            },
-                            "buttons": {
-                                "copy": "Copiar",
-                                "colvis": "Visibilidad"
-                            }
-                            
+                    "language": {
+                        "sProcessing":     "Procesando...",
+                        "sLengthMenu":     "Mostrar _MENU_ registros",
+                        "sZeroRecords":    "No se encontraron resultados",
+                        "sEmptyTable":     "Ningún dato disponible en esta tabla =(",
+                        "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                        "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                        "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                        "sInfoPostFix":    "",
+                        "sSearch":         "Buscar:",
+                        "sUrl":            "",
+                        "sInfoThousands":  ",",
+                        "sLoadingRecords": "Cargando...",
+                        "oPaginate": {
+                            "sFirst":    "Primero",
+                            "sLast":     "Último",
+                            "sNext":     "Siguiente",
+                            "sPrevious": "Anterior"
+                        },
+                        "oAria": {
+                            "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                            "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                        },
+                        "buttons": {
+                            "copy": "Copiar",
+                            "colvis": "Visibilidad"
                         }
+                        
+                    }
+                });
+                
+                var indiceCantidad=1;
+                var indicePrecio=2;
+                var indiceFechaPago=3;
+                var indiceEstado=4;
+                var indiceFechaCambio=5;
+                var indiceTerminado=6;
+                var   totalPedidosGanancias=0;   
+                var cantidadPedidos=0; 
+                var medidasGlobal;
+                var modelosGlobal;
+                const vacio='Cualquiera';
+                
+                
+                
+                //****************************************** FILTRO DE LA TABLA**************************************************************
+                function filtro_funcion(){
+                    document.getElementById('cantidadPedidos').value=0;
+                    $('#totalPedidosGanancias').val(0.0);
+                    
+                    
+                    var cantidadMin=parseInt($('#cantidadMin').val());
+                    var cantidadMax=parseInt($('#cantidadMax').val());
+                    var filtro_precioUnitarioMin=parseFloat($('#filtro_precioUnitarioMin').val());
+                    var filtro_precioUnitarioMax=parseFloat($('#filtro_precioUnitarioMax').val());
+                    
+                    var filtro_terminado=($('#filtro_terminado option:selected').text());
+                    var filtro_estado=($('#filtro_estado option:selected').text());
+                    var fechaPagoDesde=$('#fechaPagoDesde').val();
+                    var fechaPagoHasta=$('#fechaPagoHasta').val();
+                    var estadoDesde=$('#estadoDesde').val();
+                    var estadoHasta=$('#estadoHasta').val();
+                    
+                    var cantidad_filtros=0;
+                    
+                    if((cantidadMin>0) && (cantidadMax>0)){
+                        cantidad_filtros++;   
+                        
+                    }else if(cantidadMin>0){
+                        cantidad_filtros++;   
+                        
+                    }else if(cantidadMax>0){
+                        cantidad_filtros++;      
+                    }
+                    //
+                    if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
+                        cantidad_filtros++;   
+                        
+                    }else if(filtro_precioUnitarioMin>0.0){
+                        cantidad_filtros++;   
+                        
+                    }else if(filtro_precioUnitarioMax>0.0){
+                        cantidad_filtros++;      
+                    }
+                    
+                    
+                    if(filtro_terminado!= 'Cualquiera'){
+                        cantidad_filtros++;      
+                    }
+                    
+                    if(filtro_estado!=vacio){
+                        cantidad_filtros++;      
+                    }
+                    
+                    //
+                    if((fechaPagoDesde !='') && (fechaPagoHasta!='') ){
+                        cantidad_filtros++;
+                    }else if ((fechaPagoDesde !='')){
+                        cantidad_filtros++;
+                    }else if ((fechaPagoHasta !='')){
+                        cantidad_filtros++;
+                    }
+                    //
+                    if((estadoDesde !='') && (estadoHasta!='') ){
+                        cantidad_filtros++;
+                    }else if ((estadoDesde !='')){
+                        cantidad_filtros++;
+                    }else if ((estadoHasta !='')){
+                        cantidad_filtros++;
+                    }
+                    console.log(cantidad_filtros);
+                    
+                    
+                    $.fn.dataTable.ext.search.pop(
+                    function( settings, data, dataIndex ) {
+                        //si retorna falso saca de la tabla
+                        return true ;
                     });
                     
-                    var indiceCantidad=1;
-                    var indicePrecio=2;
-                    var indiceFechaPago=3;
-                    var indiceEstado=4;
-                    var indiceFechaCambio=5;
-                    var indiceTerminado=6;
-                    
-                    var medidasGlobal;
-                    var modelosGlobal;
-                    const vacio='Cualquiera';
-                    
-                    
-                    
-                    //****************************************** FILTRO DE LA TABLA**************************************************************
-                    function filtro_funcion(){
+                    //si no hay filtro que cargue todo
+                    if(cantidad_filtros>0){
                         
-                        var cantidadMin=parseInt($('#cantidadMin').val());
-                        var cantidadMax=parseInt($('#cantidadMax').val());
-                        var filtro_precioUnitarioMin=parseFloat($('#filtro_precioUnitarioMin').val());
-                        var filtro_precioUnitarioMax=parseFloat($('#filtro_precioUnitarioMax').val());
-                                                
-                        var filtro_terminado=($('#filtro_terminado option:selected').text());
-                        var filtro_estado=($('#filtro_estado option:selected').text());
-                        var fechaPagoDesde=$('#fechaPagoDesde').val();
-                        var fechaPagoHasta=$('#fechaPagoHasta').val();
-                        var estadoDesde=$('#estadoDesde').val();
-                        var estadoHasta=$('#estadoHasta').val();
-                        
-                        var cantidad_filtros=0;
-                        
-                        if((cantidadMin>0) && (cantidadMax>0)){
-                            cantidad_filtros++;   
+                        var filtro_completos=0;
+                        var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
                             
-                        }else if(cantidadMin>0){
-                            cantidad_filtros++;   
+                            //si son todo los filtros que realice todas las acciones directamente
+                            filtro_completos=0;
+                            //calculamos la fecha para el pago
+                            var minPago = moment(fechaPagoDesde);
+                            totalPedidosGanancias=0;   
+                            cantidadPedidos=0;
+                            var maxPago = moment(fechaPagoHasta) ;
+                            var d1 = data[indiceFechaPago];
+                            var datearray1 = d1.split("/");
+                            var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
+                            var s1 = new Date(newdate1)
+                            var startDatePago = moment(s1)
+                            //fecha para cambio de estado
+                            var minEstado = moment(estadoDesde);
                             
-                        }else if(cantidadMax>0){
-                            cantidad_filtros++;      
-                        }
-                        //
-                        if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
-                            cantidad_filtros++;   
+                            var maxEstado = moment(estadoHasta) ;
+                            var d1 = data[indiceFechaCambio];
+                            var datearray1 = d1.split("/");
+                            var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
+                            var s1 = new Date(newdate1)
+                            var startDateEstado = moment(s1)
                             
-                        }else if(filtro_precioUnitarioMin>0.0){
-                            cantidad_filtros++;   
                             
-                        }else if(filtro_precioUnitarioMax>0.0){
-                            cantidad_filtros++;      
-                        }
-                        
-                        
-                        if(filtro_terminado!= 'Cualquiera'){
-                            cantidad_filtros++;      
-                        }
-                        
-                        if(filtro_estado!=vacio){
-                            cantidad_filtros++;      
-                        }
-                        
-                        //
-                        if((fechaPagoDesde !='') && (fechaPagoHasta!='') ){
-                            cantidad_filtros++;
-                        }else if ((fechaPagoDesde !='')){
-                            cantidad_filtros++;
-                        }else if ((fechaPagoHasta !='')){
-                            cantidad_filtros++;
-                        }
-                        //
-                        if((estadoDesde !='') && (estadoHasta!='') ){
-                            cantidad_filtros++;
-                        }else if ((estadoDesde !='')){
-                            cantidad_filtros++;
-                        }else if ((estadoHasta !='')){
-                            cantidad_filtros++;
-                        }
-                        console.log(cantidad_filtros);
-                        
-                        
-                        $.fn.dataTable.ext.search.pop(
-                        function( settings, data, dataIndex ) {
-                            //si retorna falso saca de la tabla
-                            return true ;
-                        });
-                        
-                        //si no hay filtro que cargue todo
-                        if(cantidad_filtros>0){
-                            
-                            var filtro_completos=0;
-                            var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
+                            //filtro de fechas
+                            //*******************************************************
+                            if((fechaPagoDesde !='') && (fechaPagoHasta!='') ){
                                 
-                                //si son todo los filtros que realice todas las acciones directamente
-                                filtro_completos=0;
-                                //calculamos la fecha para el pago
-                                var minPago = moment(fechaPagoDesde);
+                                (moment(startDatePago).isSameOrAfter(minPago) && moment(startDatePago).isSameOrBefore(maxPago) )? filtro_completos++ : 0 ;
                                 
-                                var maxPago = moment(fechaPagoHasta) ;
-                                var d1 = data[indiceFechaPago];
-                                var datearray1 = d1.split("/");
-                                var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
-                                var s1 = new Date(newdate1)
-                                var startDatePago = moment(s1)
-                                //fecha para cambio de estado
-                                var minEstado = moment(estadoDesde);
+                            }else if((fechaPagoDesde !='')){
+                                // console.log(1);
+                                (moment(startDatePago).isSameOrAfter(minPago)  )? filtro_completos++ : 0 ;
                                 
-                                var maxEstado = moment(estadoHasta) ;
-                                var d1 = data[indiceFechaCambio];
-                                var datearray1 = d1.split("/");
-                                var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
-                                var s1 = new Date(newdate1)
-                                var startDateEstado = moment(s1)
+                            }else if((fechaPagoHasta !='')){
                                 
-                              
-                                    //filtro de fechas
-                                    //*******************************************************
-                                    if((fechaPagoDesde !='') && (fechaPagoHasta!='') ){
-                                        
-                                        (moment(startDatePago).isSameOrAfter(minPago) && moment(startDatePago).isSameOrBefore(maxPago) )? filtro_completos++ : 0 ;
-                                        
-                                    }else if((fechaPagoDesde !='')){
-                                        // console.log(1);
-                                        (moment(startDatePago).isSameOrAfter(minPago)  )? filtro_completos++ : 0 ;
-                                        
-                                    }else if((fechaPagoHasta !='')){
-                                        
-                                        (moment(startDatePago).isSameOrBefore(maxPago)  )? filtro_completos++ : 0 ;
-                                    }
-                                    //********************************************
-                                    if((estadoDesde !='') && (estadoHasta!='') ){
-                                        
-                                        (moment(startDateEstado).isSameOrAfter(minEstado) && moment(startDateEstado).isSameOrBefore(maxEstado) )? filtro_completos++ : 0 ;
-                                        
-                                    }else if((estadoDesde !='')){
-                                        // console.log(2);
-                                        (moment(startDateEstado).isSameOrAfter(minEstado)  )? filtro_completos++ : 0 ;
-                                        
-                                    }else if((estadoHasta !='')){
-                                        
-                                        (moment(startDateEstado).isSameOrBefore(maxEstado)  )? filtro_completos++ : 0 ;
-                                    }
-                                    //************************************************************
-                                    if(cantidadMin>0 && cantidadMax>0){
-                                        ((parseInt(data[indiceCantidad])>= cantidadMin) && (parseInt(data[indiceCantidad])<= cantidadMax) )? filtro_completos++ :0;
-                                        
-                                        
-                                    }else if(cantidadMin>0){
-                                        // console.log(3);
-                                        ((parseInt(data[indiceCantidad])>= cantidadMin))? filtro_completos++ :0;
-                                        
-                                    }else if(cantidadMax>0){
-                                        ((parseInt(data[indiceCantidad])<= cantidadMax) )? filtro_completos++ :0;
-                                    }
-                                    //************************************************************
-                                    if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
+                                (moment(startDatePago).isSameOrBefore(maxPago)  )? filtro_completos++ : 0 ;
+                            }
+                            //********************************************
+                            if((estadoDesde !='') && (estadoHasta!='') ){
+                                
+                                (moment(startDateEstado).isSameOrAfter(minEstado) && moment(startDateEstado).isSameOrBefore(maxEstado) )? filtro_completos++ : 0 ;
+                                
+                            }else if((estadoDesde !='')){
+                                // console.log(2);
+                                (moment(startDateEstado).isSameOrAfter(minEstado)  )? filtro_completos++ : 0 ;
+                                
+                            }else if((estadoHasta !='')){
+                                
+                                (moment(startDateEstado).isSameOrBefore(maxEstado)  )? filtro_completos++ : 0 ;
+                            }
+                            //************************************************************
+                            if(cantidadMin>0 && cantidadMax>0){
+                                ((parseInt(data[indiceCantidad])>= cantidadMin) && (parseInt(data[indiceCantidad])<= cantidadMax) )? filtro_completos++ :0;
+                                
+                                
+                            }else if(cantidadMin>0){
+                                // console.log(3);
+                                ((parseInt(data[indiceCantidad])>= cantidadMin))? filtro_completos++ :0;
+                                
+                            }else if(cantidadMax>0){
+                                ((parseInt(data[indiceCantidad])<= cantidadMax) )? filtro_completos++ :0;
+                            }
+                            //************************************************************
+                            if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
+                                
+                                ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin) && (parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                                
+                                
+                            }else if(filtro_precioUnitarioMin>0.0){
+                                // console.log(4);
+                                ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin))? filtro_completos++ :0.0;
+                                
+                            }else if(filtro_precioUnitarioMax>0.0){
+                                ((parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                            }
+                            //***************************************************************8
+                            
+                            (data[indiceTerminado] == filtro_terminado)? filtro_completos++ :0;
+                            (data[indiceEstado] == filtro_estado)? filtro_completos++ :0;
+                            
+                            
+                            
+                            console.log('filtro_completos: '+filtro_completos+' cantidad_filtros: '+cantidad_filtros);
+                            if(filtro_completos==cantidad_filtros){
+                                document.getElementById('cantidadPedidos').value=parseInt (document.getElementById('cantidadPedidos').value)+1;
+                                document.getElementById('totalPedidosGanancias').value=parseFloat(document.getElementById('totalPedidosGanancias').value)+parseFloat(data[indicePrecio]);
+                                // $('#cantidadPedidos').val(parseInt($('#cantidadPedidos').val())+1);
+                                // $('#totalPedidosGanancias').val(parseFloat($('#totalPedidosGanancias').val())+parseFloat((data[indicePrecio])));
+                                return true;
+                            }
+                            return false;
+                            
+                            
+                            
+                        }
+                        $.fn.dataTable.ext.search.push( filtradoTabla );
+                        setTimeout(function(){
+                            $('#totalGanancias').html(
+                        '<label for="">Precio Total: $ '+ number_format_local(document.getElementById('totalPedidosGanancias').value,2)+'</label>');
+                    
+                        },2000);
+                    }else{
+                        $('#totalGanancias').html(
+                        '<label for="">Precio Total: $ '+ number_format_local(totalPrecio,2)+'</label>');
+                  
+                 
 
-                                        ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin) && (parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
-                                        
-                                        
-                                    }else if(filtro_precioUnitarioMin>0.0){
-                                        // console.log(4);
-                                        ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin))? filtro_completos++ :0.0;
-                                        
-                                    }else if(filtro_precioUnitarioMax>0.0){
-                                        ((parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
-                                    }
-                                    //***************************************************************8
-                                    
-                                    (data[indiceTerminado] == filtro_terminado)? filtro_completos++ :0;
-                                    (data[indiceEstado] == filtro_estado)? filtro_completos++ :0;
-                                    
-                                    console.log('filtro_completos: '+filtro_completos+' cantidad_filtros: '+cantidad_filtros);
-                                    return filtro_completos==cantidad_filtros? true:false;
-                                    
-                                
-                                
-                            }
-                            $.fn.dataTable.ext.search.push( filtradoTabla );
+                    }
+                    table.draw();
+                };
+ 
+                $('#filtrar').click(function(){
+                    filtro_funcion();
+                });
+                
+                
+                
+                $('#reiniciar').click(function(){
+                    
+                                     $('#filtro_tabla').val('');
+                    $('#filtro_user').val('');
+                    $('#filtro_desde').val('');
+                    $('#filtro_hasta').val('');
+                    //cargar el select
+                    
+                    
+                    //  $('#filtro_modelo').prop("selectedIndex", 0) ;
+                    $.fn.dataTable.ext.search.pop(
+                    function( settings, data, dataIndex ) {
+                        if(1){
+                            return true ;
                         }
-                        table.draw();
-                    };
-                    $('#filtrar').click(function(){
-                        filtro_funcion();
-                    });
-                    
-                    
-                    
-                    $('#reiniciar').click(function(){
-                        
-                        $('#filtro_tabla').val('');
-                        $('#filtro_user').val('');
-                        $('#filtro_desde').val('');
-                        $('#filtro_hasta').val('');
-                        //cargar el select
-                        
-                        
-                        //  $('#filtro_modelo').prop("selectedIndex", 0) ;
-                        $.fn.dataTable.ext.search.pop(
-                        function( settings, data, dataIndex ) {
-                            if(1){
-                                return true ;
-                            }
-                            return false ;
-                        }
-                        );
-                        table.draw() ;
-                    }) ;
+                        return false ;
+                    }
+                    );
+                    table.draw() ;
+                    $('#totalGanancias').html(
+                        '<label for="">Precio Total: $ '+ number_format_local(totalPrecio,2)+'</label>');
+                  
+                 
+                }) ;
 </script>
 
 @endpush

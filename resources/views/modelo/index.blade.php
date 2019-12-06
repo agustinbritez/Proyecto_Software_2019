@@ -19,7 +19,12 @@
                         <button type="button" class="btn btn-tool" data-card-widget="collapse"><i
                                 class="fas fa-minus"></i></button>
                     </div>
-                    <h3>Filtro de Modelos</h3>
+                    @if ($modeloBase)
+                    <h3>Filtro de Opciones de Producto</h3>
+                    @else
+                    <h3>Filtro de Productos Bases</h3>
+
+                    @endif
                 </div>
 
 
@@ -35,8 +40,16 @@
 
                             @csrf
                             <div align="right">
+                                @if ($modeloBase)
 
-                                <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Modelos</button>
+                                <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte De Opciones de
+                                    Producto </button>
+                                @else
+                                <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte De Producto
+                                    Base </button>
+
+                                @endif
+
                             </div>
                             <hr>
                             <div class="row">
@@ -87,20 +100,21 @@
 
 
                 <div class="card-header">
-                    <h3>Lista de Modelos</h3>
+                    <h3>Lista de Producto Bases</h3>
                 </div>
                 <div class="card-body">
 
 
                     @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
+                
                     @if ($modeloBase)
 
                     <a href="{{route('modelo.baseCreate')}}" name="create_record" id="create_record"
-                        class="btn btn-success btn-sm">Crear Modelo Base</a>
+                        class="btn btn-success btn-sm">Crear Opciones de Producto </a>
                     @else
                     <a href="{{route('modelo.create')}}" name="create_record" id="create_record"
-                        class="btn btn-success btn-sm">Crear Modelo</a>
+                        class="btn btn-success btn-sm">Crear Productos Base </a>
 
                     @endif
                     @endif
@@ -122,7 +136,7 @@
                                     <th>Nombre</th>
                                     <th>Precio Unitario</th>
                                     <th>Receta</th>
-                                    <th>Modelo Base</th>
+                                    {{-- <th>Modelo Base</th> --}}
 
                                     <th>&nbsp; </th>
 
@@ -140,7 +154,7 @@
                                     <td><img src="{{asset("/imagenes/modelos/".$modelo->imagenPrincipal)}}" alt=""
                                             width='70px' height='70px'></td>
                                     <td>{{$modelo->nombre??'Sin nombre'}} </td>
-                                    <td>{{$modelo->precioUnitario??'Sin precio'}} </td>
+                                    <td class="text-right">{{number_format($modelo->precioUnitario,2)??'Sin precio'}} </td>
                                     <td>
                                         @if (sizeof($modelo->recetaPadre)>0)
 
@@ -158,13 +172,13 @@
                                         @endif
 
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         @if ($modelo->base)
                                         Si
                                         @else
                                         No
                                         @endif
-                                    </td>
+                                    </td> --}}
 
                                     <td>
                                         <div class="row">
@@ -211,7 +225,7 @@
                                     <th>Nombre</th>
                                     <th>Precio Unitario</th>
                                     <th>Receta</th>
-                                    <th>Modelo Base</th>
+                                    {{-- <th>Modelo Base</th> --}}
 
                                     <th>&nbsp; </th>
 

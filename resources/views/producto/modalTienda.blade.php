@@ -111,6 +111,7 @@
                             +data['warning']
                             +'</div>';   
                         }
+                        // $('#avisos').html("");
                         $('#avisos').html(mensaje);
                         
                     }

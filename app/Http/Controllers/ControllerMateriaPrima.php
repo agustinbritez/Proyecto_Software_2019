@@ -491,7 +491,14 @@ class ControllerMateriaPrima extends Controller
 
         // Flash::warning('La materia prima' . $materiaPrima->nombre . ' ha sido borrado exitosamente' );
         $materiaPrima = MateriaPrima::find($request->materia_delete);
-        $materiaPrima->delete();
-        return redirect()->back();
+        if($materiaPrima!=null){
+            if($materiaPrima->modelos->isEmpty()){
+                
+                $materiaPrima->delete();
+                return redirect()->back()->with('warning','Se elimino la materia prima con exito');
+            }
+            return redirect()->back()->withErrors('No se puedo eliminar la materia prima porque esta asociada a opciondes de pedidos');
+
+        }
     }
 }

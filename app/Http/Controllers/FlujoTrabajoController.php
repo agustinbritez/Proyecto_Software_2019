@@ -8,6 +8,7 @@ use App\Modelo;
 use App\Transicion;
 use Dotenv\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FlujoTrabajoController extends Controller
 {
@@ -53,6 +54,7 @@ class FlujoTrabajoController extends Controller
         //*****************************************************************************************************8 */
         //si el nombre esta repetido en una materia prima eliminada 
         //la volvemos a revivir y le actualizamos con los datos del nuevo
+       
         if ($flujoExistente != null) {
             // $flujoExistente->restore();
             $request->hidden_id = $flujoExistente->id;
@@ -93,6 +95,7 @@ class FlujoTrabajoController extends Controller
 
         //si no crea es porque hay agun atributo que no permite null que esta vacio
         $flujoTrabajo = FlujoTrabajo::create($form_data);
+        return $flujoTrabajo;
         if ($flujoTrabajo != null) {
             $transicion = Transicion::create(['flujoTrabajo_id' => $flujoTrabajo->id, 'estadoInicio_id' => null, 'estadoFin_id' => $request->estado]);
 
@@ -239,9 +242,14 @@ class FlujoTrabajoController extends Controller
 
         //si el id que crea es uno borrado lo revivimos
         $flujoTrabajo = FlujoTrabajo::withTrashed()->find($request->hidden_id);
-
+        
+        
         if ($flujoTrabajo == null) {
             return redirect()->back()->withErrors(['errors' => 'No se pudo actualizar']);
+        }
+        if (!$flujoTrabajo->modelos->isEmpty()) {
+            return redirect()->back()->withErrors(['errors' => 'No se pudo actualizar el flujo porque esta asociado a modelos']);
+
         }
         //revive a la materia prima borrada anteriormente.
         $flujoTrabajo->restore();

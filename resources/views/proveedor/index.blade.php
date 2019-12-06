@@ -24,11 +24,12 @@
 
 
 				<div class="card-body">
-					<form action="{{route('pdf.proveedor')}}" method="GET" enctype="multipart/form-data">
+					{{-- <form action="{{route('pdf.proveedor')}}" method="GET" enctype="multipart/form-data"> --}}
+					<form action="">
 						@csrf
 						<div align="right">
 
-							<button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Proveedor</button>
+							{{-- <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Proveedor</button> --}}
 						</div>
 						<hr>
 						<div class="row">

@@ -25,11 +25,11 @@
                                     class="fas fa-minus"></i></button>
 
                         </div>
-                        <h3>Crear Modelo Base</h3>
+                        <h3> Opciones de Producto</h3>
                         <div align="left">
 
                             <a href="{{route('modelo.baseCreate')}}" name="create_record" id="create_record"
-                                class="btn btn-success btn-sm">Crear Nuevo Modelo Base</a>
+                                class="btn btn-success btn-sm"> Nueva Opcion de Producto</a>
 
 
                         </div>

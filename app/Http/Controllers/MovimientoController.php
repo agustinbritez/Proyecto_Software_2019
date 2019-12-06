@@ -48,7 +48,7 @@ class MovimientoController extends Controller
         $tipoMovimientoAux = TipoMovimiento::find($request->tipoMovimiento_id);
         $rules = [
             'precioUnitario'        => 'required|numeric',
-            'cantidad'         => 'required|integer|min:1',
+            'cantidad'         => 'required|min:1',
             'materiaPrima_id'         =>  'required|exists:materia_primas,id',
             'tipoMovimiento_id'         =>  'required|exists:tipo_movimientos,id'
         ];
@@ -59,7 +59,10 @@ class MovimientoController extends Controller
         // $tr= str_replace('.',',',$tr);
 
         $request->precioUnitario = $tr;
+        $tr2 = str_replace([',', '$', ' '], '', $request->cantidad);
+        // $tr= str_replace('.',',',$tr);
 
+        $request->cantidad = $tr2;
         $messages = [
             'cantidad.required' => 'Agrega la  cantidad de materias primas.',
             'cantidad.integer' => 'La cantidad debe ser un valor entero',
