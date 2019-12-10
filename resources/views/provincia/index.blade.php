@@ -116,13 +116,14 @@
 
         </div>
     </div>
+</div>
 
-    @endsection
+@endsection
 
-    @push('scripts')
+@push('scripts')
 
-    @endpush
+@endpush
 
-    @section('htmlFinal')
-    @include('provincia.modal')
-    @endsection
+@section('htmlFinal')
+@include('provincia.modal')
+@endsection

@@ -133,9 +133,9 @@
 
                                         </div>
                                         <div class="col-2">
-                                            <button class="btn btn-flat btn-primary" type="button" data-toggle="collapse"
-                                                data-target="#collapse_{{$pedido->id}}" aria-expanded="true"
-                                                aria-controls="collapse_{{$pedido->id}}">
+                                            <button class="btn btn-flat btn-primary" type="button"
+                                                data-toggle="collapse" data-target="#collapse_{{$pedido->id}}"
+                                                aria-expanded="true" aria-controls="collapse_{{$pedido->id}}">
                                                 Ver detalle del pedido
                                             </button>
                                         </div>
@@ -169,6 +169,16 @@
 
                                     <table class="table table-bordered">
                                         <thead class="thead-light">
+                                            @if (!is_null($pedido->seguimientoEnvio))
+
+                                            <tr class="text-center ">
+                                                <td colspan="7" class="border border-success"><a
+                                                        href="{{$pedido->seguimientoEnvio}}">Ir al seguimiento de
+                                                        envio</a></td>
+                                            </tr>
+
+
+                                            @endif
                                             <tr>
                                                 <th scope="col">ID</th>
                                                 <th scope="col">Producto</th>
@@ -261,56 +271,54 @@
                                         @if (!is_null($detalle->pedido))
 
 
-                                        @if ($detalle->pedido->pago_id)
-                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
-                                            name="show" id="{{$detalle->producto->id}}"
-                                            class="show btn btn-outline-primary btn-sm">Ver
-                                            Producto</a>
-                                        @else
-                                        @if ($detalle->producto->user->id==auth()->user()->id)
-                                        @if ($detalle->producto->final)
-                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
-                                            name="show" id="{{$detalle->producto->id}}"
-                                            class="show btn btn-outline-primary btn-sm">Ver
-                                            Producto</a>
-                                        @else
-                                        <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
-                                            type="button" name="show" id="{{$detalle->producto->id}}"
-                                            class="show btn btn-outline-primary btn-sm">Editar
-                                            Producto</a>
-
-
-                                        @endif
-
-
-                                        <div class="col">
-                                            <button type="button" name="edit" data-id="{{$detalle->id}}"
-                                                class="edit btn btn-outline-info btn-sm">Editar
-                                                detalle</button>
-
-                                        </div>
-                                        @if (is_null($pedido->pago_id))
-
-                                        <div class="col">
-
-
-                                            <button type="submit" name="delete" id="{{$detalle->id}}"
-                                                class="deleteDetalle btn btn-outline-danger btn-sm">Eliminar</button>
-
-                                        </div>
-                                        @endif
-
-                                        @else
-                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
-                                            name="show" id="{{$detalle->producto->id}}"
-                                            class="show btn btn-outline-primary btn-sm">Ver
-                                            Producto</a>
-
-                                        @endif
+                                            @if ($detalle->pedido->pago_id)
+                                                <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                                    name="show" id="{{$detalle->producto->id}}"
+                                                    class="show btn btn-outline-primary btn-sm">Ver
+                                                    Producto</a>
+                                            @else
+                                                @if ($detalle->producto->user->id==auth()->user()->id)
+                                                    @if ($detalle->producto->final)
+                                                        <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                                            name="show" id="{{$detalle->producto->id}}"
+                                                            class="show btn btn-outline-primary btn-sm">Ver
+                                                            Producto</a>
+                                                    @else
+                                                        <a href="{{route('producto.editMiProducto',$detalle->producto->id)}}"
+                                                            type="button" name="show" id="{{$detalle->producto->id}}"
+                                                            class="show btn btn-outline-primary btn-sm">Editar
+                                                            Producto</a>
+                                                    @endif
 
 
 
-                                        @endif
+
+
+                                                @else
+                                                    <a href="{{route('producto.preshow',$detalle->producto->id)}}" type="button"
+                                                        name="show" id="{{$detalle->producto->id}}"
+                                                        class="show btn btn-outline-primary btn-sm">Ver
+                                                        Producto</a>
+
+                                                @endif
+                                                    @if (is_null($pedido->pago_id))
+                                                    <div class="col">
+                                                        <button type="button" name="edit" data-id="{{$detalle->id}}"
+                                                            class="edit btn btn-outline-info btn-sm">Editar
+                                                            detalle</button>
+
+                                                    </div>
+                                                    <div class="col">
+
+
+                                                        <button type="submit" name="delete" id="{{$detalle->id}}"
+                                                            class="deleteDetalle btn btn-outline-danger btn-sm">Eliminar</button>
+
+                                                    </div>
+                                                @endif
+
+
+                                            @endif
                                         @endif
 
 

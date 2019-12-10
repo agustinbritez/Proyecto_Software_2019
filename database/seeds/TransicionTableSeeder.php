@@ -21,6 +21,7 @@ class TransicionTableSeeder extends Seeder
         $espera = Estado::where('nombre', 'ESPERA DE PAGO')->first();
         $esperaProduccion = Estado::where('nombre', 'ESPERA DE PRODUCCION')->first();
         $carrito = Estado::where('nombre', 'CARRITO')->first();
+        $esperaEnvio = Estado::where('nombre', 'ESPERA DE ENVIO')->first();
 
         $flujoPedidos = FlujoTrabajo::where('nombre', 'FLUJO PEDIDOS')->first();
         $flujoProducto = FlujoTrabajo::where('nombre', 'FLUJO PRODUCCION GENERAL')->first();
@@ -61,16 +62,27 @@ class TransicionTableSeeder extends Seeder
         $trans->estadoFin_id = $carrito->id;
         $trans->save();
 
-
         $trans = new Transicion();
         $trans->flujoTrabajo_id = $flujoPedidos->id;
         $trans->estadoInicio_id =  $carrito->id;
+        $trans->estadoFin_id = $esperaProduccion->id;
+        $trans->save();
+
+        $trans = new Transicion();
+        $trans->flujoTrabajo_id = $flujoPedidos->id;
+        $trans->estadoInicio_id =  $esperaProduccion->id;
         $trans->estadoFin_id = $produccion->id;
         $trans->save();
 
         $trans = new Transicion();
         $trans->flujoTrabajo_id = $flujoPedidos->id;
         $trans->estadoInicio_id = $produccion->id;
+        $trans->estadoFin_id = $esperaEnvio->id;
+        $trans->save();
+
+        $trans = new Transicion();
+        $trans->flujoTrabajo_id = $flujoPedidos->id;
+        $trans->estadoInicio_id = $esperaEnvio->id;
         $trans->estadoFin_id = $final->id;
         $trans->save();
 

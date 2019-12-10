@@ -134,11 +134,12 @@
 
 		</div>
 	</div>
+</div>
 
-	@endsection
+@endsection
 
 
 
-	@section('htmlFinal')
-	@include('tipoMovimiento.modal')
-	@endsection
+@section('htmlFinal')
+@include('tipoMovimiento.modal')
+@endsection

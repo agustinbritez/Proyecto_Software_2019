@@ -118,11 +118,12 @@
 
         </div>
     </div>
+</div>
 
-    @endsection
+@endsection
 
 
 
-    @section('htmlFinal')
-    @include('tipoImagen.modal')
-    @endsection
+@section('htmlFinal')
+@include('tipoImagen.modal')
+@endsection

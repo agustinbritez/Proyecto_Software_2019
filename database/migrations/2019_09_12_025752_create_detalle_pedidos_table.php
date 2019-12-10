@@ -17,11 +17,13 @@ class CreateDetallePedidosTable extends Migration
             $table->bigIncrements('id');
             $table->integer('cantidad');
             $table->dateTime('fechaPago')->nullable();
+            $table->dateTime('fechaInicioProduccion')->nullable();
             $table->dateTime('fechaTerminado')->nullable();
 
             $table->smallInteger('verificado')->nullable();
             $table->string('detalle')->nullable();
             $table->string('aviso')->nullable();
+            $table->string('seguimientoEnvio')->nullable();
 
             $table->unsignedBigInteger('producto_id')->nullable();
             $table->foreign('producto_id')->references('id')->on('productos');

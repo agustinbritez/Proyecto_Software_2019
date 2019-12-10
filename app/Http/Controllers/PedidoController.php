@@ -42,8 +42,7 @@ class PedidoController extends Controller
 
     public function confirmarPedido($id)
     {
-        # code...
-
+        #code...
         $pedido = Pedido::find($id);
         $nombre = 'Pedro';
         if ($pedido != null) {
@@ -80,32 +79,40 @@ class PedidoController extends Controller
                 //code...
                 \MercadoPago\SDK::setAccessToken('TEST-7806727451891484-112420-84bc4622e2e2695653bd6a496d4f71a8-166999392');
                 $preference = new \MercadoPago\Preference();
-                $item = new \MercadoPago\Item();
+                $itemsCollect = collect();
+                foreach ($pedido->detallePedidos as $detalleP) {
+                    $item = new \MercadoPago\Item();
+                    # code...
+                    $item->title = $detalleP->producto->modelo->nombre;
+                    $item->description = '';
+                    $item->quantity = $detalleP->cantidad;
+                    $item->unit_price = $detalleP->producto->modelo->precioUnitario;
+                    $itemsCollect->add($item);
+                }
+                $preference->back_urls = array(
+                    "success" => route('pedido.pagarPedido', $pedido->id),
+                    "failure" => route('pedido.misPedidos'),
+                    "pending" => route('pedido.misPedidos')
+                );
+                $preference->auto_return = "approved";
+                $preference->external_reference = $pedido->id;
+                $preference->items = $itemsCollect->all();
+                $preference->save();
+                // dd($preference);
+                $pedido->preference_id = $preference->id;
+                // $pedido->precio = $item->unit_price;
+                // $pedido->rutaDePago = $preference->sandbox_init_point;
+                // $pedido->estado_id = $pedido->flujoTrabajo->siguienteEstado($pedido->estado)->id;
+                // $pedido->cambioEstado = Carbon::now();
+                $pedido->update();
+                return redirect($preference->sandbox_init_point);
             } catch (Exception $th) {
                 //throw $th;
                 return view('errors.internet');
             }
-            $item->title = $nombre;
-            $item->description = $nombre;
-            $item->quantity = 1;
-            $item->unit_price = $pedido->getPrecio();
-            $preference->back_urls = array(
-                "success" => route('pedido.pagarPedido', $pedido->id),
-                "failure" => route('pedido.misPedidos'),
-                "pending" => route('pedido.misPedidos')
-            );
-            $preference->auto_return = "approved";
-            $preference->external_reference = $pedido->id;
-            $preference->items = [$item];
-            $preference->save();
-            // dd($preference);
-            $pedido->preference_id = $preference->id;
-            // $pedido->precio = $item->unit_price;
-            // $pedido->rutaDePago = $preference->sandbox_init_point;
-            // $pedido->estado_id = $pedido->flujoTrabajo->siguienteEstado($pedido->estado)->id;
-            // $pedido->cambioEstado = Carbon::now();
-            $pedido->update();
-            return redirect($preference->sandbox_init_point);
+
+
+
             // dd($preference);
             return redirect()->back()->withErrors('El pedido no se pudo confirmar');
         }
@@ -155,6 +162,11 @@ class PedidoController extends Controller
                     $pedido->terminado = 0;
                     $pedido->restarMateriaPrimas();
                     $pedido->update();
+                    foreach ($pedido->detallePedidos as  $detalle) {
+                        # code...
+                        $detalle->fechaPago = $pedido->fechaPago;
+                        $detalle->update();
+                    }
                     $conMate = new ControllerMateriaPrima();
                     $conMate->verificarStock();
                 } else {
@@ -184,6 +196,40 @@ class PedidoController extends Controller
     public function store(Request $request, $idUsuario)
     {
         //
+    }
+    //se agrega el seguimiento al pedido y se pasa al ultimo estado.
+    public function agregarSeguimientoEnvio(Request $request, $id)
+    {
+        $rules = [
+            'seguimientoEnvio'    =>  'required|max:190'
+        ];
+
+
+
+        $messages = [
+            'seguimientoEnvio.required' => 'El seguimiento es obligatorio.',
+            'seguimientoEnvio.max' => 'El tamaño maximo es 190 caracteres.'
+        ];
+
+        $this->validate($request, $rules, $messages);
+        $pedido = Pedido::find($id);
+        # code...
+        if ($pedido != null) {
+            if ($pedido->puedeTerminar()) {
+                $pedido->seguimientoEnvio = $request->seguimientoEnvio;
+
+                $pedido->terminado = 1;
+                $pedido->estado_id = $pedido->flujoTrabajo->getEstadoFinal()->id;
+                $pedido->update();
+                foreach ($pedido->detallePedidos as   $detallePedido) {
+                    # code...
+                    $detallePedido->seguimientoEnvio = $request->seguimientoEnvio;
+                    $detallePedido->update();
+                }
+                return redirect()->back()->with('success', 'Se agrego el seguimiento con exito');
+            }
+        }
+        return redirect()->back()->withErrors('No existe el pedido');
     }
 
     public function agregarCarrito(Producto $producto, $cantidad, $usuario, $materiasPrimasSeleccionadas)
@@ -408,28 +454,45 @@ class PedidoController extends Controller
 
         if (($request->desde != '') && ($request->hasta != '')) {
             $pedidos = $pedidos
-                ->whereDate('fechaPago', '>=', $request->desde)
-                ->whereDate('fechaPago', '<=', $request->hasta);
+                ->whereDate('pedidos.fechaPago', '>=', $request->desde)
+                ->whereDate('pedidos.fechaPago', '<=', $request->hasta);
         } else if (($request->desde != '')) {
             $pedidos = $pedidos
-                ->whereDate('fechaPago', '>=', $request->desde);
+                ->whereDate('pedidos.fechaPago', '>=', $request->desde);
         } else if (($request->hasta != '')) {
             $pedidos = $pedidos
-                ->whereDate('fechaPago', '<=', $request->hasta);
+                ->whereDate('pedidos.fechaPago', '<=', $request->hasta);
         }
-        if ($request->has('modelo')) {
-            $pedidos = $pedidos->where('modelo_id', $request->modelo);
+        if ($request->filtro_modelo > 0) {
+            $pedidos = $pedidos->join('detalle_pedidos','pedidos.id','=','detalle_pedidos.pedido_id');
+            $pedidos = $pedidos->join('productos','productos.id','=','detalle_pedidos.producto_id');
+            $pedidos = $pedidos->where('productos.modelo_id', $request->filtro_modelo);
+            $pedidos = $pedidos->select('pedidos.*');
+            $pedidos = $pedidos->groupBy('pedidos.id');
         }
         //el pedido mas nuevo tiene un valor mas grande por ejemplo 2019-12-1 < 2019-12-2
 
         if ($request->filtro_pedido == 0) {
             //si es 1 entonces el pedido mas antiguo primero
-            $pedidos = $pedidos->orderBy('fechaPago', 'asc');
+            $pedidos = $pedidos->orderBy('pedidos.fechaPago', 'asc');
         } else if ($request->filtro_pedido == 1) {
 
-            $pedidos = $pedidos->orderBy('fechaPago', 'desc');
+            $pedidos = $pedidos->orderBy('pedidos.fechaPago', 'desc');
         }
+
         $pedidos = $pedidos->get();
+        // $salir=0;
+        // if ($request->filtro_modelo > 0) {
+        //    foreach ($pedidos as $key => $pedido) {
+        //        # code...
+        //         foreach ($pedido->detallePedidos as $key2 => $detalle) {
+        //             # code...
+        //             if(){
+
+        //             }
+        //         }
+        //    }
+        // }
         $modelos = Modelo::all()->where('venta', true);
         // return redirect()->back()->with('pedidos',$pedidos)->with('modelos',$modelos);
         $desde = $request->desde;

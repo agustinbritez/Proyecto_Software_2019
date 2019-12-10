@@ -23,8 +23,8 @@ class AddRelationToRecetasTable extends Migration
             $table->unsignedBigInteger('materiaPrima_id')->nullable();
             $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');
 
-            $table->unsignedBigInteger('producto_id')->nullable();
-            $table->foreign('producto_id')->references('id')->on('productos');
+            // $table->unsignedBigInteger('producto_id')->nullable();
+            // $table->foreign('producto_id')->references('id')->on('productos');
         });
     }
 

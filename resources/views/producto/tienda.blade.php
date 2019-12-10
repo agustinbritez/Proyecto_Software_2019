@@ -43,7 +43,7 @@
     <div class="row">
         <div class="col">
 
-            <div class="card text-left">
+            <div class="card text-left card-info  card-outline">
 
 
                 <div class="card-header">
@@ -118,7 +118,7 @@
 
         <div class="form-group">
             <div class="col">
-                <div class="card" style="width: 18rem;">
+                <div class="card " style="width: 18rem;">
                     <img src="{{ asset('/imagenes/productos/'.$producto->imagenPrincipal) }}" class="card-img-top"
                         alt="..." height="250px">
                     <div class="card-body">

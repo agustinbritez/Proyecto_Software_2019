@@ -34,7 +34,7 @@
 <br>
 <input type="hidden" name="" id="" value="{{$cantidadComponente=0}}" />
 
-@if ($modelo!=null)
+@if (!is_null($modelo))
 
 <div class=" ">
 
@@ -42,18 +42,56 @@
         id="sample_form">
         @csrf
 
-        <div class="row ">
-            {{-- @guest
-            &nbsp;&nbsp;&nbsp; <a id="prueba2" href="{{ route('login') }}" class="btn btn-success">Crear Producto</a>
-            @else
-            @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
 
-            &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Crear Producto</button>
+        <br>
 
-            @endif
+        <div class="row justify-content-center">
+            <div class="card border-danger border">
 
-            @endguest --}}
+
+                <div class="card-body">
+
+                    <div class="container ">
+                       
+                        {{-- <div class="inline"> --}}
+                        <div class="row">
+                            <h3>Permitir que este producto se muestre en la tienda:
+                            </h3>
+                            &nbsp;&nbsp;
+                            <div class="icheck-success ">
+
+                                <input type="checkbox" checked id="mostrar" name="mostrar">
+                                <label for="mostrar" id='labelOperacion'>
+                                </label>
+                            </div>
+                            <div class="dropright">
+                                <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-question-circle" style="font-size: 200%"></i>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <p class="">Si la casilla esta (<img src="{{asset('/images/checked.png')}}"
+                                            height="20px" width="20px" alt="">) seleccionada
+                                        el producto se muestra en la tienda. Si esta (<img
+                                            src="{{asset('/images/checked2.png')}}" height="18px" width="18px" alt="">)
+                                        su porducto no se mostrara
+
+                                    </p>
+
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
         </div>
+
         <br>
 
         <div class="row justify-content-around ">
@@ -64,7 +102,7 @@
 
 
                 <input type="hidden" name="modelo_id" id="modelo_id" value="{{$modelo->id}}" />
-                <div class="card text-left">
+                <div class="card text-left card-orange  card-outline">
 
                     <div class="card-header">
 
@@ -157,7 +195,7 @@
                     </div>
                 </div>
                 {{-- Imagenes --}}
-                <div class="card text-left">
+                <div class="card text-left card-yellow  card-outline">
 
                     <div class="card-header">
 
@@ -255,7 +293,7 @@
             </div>
             <div class="col-7">
 
-                <div class="card text-left">
+                <div class="card text-left card-red  card-outline">
 
                     <div class="card-header">
 
@@ -301,7 +339,8 @@
                         <div class="row ">
                             @guest
                             &nbsp;&nbsp;&nbsp; <a id="prueba2" href="{{ route('login') }}"
-                                class="btn btn-success">Agregar a Mis Pedidos</a>
+                                class="btn btn-success">Agregar a Mis
+                                Pedidos</a>
                             @else
                             @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
 

@@ -25,7 +25,9 @@ class CreatePedidosTable extends Migration
             $table->dateTime('fechaPago')->nullable();
             $table->dateTime('cambioEstado')->nullable();
             $table->string('rutaDePago')->nullable();
+            $table->string('seguimientoEnvio')->nullable();
             $table->double('precio')->nullable();
+            $table->boolean('produccion')->nullable();
             $table->smallInteger('terminado')->nullable();
 
             $table->unsignedBigInteger('user_id')->nullable();

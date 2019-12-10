@@ -14,9 +14,9 @@ class MateriaPrimaTableSeeder extends Seeder
      */
     public function run()
     {
-        $medida = Medida::where('nombre', 'CENTIMETROS')->first();
+        $medida = Medida::where('nombre', 'CM CUADRADOS')->first();
         $unidad = Medida::where('nombre', 'UNIDAD')->first();
-        $kilo = Medida::where('nombre', 'KILO GRAMOS')->first();
+        $kilo = Medida::where('nombre', 'GRAMOS')->first();
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 1;
@@ -89,8 +89,8 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->id = 7;
         $materiaP->nombre = 'PLUMAS';
         $materiaP->detalle = '';
-        $materiaP->cantidad = 100;
-        $materiaP->stockMinimo = 50;
+        $materiaP->cantidad = 100000000;
+        $materiaP->stockMinimo = 5000;
         $materiaP->precioUnitario = 2;
         $materiaP->medida_id = $kilo->id;
         $materiaP->imagenPrincipal = 'plumas.jpg';
@@ -100,8 +100,8 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->id = 8;
         $materiaP->nombre = 'ALGODON';
         $materiaP->detalle = '';
-        $materiaP->cantidad = 100;
-        $materiaP->stockMinimo = 50;
+        $materiaP->cantidad = 100000000;
+        $materiaP->stockMinimo = 5000;
         $materiaP->precioUnitario = 2;
         $materiaP->medida_id = $kilo->id;
         $materiaP->imagenPrincipal = 'algodon.jpg';

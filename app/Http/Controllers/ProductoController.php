@@ -49,6 +49,7 @@ class ProductoController extends Controller
     public function tienda()
     {
         $productos = Producto::where('final', true)
+            ->where('mostrar',true)  
             ->join('modelos', 'modelos.id', '=', 'productos.modelo_id')
             ->where('modelos.venta', true)
             ->select('productos.*')
@@ -243,11 +244,16 @@ class ProductoController extends Controller
         $rules = array_merge($rules, $rule2);
         $this->validate($request, $rules, $messages);
 
+        $mostrar=0;
+        if($request->has('mostrar')){
+            $mostrar=1;
+        }
         //creamos el producto
         $form_data = array(
             'final'        =>  0,
             'imagenPrincipal'        =>  null,
             'modelo_id'         =>  $request->modelo_id,
+            'mostrar'         =>  $mostrar,
             'user_id' => auth()->user()->id
         );
 

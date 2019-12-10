@@ -95,8 +95,9 @@
                 {{-- 2 days ago --}}
             </div>
         </div>
-
     </div>
+
+</div>
 </div>
 
 @endsection

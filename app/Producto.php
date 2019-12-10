@@ -20,22 +20,22 @@ class Producto extends Model implements Auditable
     }
 
     //las relaciones de los procutos con las recetas son siempre con una receta que tiene relacion con una materiaprimas
-    public function materiasPrimas()
-    {
-        $array = collect();
-        $recetas = $this->recetas();
-        foreach ($recetas as $key => $receta) {
-            # code...
+    // public function materiasPrimas()
+    // {
+    //     $array = collect();
+    //     $recetas = $this->recetas();
+    //     foreach ($recetas as $key => $receta) {
+    //         # code...
 
-            if ($receta != null) {
-                if ($receta->materiaPrima != null) {
-                    # code...
-                    $array->add($receta->materiaPrima);
-                }
-            }
-        }
-        return $array;
-    }
+    //         if ($receta != null) {
+    //             if ($receta->materiaPrima != null) {
+    //                 # code...
+    //                 $array->add($receta->materiaPrima);
+    //             }
+    //         }
+    //     }
+    //     return $array;
+    // }
     // //las materias primas que se utilizan para un producto
     // public function recetas()
     // {

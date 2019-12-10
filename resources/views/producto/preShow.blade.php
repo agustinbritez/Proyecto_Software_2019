@@ -122,7 +122,7 @@
     <div class="col-5">
 
       {{-- Otro cards --}}
-      <div class="card text-left">
+      <div class="card text-left card-orange  card-outline">
 
         <div class="card-header">
 
@@ -180,7 +180,7 @@
         </div>
       </div>
       {{-- Imagenes --}}
-      <div class="card text-left">
+      <div class="card text-left card-yellow  card-outline">
 
         <div class="card-header">
 
@@ -241,7 +241,7 @@
 
     <div class="col-7">
 
-      <div class="card text-left">
+      <div class="card text-left card-red  card-outline">
 
         <div class="card-header">
 

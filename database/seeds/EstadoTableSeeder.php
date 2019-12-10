@@ -33,6 +33,9 @@ class EstadoTableSeeder extends Seeder
         $estado = new Estado();
         $estado->nombre = 'ESPERA DE PRODUCCION';
         $estado->save();
+        $estado = new Estado();
+        $estado->nombre = 'ESPERA DE ENVIO';
+        $estado->save();
 
         // $estado=new Estado();
         // $estado->nombre='Final';

@@ -106,23 +106,22 @@
 <div id="avisos">
 
 </div>
+
 <div class="row ">
     <div class="col-2"></div>
     <div class="col">
         <div class="card card-widget card-success card-outline">
             <div class="card-header">
                 <div class="user-block">
-                    <div id="estadoTitulo">
+                    <div id="estadoTitulo" class="row">
 
                         <h3>
                             <span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>
-                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==
-                            $detallePedido->estado->id)
+                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==$detallePedido->estado->id)
                             <span class="badge badge-danger ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                             </span>
                             @else
-                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id==
-                            $detallePedido->estado->id)
+                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id==$detallePedido->estado->id)
                             <span class="badge badge-success">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                             </span>
 
@@ -134,6 +133,44 @@
                             @endif
 
                         </h3>
+                        &nbsp;&nbsp; &nbsp;&nbsp;
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-question-circle" style="font-size: 200%"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-item">
+                                    Estados del producto
+                                </div>
+                                <div class="dropdown-item">
+
+                                    <input type="hidden"
+                                        value="{{$estadoIncial=$detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()}}">
+                                    <input type="hidden"
+                                        value="{{$estadoFinal=$detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()}}">
+
+
+                                    @foreach ($detallePedido->producto->modelo->flujoTrabajo->getEstados() as $estado)
+                                    @if ($estado!=null)
+                                    @if ($estado->id==$estadoIncial->id)
+                                    <span class="badge badge-success " id="estado_">{{$estado->nombre}}</span>
+                                    <span><i class="fas fa-arrow-right"></i></span>
+                                    @endif
+                                    @if ($estado->id==$estadoFinal->id)
+                                    <span class="badge badge-danger " id="estado_">{{$estado->nombre}}</span>
+
+                                    @endif
+                                    @if (($estado->id!=$estadoIncial->id)&&($estado->id!=$estadoFinal->id))
+                                    <span class="badge badge-info " id="estado_">{{$estado->nombre}}</span>
+                                    <span><i class="fas fa-arrow-right"></i></span>
+                                    @endif
+                                    @endif
+                                    @endforeach
+
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <!-- /.user-block -->
@@ -150,9 +187,14 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-group  ">
+                            <h3 class="">
+                                <span class="badge badge-light " id="estado_">
+                                    <label class="control-label">Cantidad: </label>
+                                    <label class="control-label ">{{$detallePedido->cantidad}} </label>
+                                </span>
 
-                            <label class="control-label">Cantidad: </label>
-                            <label class="control-label">{{$detallePedido->cantidad}} </label>
+
+                            </h3>
 
                         </div>
                     </div>
@@ -174,160 +216,77 @@
                 </div>
                 <div class="row">
 
-                    <div class="form-group  ">
-                        <div class="col">
+                    <div class="col">
+                        <div class="form-group  ">
+
                             <label class="control-label">Fecha de Pago: </label>
-                            <label class="control-label">{{$detallePedido->getFechaPago() ?? 'No Pagado'}} </label>
+                            <label class="control-label">{{$detallePedido->pedido->getFechaPago() ?? 'No Pagado'}}
+                            </label>
 
                         </div>
                     </div>
                 </div>
+
                 <div class="row">
-
-
-                    {{-- <div class="form-group  ">
-                            <div class="col">
-                                
-                                <label class="control-label">Verificado: </label>
-                            </div>
-                        </div> --}}
                     <div class="form-group  ">
                         <div class="col">
 
-                            @if ($detallePedido->verificado)
-                            {{-- <div class="row">
-                                    
-                                    <div class="form-group  ">
-                                        <div class="col">
-                                            
-                                            <span class="badge badge-success">Verificado
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group  ">
-                                        <div class="col">
-                                            
-                                            <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
+
+                            <label class="control-label">Detalles del Usuario: </label>
+
                         </div>
                     </div>
 
 
-                </div> --}}
-                @else
+
+
+                </div>
                 <div class="row">
-                    {{-- @if (is_null($detallePedido->verificado))
-                                        <div class="col">
-                                            
-                                            <div class="form-group  ">
-                                                <span class="badge badge-warning">Sin Verificar
-                                                </span>
-                                            </div>
-                                        </div>
-                                        
-                                        
-                                        @else
-                                        <div class="row">
-                                            <div class="col">
-                                                
-                                                <div class="form-group  ">
-                                                    <span class="badge badge-danger">Rechazado
-                                                    </span>
-                                                </div>
-                                                
-                                            </div>
-                                            <div class="col">
-                                                <div class="form-group  ">
-                                                    
-                                                    <p> {{$detallePedido->getUltimaAtualizacion()}}</p>
+                    <div class="form-group  ">
+                        <div class="col">
+
+                            <label for="" style="font-family: Arial, Helvetica, sans-serif; font-size: medium">
+                                {{$detallePedido->detalle ?? 'Sin Detalles'}}
+                            </label>
+
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
 
 
-
-            @endif --}}
-
-            {{-- <div class="col">
-                                                
-                                                <input type="button" name="botonVerificar" id="botonVerificar" required
-                                                placeholder="" class="btn btn-success" value="Verificar" />
-                                                
-                                                
-                                            </div> --}}
-            {{-- <div class="col">
-                                                
-                                                <input type="submit" name="botonRechazar" id="botonRechazar" required
-                                                placeholder="" class="btn btn-danger" value="Rechazar" />
-                                                
-                                            </div> --}}
-
-            {{-- </div> --}}
-        </div>
-        @endif
-    </div>
-
-
-</div>
-<div class="row">
-    <div class="col">
-
-        <div class="form-group  ">
-
-            <label class="control-label">Detalles del Usuario: </label>
-
-        </div>
-    </div>
+            <div class="card-footer">
+                <div class="row justify-content-around">
 
 
 
+                    @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
-</div>
-<div class="row">
-    <div class="form-group  ">
-        <div class="col">
-
-            <label for="" style="font-family: Arial, Helvetica, sans-serif; font-size: medium">
-                {{$detallePedido->detalle ?? 'Sin Detalles'}}
-            </label>
-
-        </div>
-
-    </div>
-
-</div>
-</div>
-
-</div>
-<div class="card-footer">
-    <div class="row justify-content-around">
-
-
-
-        @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
-
-        @if (!$detallePedido->pedido->terminado)
-        {{-- <button type="button" class="estadoAnterior btn btn-outline-danger " id="botonAnterior"><i
+                    @if (!$detallePedido->pedido->terminado)
+                    {{-- <button type="button" class="estadoAnterior btn btn-outline-danger " id="botonAnterior"><i
                                     class="fad fa-arrow-left"></i>
                                     Estado Anterior</button> --}}
-        @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id!=$detallePedido->estado->id)
+                    @if($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id!=$detallePedido->estado->id)
 
-        <button type="button" class="etadoSiguiente btn btn-outline-success " id="botonSiguiente">
-            Siguiente Estado</button>
-        @endif
+                    <button type="button" class="etadoSiguiente btn btn-outline-success " id="botonSiguiente">
+                        Siguiente Estado</button>
+                    @endif
 
-        @endif
-        @endif
-
-
+                    @endif
+                    @endif
 
 
+
+
+                </div>
+            </div>
+            <!-- /.card-footer -->
+
+        </div>
     </div>
-</div>
-<!-- /.card-footer -->
-
-</div>
-</div>
-<div class="col-2"></div>
+    <div class="col-2"></div>
 </div>
 
 
@@ -344,7 +303,7 @@
         <div class="col-5">
 
             {{-- Otro cards --}}
-            <div class="card text-left">
+            <div class="card text-left card-orange  card-outline">
 
                 <div class="card-header">
 
@@ -443,7 +402,7 @@
                 </div>
             </div>
             {{-- Imagenes --}}
-            <div class="card text-left">
+            <div class="card text-left card-yellow  card-outline">
 
                 <div class="card-header">
 
@@ -515,7 +474,7 @@
 
         <div class="col-7">
 
-            <div class="card text-left">
+            <div class="card text-left card-red  card-outline">
 
                 <div class="card-header">
 

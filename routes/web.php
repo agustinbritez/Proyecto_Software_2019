@@ -90,6 +90,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('estadistica', 'EstadisticaController@index')->name('estadistica.index');
         Route::get('estadistica/productosMasVendidos', 'EstadisticaController@productosMasVendidos')->name('estadistica.productosMasVendidos');
         Route::get('estadistica/materiaPrimasMasConsumidas', 'EstadisticaController@materiaPrimasMasConsumidas')->name('estadistica.materiaPrimasMasConsumidas');
+        Route::get('estadistica/evolucionProducto', 'EstadisticaController@evolucionProducto')->name('estadistica.evolucionProducto');
+        Route::get('estadistica/filtroEvolucionProducto', 'EstadisticaController@filtroEvolucionProducto')->name('estadistica.filtroEvolucionProducto');
+        Route::get('estadistica/ingresosProductos', 'EstadisticaController@ingresosProductos')->name('estadistica.ingresosProductos');
     });
 
 
@@ -170,6 +173,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('pedido/terminarPedido/{id}', 'PedidoController@terminarPedido')->name('pedido.terminarPedido');
         Route::get('pedido/trabajo', 'PedidoController@trabajo')->name('pedido.trabajo');
         Route::get('pedido/ordenamientoInteligente', 'PedidoController@ordenamientoInteligente')->name('pedido.ordenamientoInteligente');
+        Route::get('pedido/agregarSeguimientoEnvio/{id}', 'PedidoController@agregarSeguimientoEnvio')->name('pedido.agregarSeguimientoEnvio');
 
         // detalle de pedido
         Route::get('detallePedido/{id}', 'DetallePedidoController@index')->name('detallePedido.index');

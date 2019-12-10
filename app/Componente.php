@@ -25,4 +25,13 @@ class Componente extends Model implements Auditable
 
         return $this->belongsToMany(ImagenIndividual::class);
     }
+    //obtiene 
+    public function obtenerSublimacionesDelProducto($producto)
+    {
+        if($producto->sublimaciones->isEmpty()){
+            return $producto->sublimaciones;
+        }
+        return $producto->sublimaciones->where('componente_id',$this->id);
+
+    }
 }

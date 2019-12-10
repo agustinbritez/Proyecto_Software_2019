@@ -30,8 +30,8 @@ class ProveedorTableSeeder extends Seeder
         $documento = Documento::where('nombre', 'CUIT')->first();
 
         $proveedor = new Proveedor();
-        $proveedor->nombre = 'California';
-        $proveedor->email = 'California@america.com';
+        $proveedor->nombre = 'ProveedorMyG';
+        $proveedor->email = 'proveedorMyG@gmail.com';
         $proveedor->razonSocial = 'Sociedad Anonima';
         if ($documento != null) {
 
@@ -41,7 +41,7 @@ class ProveedorTableSeeder extends Seeder
         $proveedor->direccion_id = $direccion->id;
         $proveedor->save();
         $proveedor = new Proveedor();
-        $proveedor->nombre = 'Agus';
+        $proveedor->nombre = 'InsumosAgus';
         $proveedor->email = 'agusbritez97@gmail.com';
         $proveedor->razonSocial = 'Sociedad Anonima';
         if ($documento != null) {

@@ -63,7 +63,7 @@ class DetallePedido extends Model implements Auditable
     public function getDiasEnProduccion()
     {
         # code...
-        $fechaPago = new Carbon($this->pedido->fechaPago);
+        $fechaPago = new Carbon($this->fechaInicioProduccion);
         $fechaTerminado = new Carbon($this->fechaTerminado);
         //le sumo uno porque si la diferencia es 0 significa que se hizo todo en el mismo dia
         return $fechaPago->diffInDays($fechaTerminado) + 1;

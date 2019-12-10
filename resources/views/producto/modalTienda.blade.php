@@ -21,7 +21,7 @@
                         <div class="col">
                             <form action="{{ route('producto.create', $modelo->id) }}">
 
-                                <div class="card" style="width: 15rem; ">
+                                <div class="card" style="width: 18rem; ">
                                     <img src="{{ asset('/imagenes/modelos/'.$modelo->imagenPrincipal) }}"
                                         class="card-img-top" alt="..." height="250 px">
                                     <div class="card-body">
@@ -29,6 +29,8 @@
                                             <div class="text-justify"> </div>
                                             <h5 class="text-dark contenido" title="{{$modelo->nombre}}">
                                                 {{$modelo->nombre}}</h5>
+                                            <h5 class="text-dark contenido" title="{{$modelo->nombre}}">
+                                                ${{number_format($modelo->precioUnitario,2)}}</h5>
 
                                             <input type="submit" name="action_button" id="action_button"
                                                 class="btn btn-info btn-sm" value="Diseñar Producto" />

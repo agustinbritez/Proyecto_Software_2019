@@ -145,15 +145,22 @@ class DetallePedidoController extends Controller
         return response()->json($mensaje);
         // return ['errors' => ['El detalle del producto no existe']];
     }
-    public function estadoSiguiente($id)
+
+    public function agregarSeguimientoEnvio($pedido)
+    {
+        # code...
+
+    }
+
+    public function estadoSiguiente2Prueba($id)
     {
 
         $detalle = DetallePedido::findOrFail($id);
         $mensaje = [];
-        $detalle->getEstadoFinal();
-        $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
-        $estadoSiguiente->id;
         if ($detalle != null) {
+            $detalle->getEstadoFinal();
+            $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
+            $estadoSiguiente->id;
             $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
 
             if ($estadoSiguiente != null) {
@@ -165,15 +172,67 @@ class DetallePedidoController extends Controller
                     $mensaje = array_merge($mensaje, ['estado' => $estadoSiguiente]);
                     if ($detalle->getEstadoFinal()->id == $estadoSiguiente->id) {
                         if ($detalle->pedido->puedeTerminar()) {
+
                             $detalle->pedido->terminado = 1;
 
                             $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->getEstadoFinal()->id;
                             $detalle->pedido->update();
                             $detalle->fechaTerminado = Carbon::now();
                             $detalle->update();
-                            //sumamos la cantidad de dias producidos
+                            //sumamos la cantidad de dias producidos y dividimos por la cantidad del detalle para obtener el de un dia
                             $detalle->producto->modelo->cantidadDiasProducidos += (round($detalle->getDiasEnProduccion() / $detalle->cantidad));
                             $detalle->producto->modelo->update();
+                            $mensaje = array_merge($mensaje, ['pedidoTerminado' => $detalle->pedido]);
+                        }
+                        $mensaje = array_merge($mensaje, ['final' => true]);
+                    }
+                } else {
+                    $mensaje = array_merge($mensaje, ['warning' => 'No se actualizo el producto al siguiente estado.']);
+                }
+
+                //si es el utlimo estado y todo los detalle de pedido estan terminados
+
+                return response()->json($mensaje);
+            }
+        }
+
+        $mensaje = array_merge($mensaje,  ['errors' => ['El detalle del producto no existe']]);
+        return response()->json($mensaje);
+    }
+    public function estadoSiguiente($id)
+    {
+
+        $detalle = DetallePedido::findOrFail($id);
+        $mensaje = [];
+        if ($detalle != null) {
+            $detalle->getEstadoFinal();
+            $estadoSiguiente = $detalle->producto->modelo->flujoTrabajo->siguienteEstado($detalle->estado);
+           if(!$detalle->pedido->produccion){
+            $detalle->pedido->produccion = 1;
+            $detalle->fechaInicioProduccion =  Carbon::now();
+            $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->siguienteEstado($detalle->pedido->estado)->id;
+            $detalle->pedido->update();
+           }
+            if ($estadoSiguiente != null) {
+                $detalle->estado_id = $estadoSiguiente->id;
+
+                if ($detalle->update()) {
+                    // if (true) {
+                    $mensaje = array_merge($mensaje, ['success' => 'Cambiado al siguiente estado.']);
+                    $mensaje = array_merge($mensaje, ['estado' => $estadoSiguiente]);
+            
+                    if ($detalle->getEstadoFinal()->id == $estadoSiguiente->id) {
+                        $detalle->fechaTerminado = Carbon::now();
+                        $detalle->update();
+                        //sumamos la cantidad de dias producidos y dividimos por la cantidad del detalle para obtener el de un dia
+                        $detalle->producto->modelo->cantidadDiasProducidos += (round($detalle->getDiasEnProduccion() / $detalle->cantidad));
+                        $detalle->producto->modelo->update();
+                        if ($detalle->pedido->puedeTerminar()) {
+
+                            // $detalle->pedido->terminado = 1;
+
+                            $detalle->pedido->estado_id = $detalle->pedido->flujoTrabajo->siguienteEstado($detalle->pedido->estado)->id;
+                            $detalle->pedido->update();
                             $mensaje = array_merge($mensaje, ['pedidoTerminado' => $detalle->pedido]);
                         }
                         $mensaje = array_merge($mensaje, ['final' => true]);
@@ -227,7 +286,8 @@ class DetallePedidoController extends Controller
                 return redirect()->back()->withErrors('El detalle de pedido no esta asociado a ningun pedido');
             }
         }
-        if (!is_null($detallePedido->pedido->fechaPago) || !is_null($detallePedido->pedido->preference_id)) {
+        // if (!is_null($detallePedido->pedido->fechaPago) || !is_null($detallePedido->pedido->preference_id)) {
+        if (!is_null($detallePedido->pedido->fechaPago) ) {
             $form_data = array(
                 'detalle'        =>  $request->detalle
             );

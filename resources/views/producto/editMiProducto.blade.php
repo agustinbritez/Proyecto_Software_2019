@@ -40,18 +40,67 @@
         name="sample_form" id="sample_form">
         @csrf
 
+        <div class="row justify-content-center">
+            <div class="card border-danger border">
 
 
-        <div class="row ">
+                <div class="card-body">
 
-            &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Actualizar Producto</button>
+                    <div class="form-group ">
+                        <div class="">
+
+                        </div>
+                        {{-- <div class="inline"> --}}
+                        <div class="row">
+                            <h3>Permitir que este producto se muestre en la tienda:
+                            </h3>
+                            &nbsp;&nbsp;
+                            <div class="icheck-success ">
+                                @if ($producto->mostrar)
+                                
+                                <input type="checkbox" checked id="mostrar" name="mostrar">
+                                @else
+                                <input type="checkbox"  id="mostrar" name="mostrar">
+                                    
+                                @endif
+                                <label for="mostrar" id='labelOperacion'>
+                                </label>
+                            </div>
+                            <div class="dropright">
+                                <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="fas fa-question-circle" style="font-size: 200%"></i>
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                    <p class="">Si la casilla esta (<img src="{{asset('/images/checked.png')}}"
+                                            height="20px" width="20px" alt="">) seleccionada
+                                        el producto se muestra en la tienda. Si esta (<img
+                                            src="{{asset('/images/checked2.png')}}" height="18px" width="18px" alt="">)
+                                        su porducto no se mostrara
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+            </div>
         </div>
+
         <br>
+
+
+
+
         <div class="row justify-content-around ">
             <div class="col-5">
 
                 {{-- Otro cards --}}
-                <div class="card text-left">
+                <div class="card text-left card-orange  card-outline">
 
                     <div class="card-header">
 
@@ -151,7 +200,7 @@
                     </div>
                 </div>
                 {{-- Imagenes --}}
-                <div class="card text-left">
+                <div class="card text-left card-yellow  card-outline">
 
                     <div class="card-header">
 
@@ -173,7 +222,9 @@
 
                             <input type="hidden" value="{{$cantidadImagenes=0}}">
                             <input type="hidden" value="{{$cantidadImagenesSistema=0}}">
-                            @foreach ($producto->sublimaciones as $sublimacion)
+                            @foreach ($producto->modelo->componentes as $componente)
+                            <input type="hidden" value="{{$cantidadImagenes=0}}">
+                            @foreach ($componente->obtenerSublimacionesDelProducto($producto) as $sublimacion)
                             @if ($sublimacion!=null)
 
                             <div class="form-group "
@@ -185,22 +236,24 @@
                                         @if ($sublimacion->nuevaImagen!=null)
 
                                         {{-- <input id="slider_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}"
-                                            class="range_5" type="text" name="range_5" value=""
-                                            onchange="cambiarSlider(this,document.getElementById('imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'))"> --}}
+                                        class="range_5" type="text" name="range_5" value=""
+                                        onchange="cambiarSlider(this,document.getElementById('imagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}'))">
+                                        --}}
                                         @else
                                         @if ($sublimacion->imagen !=null)
 
                                         {{-- <input
                                             id="slider_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}"
-                                            class="range_5" type="text" name="range_5" value=""
-                                            onchange="cambiarSlider(this,document.getElementById('imagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'))"> --}}
+                                        class="range_5" type="text" name="range_5" value=""
+                                        onchange="cambiarSlider(this,document.getElementById('imagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'),document.getElementById('nuevaImagen_sistema_{{$cantidadImagenesSistema}}_componente_{{$cantidadComponente}}'))">
+                                        --}}
                                         @endif
 
                                         @endif
                                     </div>
                                     <div id=" " style="max-width: 10rem;" class=" row justify-content-center">
                                         @if ($sublimacion->nuevaImagen!=null)
-                                        <div id="'preview_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}">
+                                        <div id="preview_{{$cantidadImagenes}}_componente_{{$cantidadComponente}}">
 
                                             <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
                                                 class="bg-transparent" height="150" width="180"
@@ -250,6 +303,8 @@
                             @endif
                             <input type="hidden" value="{{$cantidadComponente++}}">
                             @endforeach
+                            @endforeach
+
                         </div>
 
 
@@ -265,7 +320,7 @@
 
             <div class="col-7">
 
-                <div class="card text-left">
+                <div class="card text-left card-red  card-outline">
 
                     <div class="card-header">
 
@@ -427,6 +482,11 @@
 
 
                     <div class="card-footer text-muted justify-content-center">
+                        <div class="row ">
+
+                            &nbsp;&nbsp;&nbsp;<button type="submit" id="prueba2" class="btn btn-success">Actualizar
+                                Producto</button>
+                        </div>
                     </div>
                 </div>
 
@@ -735,7 +795,7 @@
                     let reader = new FileReader();
                     // Leemos el archivo subido y se lo pasamos a nuestro fileReader
                     reader.readAsDataURL(this.event.target.files[0]);
-                    
+                        console.log('idImagen: '+idImagen+' compoene: '+componenteSeleccionado);
                     // Le decimos que cuando este listo ejecute el código interno
                     reader.onload = function(){
                         // image = document.createElement('img');

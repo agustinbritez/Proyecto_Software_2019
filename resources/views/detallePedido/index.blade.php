@@ -86,12 +86,76 @@
 
 
                 <div class="card-header">
-                    <h3>Informacion del Usuario</h3>
+                    <div class="row">
+
+
+                        <h2>Estado del Pedido:
+
+                            @if ($pedido->flujoTrabajo->getEstadoFinal()->id==$pedido->estado->id)
+                            <span class="badge badge-danger ">{{$pedido->estado->nombre ?? 'Sin Estado'}}
+                            </span>
+                            @else
+                            @if ($pedido->flujoTrabajo->getEstadoInicial()->id==
+                            $pedido->estado->id)
+                            <span class="badge badge-success">{{$pedido->estado->nombre ?? 'Sin Estado'}}
+                            </span>
+
+                            @else
+                            <span class="badge badge-info">{{$pedido->estado->nombre ?? 'Sin Estado'}}
+                            </span>
+
+                            @endif
+                            @endif
+
+                        </h2>
+                        &nbsp;&nbsp; &nbsp;&nbsp;
+                        <div class="dropdown">
+                            <a class="dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                                <i class="fas fa-question-circle" style="font-size: 200%"></i>
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <div class="dropdown-item">
+                                    Estados del pedido
+                                </div>
+                                <div class="dropdown-item">
+
+                                    <input type="hidden"
+                                        value="{{$estadoIncial=$pedido->flujoTrabajo->getEstadoInicial()}}">
+                                    <input type="hidden"
+                                        value="{{$estadoFinal=$pedido->flujoTrabajo->getEstadoFinal()}}">
+
+
+                                    @foreach ($pedido->flujoTrabajo->getEstados() as $estado)
+                                    @if ($estado!=null)
+                                    @if ($estado->id==$estadoIncial->id)
+                                    <span class="badge badge-success " id="estado_">{{$estado->nombre}}</span>
+                                    <span><i class="fas fa-arrow-right"></i></span>
+                                    @endif
+                                    @if ($estado->id==$estadoFinal->id)
+                                    <span class="badge badge-danger " id="estado_">{{$estado->nombre}}</span>
+
+                                    @endif
+                                    @if (($estado->id!=$estadoIncial->id)&&($estado->id!=$estadoFinal->id))
+                                    <span class="badge badge-info " id="estado_">{{$estado->nombre}}</span>
+                                    <span><i class="fas fa-arrow-right"></i></span>
+                                    @endif
+                                    @endif
+                                    @endforeach
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
 
                 <div class="card-body">
                     <div>
+                        <div class="row">
+
+                            <h3><u> Informacion del Usuario</u></h3>
+                        </div>
                         <div class="row">
                             <h4>
                                 <label for="" style="font-weight: normal;">Usuario:
@@ -120,6 +184,32 @@
                             </h4>
                         </div>
                         @else
+
+                        @endif
+                        @if (($pedido->estado->nombre=='ESPERA DE ENVIO')||($pedido->terminado))
+
+
+
+                        <form id="enviarSeguimiento"
+                            action="{{ route('pedido.agregarSeguimientoEnvio', $pedido->id) }}">
+
+                            <div class="row ">
+
+                                <label>Seguimiento del pedido: </label>
+
+                                <div class="col-3">
+                                    <input type="text" name="seguimientoEnvio" id="seguimientoEnvio" required
+                                        placeholder="Ingrese el seguimiento del envio" class="form-control"
+                                        value="{{$pedido->seguimientoEnvio ?? ''}}" />
+                                </div>
+                                <div class="col">
+
+                                    <button type="button" class="btn btn-primary agregarSegui">Agregar
+                                        Seguimiento</button>
+                                </div>
+
+                            </div>
+                        </form>
 
                         @endif
                     </div>
@@ -280,15 +370,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <h4 align="center" style="margin:0;" id="tituloConfirm">¿Esta seguro que desea finalizar el pedido?</h4>
+                <h4 align="center" style="margin:0;" id="tituloConfirm">¿Esta seguro que desea enviar el producto?</h4>
             </div>
             <div class="modal-footer">
-                <form id="formConfirm" action="{{ route('pedido.terminarPedido', $pedido->id) }}" method="POST">
-                    @csrf
-                    {{-- Paso el id de la materia  aborrar en materia_delete--}}
-                    <input type="hidden" name="materia_delete" id="materia_delete">
-                    <button type="submit" name="ok_button" id="ok_button" class="btn btn-primary">OK</button>
-                </form>
+
+                {{-- Paso el id de la materia  aborrar en materia_delete--}}
+                <button type="submit" name="ok_button" id="ok_button"
+                    onclick="document.getElementById('enviarSeguimiento').submit();" class="btn btn-primary">OK</button>
+
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
             </div>
         </div>
@@ -330,7 +419,7 @@
             
         }
     });
-    $('.finalizar').click(function(){
+    $('.agregarSegui').click(function(){
 
         $('#confirmModal').modal('show');
     });

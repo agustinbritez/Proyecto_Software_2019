@@ -28,7 +28,7 @@
                         <input type="text" name="detalle" id="detalle" required placeholder="Ingrese un mayor detalle"
                             class="form-control" />
                     </div>
-
+                    
 
                     <div class="form-group clearfix col">
                         <label for="">Operacion: </label>
@@ -36,9 +36,8 @@
 
                             <input type="checkbox" checked id="operacion" name="operacion">
                             <label for="operacion" id='labelOperacion'>
-
+                            </label>
                         </div>
-                        </label>
                     </div>
 
                 </div>
