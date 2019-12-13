@@ -49,7 +49,7 @@
 										<span class="input-group-text">$</span>
 									</div>
 									<input type="text" class="form-control text-left" id="filtro_precioUnitarioMin"
-										name="filtro_precioUnitarioMin" data-mask
+										name="filtro_precioUnitarioMin" data-mask value="0.0"
 										data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
 								</div>
 							</div>
@@ -60,7 +60,7 @@
 										<span class="input-group-text">$</span>
 									</div>
 									<input type="text" class="form-control text-left" id="filtro_precioUnitarioMax"
-										name="filtro_precioUnitarioMax" data-mask
+										name="filtro_precioUnitarioMax" data-mask value="0.0"
 										data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0'">
 								</div>
 							</div>

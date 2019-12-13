@@ -55,7 +55,7 @@
     <ul class="navbar-nav ml-auto">
       <li class="nav-item ">
         <a href="{{route('pedido.misPedidos',auth()->user()->id)}}" class="btn btn-info  " style="border-radius:0%">
-           <i class="far fa-shopping-cart nav-icon"></i>
+          <i class="far fa-shopping-cart nav-icon"></i>
           Mis
           Pedidos</a>
 

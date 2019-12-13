@@ -17,6 +17,7 @@ class CreatePropuestaMateriaPrimasTable extends Migration
             $table->bigIncrements('id');
             $table->double('precioUnitario')->nullable();
             $table->string('detalle')->nullable();
+            $table->boolean('realizado')->nullable();
 
             $table->unsignedBigInteger('materiaPrima_id')->nullable();
             $table->foreign('materiaPrima_id')->references('id')->on('materia_primas');

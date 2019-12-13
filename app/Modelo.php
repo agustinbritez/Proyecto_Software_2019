@@ -139,8 +139,28 @@ class Modelo extends Model implements Auditable
         # code...
         if (!$this->productosModelos->isEmpty()) {
 
-            return $this->cantidadDiasProducidos / $this->productosModelos->count();
+            // return $this->cantidadDiasProducidos / $this->productosModelos->count();
+            return $this->cantidadDiasProducidos / $this->cantidadProductosProducidos();
         }
         return 0;
+    }
+
+    public function cantidadProductosProducidos()
+    {
+        # code...
+        $cantidad = 0;
+        if (!$this->productosModelos->isEmpty()) {
+
+            foreach ($this->productosModelos as  $producto) {
+                # code...
+                foreach ($producto->detallePedido as $key => $detalle) {
+                    # code...
+                    if ($detalle->pedido->terminado) {
+                        $cantidad += $detalle->cantidad;
+                    }
+                }
+            }
+        }
+        return $cantidad;
     }
 }

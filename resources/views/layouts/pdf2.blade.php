@@ -63,14 +63,21 @@
     <div class="row" style="height: 100px">
         <div class="img">
 
-            <img class="imagen" src="{{asset("images/logo2.jpeg")}}" alt="">
+            {{-- <img class="imagen" src="{{asset("images/logo2.jpeg")}}" alt=""> --}}
+            <img class="imagen" src="{{asset("imagenes/configuraciones/").'/'.$configuracion->imagenPrincipal}}" alt="">
         </div>
         <div class="justify-content-center">
             <div class="text-center">
 
-                <h5><strong>MyG Sublimacion</strong></h5>
-                <h6><strong>Direccion, Nxxxx Apóstoles, Misiones</strong></h6>
-                <h6><strong>Telefono: (03758) xx-xxxx</strong></h6>
+                {{-- <h5><strong>MyG Sublimacion</strong></h5> --}}
+                <h5><strong>{{$configuracion->nombre}}</strong></h5>
+                {{-- <h6><strong>Direccion, Nxxxx Apóstoles, Misiones</strong></h6> --}}
+                @if ($configuracion->direccion != null)
+
+                <strong style="font-size: 12px">{{$configuracion->direccion->obtenerDireccion()}}</strong>
+                @endif
+                {{-- <h6><strong>Telefono: (03758) xx-xxxx</strong></h6> --}}
+                <h6><strong>Telefono:{{$configuracion->telefono}}</strong></h6>
 
             </div>
         </div>

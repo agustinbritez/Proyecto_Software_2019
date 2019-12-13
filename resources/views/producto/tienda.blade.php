@@ -44,70 +44,119 @@
         <div class="col">
 
             <div class="card text-left card-info  card-outline">
+                <form action="{{ route('producto.filtrarTienda') }}" method="GET" enctype="multipart/form-data">
+                    @csrf
+                    <div class="card-header">
+
+                        <h3>Buscar Producto</h3>
+
+                        <div align="right">
+                            <button type="button" id="create_record" class="btn btn-success btn-sm">Crear Mi
+                                Producto</button>
+                        </div>
 
 
-                <div class="card-header">
 
-                    <h3>Buscar Producto</h3>
 
-                    <div align="right">
-                        <button type="submit" id="create_record" class="btn btn-success btn-sm">Crear Mi
-                            Producto</button>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {{-- <div class="form-group col">
+                            <label>Nombre : </label>
+                            <input class="form-control" type="text" name="nombre" id="nombre"
+                                data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
+                        </div> --}}
+                            <div class="form-group col-3 ">
+                                <label class="control-label " style="font-size:15px ">Precio Unitario Minimo - Maximo:
+                                </label>
+                                <div class="row">
+                                    <div class="col">
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input type="text" class="form-control text-left"
+                                                id="filtro_precioUnitarioMin" name="filtro_precioUnitarioMin" data-mask
+                                                data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0.00'">
+                                        </div>
+                                    </div>
+                                    <div class="col">
+
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text">$</span>
+                                            </div>
+                                            <input type="text" class="form-control text-left"
+                                                id="filtro_precioUnitarioMax" name="filtro_precioUnitarioMax" data-mask
+                                                data-inputmask="'alias': 'numeric', 'digits': 2, 'digitsOptional': false,  'placeholder': '0.00'">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <div class="form-group col">
+                                <label>Modelo : </label>
+                                <select class="form-control select2 " id="modelos" name="modelos">
+                                    <option value="-1">Cualquiera</option>
+                                    @foreach ($modelosVentas as $modelo)
+
+                                    <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
+                                    @endforeach
+
+                                </select>
+
+                            </div>
+                            <div class="form-group col">
+                                <label>Tipo Imagen : </label>
+                                <select class="form-control select2 " id="tipoImagen" name="tipoImagen">
+                                    <option value="-1">Cualquiera</option>
+                                    @foreach ($tipoImagenes as $tipo)
+
+                                    <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
+                                    @endforeach
+
+                                </select>
+                            </div>
+                            <div class="form-group col">
+                                <label>Imagen : </label>
+                                <select class="form-control select2 " id="imagenSeleccionada" name="imagenSeleccionada">
+                                    <option value="-1">Cualquiera</option>
+                                    @foreach ($imagenes as $imagen)
+
+                                    <option value="{{$imagen->id}}">{{$imagen->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col">
+                                <label>Ordenar Por Precio : </label>
+                                <select class="form-control select2 " id="precios" name="precios">
+                                    <option value="-1" selected>Cualquiera</option>
+                                    <option value="0">Menor Precio</option>
+                                    <option value="1">Mayor Precio</option>
+
+                                </select>
+                            </div>
+
+
+
+
+                        </div>
+
+                    </div>
+                    <div class="card-footer text-muted">
+                        <div class="text-center">
+                            <button type="submit" name="filtrar" id="filtrar"
+                                class="btn btn-success btn-sm">Buscar</button>
+                            <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
+                                Busqueda</button>
+                        </div>
                     </div>
 
 
-
-
-                </div>
-                <div class="card-body row">
-
-                    <div class="form-group col">
-                        <label>Nombre : </label>
-                        <input class="form-control" type="text" name="nombre" id="nombre"
-                            data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
-                    </div>
-
-                    <div class="form-group col">
-                        <label>Modelo : </label>
-                        <select class="form-control select2 " id="" name="modelos">
-                            @foreach ($modelosVentas as $modelo)
-
-                            <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
-                            @endforeach
-
-                        </select>
-
-                    </div>
-                    <div class="form-group col">
-                        <label>Tipo Imagen : </label>
-                        <select class="form-control select2 " id="" name="modelos">
-                            @foreach ($tipoImagenes as $tipo)
-
-                            <option value="{{$tipo->id}}">{{$tipo->nombre}}</option>
-                            @endforeach
-
-                        </select>
-                    </div>
-                    <div class="form-group col">
-                        <label>Imagen : </label>
-                        <select class="form-control select2 " id="" name="modelos">
-                            @foreach ($imagenes as $imagen)
-
-                            <option value="{{$imagen->id}}">{{$imagen->nombre}}</option>
-                            @endforeach
-
-                        </select>
-                    </div>
-
-
-                </div>
-                <div class="card-footer text-muted">
-                    <div class="text-center">
-                        <button type="button" name="filtrar" id="filtrar" class="btn btn-success btn-sm">Buscar</button>
-                        <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
-                            Busqueda</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
 
@@ -129,24 +178,39 @@
 
 
                         </div>
-                        <div class="text-center">
+                        <div class="row">
+                                <div class="col">
+                                        <form action="{{ route('producto.preshow',$producto->id) }}" method="GET" id="reiniciarTodaLaVista">
+                                            @csrf
+                                            <button class="btn  btn-pill btn-outline-info pt-1 pb-1 verProducto" type="submit">
+                                                Ver Producto
+                                            </button>
+        
+                                        </form>
+                                    </div>
+        
                             @guest
-                            <a class="btn bg-gradient-teal btn-pill pt-1 pb-1 " href="{{ route('login') }}"
-                                type="button" data-id="{{$producto->id}}">
-                                Agregar
-                            </a>
+                            <div class="col">
+
+                                <a class="btn bg-gradient-teal btn-pill pt-1 pb-1 " href="{{ route('login') }}"
+                                    type="button" data-id="{{$producto->id}}">
+                                    Agregar<i class="far fa-shopping-cart nav-icon"></i>
+                                </a>
+                            </div>
                             @else
                             @if (auth()->user()->hasRole('cliente')||auth()->user()->hasRole('admin'))
+                            <div class="col">
+                                <button class="btn bg-gradient-teal btn-pill pt-1 pb-1 agregarCarrito" type="button"
+                                    data-id="{{$producto->id}}">
+                                    Agregar<i class="far fa-shopping-cart nav-icon"></i>
+                                </button>
 
-                            <button class="btn bg-gradient-teal btn-pill pt-1 pb-1 agregarCarrito" type="button"
-                                data-id="{{$producto->id}}">
-                                Agregar
-                            </button>
+                            </div>
                             @endif
 
                             @endguest
 
-
+                           
 
 
                             {{-- <button type="button" class="btn btn-warning" id="agregarCarrito"
@@ -161,7 +225,10 @@
         @endforeach
     </div>
 </div>
+<form action="{{ route('producto.tienda') }}" method="GET" id="reiniciarTodaLaVista">
+    @csrf
 
+</form>
 @endsection
 
 @section('htmlFinal')

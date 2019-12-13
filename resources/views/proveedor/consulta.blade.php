@@ -24,7 +24,9 @@
         <div class="col">
             <div class="img">
 
-                <img class="imagen" src="{{asset("images/logo2.jpeg")}}" alt="" style="width: 20rem">
+                {{-- <img class="imagen" src="{{asset("images/logo2.jpeg")}}" alt="" style="width: 20rem"> --}}
+                <img class="imagen" src="{{asset("imagenes/configuraciones/").'/'.$configuracion->imagenPrincipal}}" alt="" style="width: 20rem">
+
             </div>
 
         </div>
@@ -32,10 +34,13 @@
 
             <div class="justify-content-center">
                 <div class="text-center">
+                    <h5><strong>{{$configuracion->nombre}}</strong></h5>
+                    @if ($configuracion->direccion != null)
 
-                    <h5><strong>MyG Sublimacion</strong></h5>
-                    <h6><strong>Direccion, Nxxxx Apóstoles, Misiones</strong></h6>
-                    <h6><strong>Telefono: (03758) xx-xxxx</strong></h6>
+                    <strong style="font-size: 12px">{{$configuracion->direccion->obtenerDireccion()}}</strong>
+                    @endif
+                    <h6><strong>Telefono:{{$configuracion->telefono}}</strong></h6>
+
 
                 </div>
             </div>
@@ -57,12 +62,21 @@
             <br>
             <br>
             <div class="text-center">
+                @if ($proveedor->propuestaPendiente()!=null)
                 <h3>Bienvendio {{$proveedor->nombre}} le agradeceriamos que respondiera los siguientes campos</h3>
+                @else
+                <div class="text-center">
+                    <a type="button" href="{{ route('home') }}" class="btn btn-success">Ir Al Inicio</a>
+                </div>
+
+                @endif
             </div>
             <br>
             <input type="hidden" value="{{$cantidadMaterias=0}}">
             @foreach ($proveedor->materiaPrimas as $materia)
             @if ($materia->cantidad <= $materia->stockMinimo)
+                @if (!$proveedor->obtenerPropuesta($materia->id)->realizado)
+
                 <div class="form-group">
 
                     <div class="card">
@@ -175,19 +189,19 @@
                         </div>
                     </div>
                 </div>
-
-
-
-
-
                 <input type="hidden" name="materia_{{$cantidadMaterias++}}" value="{{$materia->id}}">
+                @endif
+
                 @endif
 
                 @endforeach
                 <input type="hidden" name="cantidadMaterias" value="{{$cantidadMaterias}}">
+                @if ($proveedor->propuestaPendiente()!=null)
                 <div class="text-right">
                     <button type="submit" class="btn btn-success">Enviar Datos</button>
                 </div>
+
+                @endif
         </div>
 
 
@@ -230,5 +244,5 @@
 <script>
     $('.select2').select2();
     $('[data-mask]').inputmask();
-
+    $('.dropdown-toggle').dropdown();
 </script>

@@ -36,4 +36,14 @@ class Proveedor extends Model implements Auditable
 
         return $this->hasMany(PropuestaMateriaPrima::class, 'proveedor_id');
     }
+    public function obtenerPropuesta($materiaPrima_id)
+    {
+        # code...
+        return PropuestaMateriaPrima::where('materiaPrima_id',$materiaPrima_id)->where('proveedor_id',$this->id)->first();
+    }
+    public function propuestaPendiente()
+    {
+        # code...
+        return PropuestaMateriaPrima::where('proveedor_id',$this->id)->where('realizado',false)->first();
+    }
 }

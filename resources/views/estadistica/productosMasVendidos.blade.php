@@ -139,10 +139,12 @@
         $('#productosMasVendidosHasta').val('{{$vuelto->productosMasVendidosHasta ?? ""}}');
 
 </script>
+@if ($vuelto->has('modelosEvolucionProducto'))
 @foreach ($vuelto->modelosEvolucionProducto as $item)
 <script>
     console.log($('#modelosEvolucionProducto').val())
     $('#modelosEvolucionProducto').val($('#modelosEvolucionProducto').val().concat(['{{$item}}']));
 </script>
 @endforeach
+@endif
 @endsection

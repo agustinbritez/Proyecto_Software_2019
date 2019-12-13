@@ -123,5 +123,18 @@
                 }
             });
         });
+        $('#reiniciar').click(function(){
+            $('#reiniciarTodaLaVista').submit();
+        });
+</script>
+
+<script>
+    $('#filtro_precioUnitarioMin').val('{{$vuelto->filtro_precioUnitarioMin ??""}}');
+            $('#filtro_precioUnitarioMax').val('{{$vuelto->filtro_precioUnitarioMax ?? ""}}');
+
+            $('#modelos').val('{{$vuelto->modelos ?? "-1"}}');
+            $('#tipoImagen').val('{{$vuelto->tipoImagen ?? "-1"}}');
+            $('#imagenSeleccionada').val('{{$vuelto->imagenSeleccionada ?? "-1"}}');
+            $('#precios').val('{{$vuelto->precios ?? "-1"}}');
 </script>
 @endpush

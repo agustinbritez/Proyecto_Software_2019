@@ -43,6 +43,8 @@ class EstadisticaController extends Controller
             ->select('modelos.*')
             ->get();
         $vuelto = $request;
+    
+
         return view('estadistica.productosMasVendidos', compact('productosMasVendidos', 'evolucionProducto', 'modelos', 'vuelto'));
     }
     public function filtroEvolucionProducto(Request $request)

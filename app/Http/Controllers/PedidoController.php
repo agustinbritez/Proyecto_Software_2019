@@ -138,9 +138,10 @@ class PedidoController extends Controller
         if (!$request->has('preference_id')) {
             return redirect()->route('pedido.misPedidos')->withErrors('No existe el encargo del pedido');
         }
-        $preference = \MercadoPago\Preference::find_by_id($request->preference_id);
+        // $preference = \MercadoPago\Preference::find_by_id($request->preference_id);
         // dd(['UNO' => $pago, 'DOS' => $request]);
-        // return $pago = \MercadoPago\Payment::find_by_id($pedido->pago_id);
+        $pago = \MercadoPago\Payment::find_by_id($request->collection_id);
+
         // return dd($pago);
 
         $espera = Estado::where('nombre', 'CARRITO')->first();
@@ -157,7 +158,10 @@ class PedidoController extends Controller
                     $pedido->pago_id = $request->collection_id;
                     $pedido->fechaPago = Carbon::now();
                     $pedido->cambioEstado = Carbon::now();
-                    $pedido->precio = $preference->items[0]->unit_price;
+                    $pedido->precio = $pago->transaction_amount;
+
+                    // $pedido->precio += $item->unit_price ;
+                    // return $pedido->precio;
                     //si terminado es 0 significa que pago pero no se termino de producir el producto
                     $pedido->terminado = 0;
                     $pedido->restarMateriaPrimas();
@@ -464,8 +468,8 @@ class PedidoController extends Controller
                 ->whereDate('pedidos.fechaPago', '<=', $request->hasta);
         }
         if ($request->filtro_modelo > 0) {
-            $pedidos = $pedidos->join('detalle_pedidos','pedidos.id','=','detalle_pedidos.pedido_id');
-            $pedidos = $pedidos->join('productos','productos.id','=','detalle_pedidos.producto_id');
+            $pedidos = $pedidos->join('detalle_pedidos', 'pedidos.id', '=', 'detalle_pedidos.pedido_id');
+            $pedidos = $pedidos->join('productos', 'productos.id', '=', 'detalle_pedidos.producto_id');
             $pedidos = $pedidos->where('productos.modelo_id', $request->filtro_modelo);
             $pedidos = $pedidos->select('pedidos.*');
             $pedidos = $pedidos->groupBy('pedidos.id');
@@ -518,6 +522,9 @@ class PedidoController extends Controller
 
         for ($i = 1; $i < count($detallesOrdenados); $i++) {
             for ($j = 0; $j < count($detallesOrdenados) - $i; $j++) {
+                // return $detallesOrdenados[2]->producto->modelo->productosModelos->count();
+                // return $detallesOrdenados[2]->producto->modelo->nombre;
+                // return $detallesOrdenados[1]->producto->modelo->promedioProduccion() .' remera'. $detallesOrdenados[2]->producto->modelo->promedioProduccion();
                 if ($detallesOrdenados[$j]->producto->modelo->promedioProduccion() > $detallesOrdenados[$j + 1]->producto->modelo->promedioProduccion()) {
                     $k = $detallesOrdenados[$j + 1];
                     $detallesOrdenados[$j + 1] = $detallesOrdenados[$j];

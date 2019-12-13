@@ -14,6 +14,7 @@ use App\Proveedor;
 use App\Provincia;
 use Illuminate\Http\Request;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 
 class ProveedorController extends Controller
 {
@@ -44,6 +45,8 @@ class ProveedorController extends Controller
         // }
         return view('proveedor.consulta', compact('proveedor', 'medidas'));
     }
+ 
+
     public function obtenerPrecios(Request $request, $id)
     {
         # code...
@@ -57,11 +60,15 @@ class ProveedorController extends Controller
             $materiaPrima = MateriaPrima::find($request->input('materia_' . $i));
             if (!is_null($materiaPrima)) {
                 $propuesta = PropuestaMateriaPrima::where('materiaPrima_id', $materiaPrima->id)->where('proveedor_id', $id)->get()->first();
-                if (!is_null($propuesta)) {
-                    $propuesta->precioUnitario = $request->input('precioUnitario_materia_' . $materiaPrima->id);
-                    $propuesta->detalle = $request->input('informacion_materia_' . $materiaPrima->id);
-                    $propuesta->medida_id = $request->input('medida_id_materia_' . $materiaPrima->id);
-                    $propuesta->update();
+                if (($request->input('precioUnitario_materia_' . $materiaPrima->id) != 0) && ($request->input('precioUnitario_materia_' . $materiaPrima->id) != '') && ($request->input('precioUnitario_materia_' . $materiaPrima->id) != null)) {
+
+                    if (!is_null($propuesta)) {
+                        $propuesta->precioUnitario = $request->input('precioUnitario_materia_' . $materiaPrima->id);
+                        $propuesta->detalle = $request->input('informacion_materia_' . $materiaPrima->id);
+                        $propuesta->medida_id = $request->input('medida_id_materia_' . $materiaPrima->id);
+                        $propuesta->realizado = 1;
+                        $propuesta->update();
+                    }
                 }
                 // $propuesta = PropuestaMateriaPrima::create([
                 //     'precioUnitario' => $request->input('precioUnitario_materia_' . $materiaPrima->id),

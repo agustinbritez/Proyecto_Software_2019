@@ -86,12 +86,17 @@ class MateriaPrima extends Model implements Auditable
       $movimiento->save();
 
       $this->cantidad = $this->cantidad - $cantidad;
+      if($this->cantidad <= $this->stockMinimo){
+         $propuestas= PropuestaMateriaPrima::all()->where('materiaPrima_id',$this->id);
+         foreach ($propuestas as $key => $propuesta) {
+            # code...
+            $propuesta->realizado=0;
+            $propuesta->update();
+         }
+      }
       $this->update();
    }
-   public function FunctionName(Type $var = null)
-   {
-      # code...
-   }
+
    public function pruebaDeResta($cantidad)
    {
       # code...

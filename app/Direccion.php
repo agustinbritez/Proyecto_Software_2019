@@ -38,10 +38,16 @@ class Direccion extends Model implements Auditable
     {
         return $this->belongsTo(Calle::class);
     }
+  
     public function direccionEnvios()
     {
         # code...
         return $this->hasMany(DireccionEnvio::class);
+    }
+    public function configuraciones()
+    {
+        # code...
+        return $this->hasMany(Configuracion::class);
     }
     public function obtenerDireccion()
     {

@@ -201,24 +201,34 @@
         
         //****************************************** FILTRO DE LA TABLA**************************************************************
         function filtro_funcion(){
-            var filtro_precioUnitarioMax = $('#filtro_precioUnitarioMax').val().trim().toUpperCase() ;
-            var filtro_precioUnitarioMin = $('#filtro_precioUnitarioMin').val().trim().toUpperCase() ;
+            
+            var filtro_precioUnitarioMin=parseFloat($('#filtro_precioUnitarioMin').val());
+            var filtro_precioUnitarioMax=parseFloat($('#filtro_precioUnitarioMax').val());
             var filtro_cantidad = $('#filtro_cantidad').val();
             var filtro_desde = $('#min').val();
             var filtro_hasta = $('#max').val();
             var filtro_id= $('#filtro_id').val();
             //se guardan la cantidad de filtros que se quieren realizar
+            console.log(filtro_precioUnitarioMax);
             var cantidad_filtros=0;
             if(filtro_id!=''){
                 cantidad_filtros++;
             }
-            if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
-                cantidad_filtros++;
-            }else if((filtro_precioUnitarioMax!=0.00)){
-                cantidad_filtros++;
-            }else if((filtro_precioUnitarioMin!=0.00)){
-                cantidad_filtros++;
+            if (filtro_precioUnitarioMax == NaN) {
+            console.log('gil');
+                
             }
+         
+            if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
+                        cantidad_filtros++;   
+                        
+                    }else if(filtro_precioUnitarioMin>0.0){
+                        cantidad_filtros++;   
+                        
+                    }else if(filtro_precioUnitarioMax>0.0){
+                        cantidad_filtros++;      
+                    }
+
             if((filtro_desde !='') && (filtro_hasta!='') ){
                 cantidad_filtros++;
             }
@@ -238,7 +248,7 @@
                     
                     //si son todo los filtros que realice todas las acciones directamente
                     filtro_completos=0;
-                    if(cantidad_filtros==4){
+                   
                         //filtro de fechas
                         var min = moment(filtro_desde);
                         var max = moment(filtro_hasta) ;
@@ -256,59 +266,26 @@
                         }
                         //comparamos los filtros del precio maximo y minimo
                         var precio=parseFloat(data[indicePrecioUnitario]);
-                        if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
-                            
-                            (parseFloat(filtro_precioUnitarioMax) > precio )&&(precio >parseFloat(filtro_precioUnitarioMin))? filtro_completos++ : 0 ;
-                            
-                        }else if((filtro_precioUnitarioMax!=0.00)){
-                            parseFloat(filtro_precioUnitarioMax) > precio ? filtro_completos++ : 0 ;
-                            
-                        }else if((filtro_precioUnitarioMin!=0.00)){
-                            precio > parseFloat(filtro_precioUnitarioMin) ? filtro_completos++ : 0 ;
-                        }
+                        if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
+                                
+                                ((parseFloat(data[indicePrecioUnitario])>= filtro_precioUnitarioMin) && (parseFloat(data[indicePrecioUnitario])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                                console.log('entro a los dos');
+                                
+                            }else if(filtro_precioUnitarioMin>0.0){
+                                // console.log(4);
+                                console.log('entro a los min');
+                                ((parseFloat(data[indicePrecioUnitario])>= filtro_precioUnitarioMin))? filtro_completos++ :0.0;
+                                
+                            }else if(filtro_precioUnitarioMax>0.0){
+                                console.log('entro a los max');
+                                ((parseFloat(data[indicePrecioUnitario])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                            }
                         
                         filtro_id==data[indiceId]? filtro_completos++ :0;
-                        
                         //si cummple con los tres filtro que guarde en la tabla la fila
                         return filtro_completos==cantidad_filtros? true:false;
                         
-                    }else{
-                        // si hay 1 o 2 filtros que compruebe todo
-                        //filtro fechas **********************************************************************************************
-                        var min = moment(filtro_desde);
-                        var max = moment(filtro_hasta) ;
-                        var d = data[indiceFecha];
-                        
-                        var datearray = d.split("/");
-                        var newdate =   datearray[2] + '/'+ datearray[1] + '/' + datearray[0] ;
-                        var s = new Date(newdate);
-                        var startDate = moment(s);
-                        
-                        //comparamos el filtro entre la fechas
-                        if((filtro_desde !='') && (filtro_hasta!='') ){
-                            (moment(startDate).isSameOrAfter(min) && moment(startDate).isSameOrBefore(max) )? filtro_completos++ : 0 ;
-                            
-                        }
-                        
-                        //filtro de id ******************************************************************************   
-                        if(filtro_id.length>0){
-                            filtro_id==data[indiceId]? filtro_completos++ :0;
-                        }
-                        //filtro de precio unitario maximo y iminimo ****************************************************************
-                        var precio=parseFloat(data[indicePrecioUnitario]);
-                        
-                        
-                        if((filtro_precioUnitarioMax!=0.00)&&(filtro_precioUnitarioMin!=0.00)){
-                            (parseFloat(filtro_precioUnitarioMax) > precio )&&(precio >parseFloat(filtro_precioUnitarioMin))? filtro_completos++ : 0 ;
-                            
-                        }else if((filtro_precioUnitarioMax!=0.00)){
-                            (parseFloat(filtro_precioUnitarioMax) > precio) ? filtro_completos++ : 0 ;
-                        }else if((filtro_precioUnitarioMin!=0.00)){
-                            precio > parseFloat(filtro_precioUnitarioMin) ? filtro_completos++ : 0 ;
-                        } 
-                        
-                        return filtro_completos==cantidad_filtros? true:false;
-                    }
+                    
                     
                     
                 }

@@ -249,7 +249,7 @@
                                     @if ($detallePedido->cantidad!=null)
 
                                     <td align="right">
-                                        ${{$detallePedido->cantidad * $detallePedido->producto->modelo->precioUnitario}}
+                                        ${{number_format($detallePedido->cantidad * $detallePedido->producto->modelo->precioUnitario,2)}}
                                     </td>
                                     @else
                                     <td align="right">${{ $detallePedido->producto->modelo->precioUnitario}}

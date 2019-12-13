@@ -350,7 +350,17 @@
           </a>
         </li>
         @endif
+        <li class="nav-header pl-3">Configuraciones</li>
+        @if (auth()->user()->hasRole('admin')||auth()->user()->hasRole('gerente'))
 
+        <li class="nav-item">
+          <a href="{{ route('configuracion.index') }}" class="nav-link">
+
+              <i class="fal fa-cogs nav-icon"></i>
+            <p>Empresa</p>
+          </a>
+        </li>
+        @endif
       </ul>
 
     </nav>

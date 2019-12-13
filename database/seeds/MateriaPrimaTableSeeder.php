@@ -2,6 +2,7 @@
 
 use App\TipoMateriaPrima;
 use App\MateriaPrima;
+use App\PropuestaMateriaPrima;
 use App\Medida;
 use Illuminate\Database\Seeder;
 
@@ -28,6 +29,12 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $medida->id;
         $materiaP->imagenPrincipal = 'telanegra.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
+       
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 2;
@@ -39,6 +46,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $medida->id;
         $materiaP->imagenPrincipal = 'telaroja.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 3;
@@ -50,6 +62,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $medida->id;
         $materiaP->imagenPrincipal = 'telaverde.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 4;
@@ -61,6 +78,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $medida->id;
         $materiaP->imagenPrincipal = 'telablanca.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 5;
@@ -72,6 +94,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $unidad->id;
         $materiaP->imagenPrincipal = 'cierreazul.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
 
         $materiaP = new MateriaPrima();
@@ -84,6 +111,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $unidad->id;
         $materiaP->imagenPrincipal = 'cierrerojo.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 7;
@@ -95,6 +127,11 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $kilo->id;
         $materiaP->imagenPrincipal = 'plumas.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
 
         $materiaP = new MateriaPrima();
         $materiaP->id = 8;
@@ -106,5 +143,10 @@ class MateriaPrimaTableSeeder extends Seeder
         $materiaP->medida_id = $kilo->id;
         $materiaP->imagenPrincipal = 'algodon.jpg';
         $materiaP->save();
+        $propuesta = PropuestaMateriaPrima::create([
+            'materiaPrima_id' => $materiaP->id,
+            'proveedor_id' => 1,
+            'precioUnitario' => $materiaP->precioUnitario,
+        ]);
     }
 }

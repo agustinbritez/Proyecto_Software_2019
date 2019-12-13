@@ -157,8 +157,8 @@
                     <div align="left">
                         @if (auth()->user()->hasRole('empleado')||auth()->user()->hasRole('admin'))
 
-                        <button type="button" name="create_record" id="create_record"
-                            class="btn btn-success btn-sm">Crear Nuevo Pedido </button>
+                        {{-- <button type="button" name="create_record" id="create_record"
+                            class="btn btn-success btn-sm">Crear Nuevo Pedido </button> --}}
 
                         @endif
 
@@ -454,25 +454,26 @@
                             //si son todo los filtros que realice todas las acciones directamente
                             filtro_completos=0;
                             //calculamos la fecha para el pago
-                            var minPago = moment(fechaPagoDesde);
                             totalPedidosGanancias=0;   
                             cantidadPedidos=0;
+
+                            var minPago = moment(fechaPagoDesde);
                             var maxPago = moment(fechaPagoHasta) ;
                             var d1 = data[indiceFechaPago];
                             var datearray1 = d1.split("/");
-                            var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
+                            var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0];
                             var s1 = new Date(newdate1)
                             var startDatePago = moment(s1)
                             //fecha para cambio de estado
                             var minEstado = moment(estadoDesde);
                             
                             var maxEstado = moment(estadoHasta) ;
+                            // console.log('Filtro hasta: '+maxEstado);
                             var d1 = data[indiceFechaCambio];
                             var datearray1 = d1.split("/");
                             var newdate1 =   datearray1[2] + '/'+ datearray1[1] + '/' + datearray1[0] ;
                             var s1 = new Date(newdate1)
                             var startDateEstado = moment(s1)
-                            
                             
                             //filtro de fechas
                             //*******************************************************
@@ -516,36 +517,33 @@
                             //************************************************************
                             if((filtro_precioUnitarioMin>0.0) && (filtro_precioUnitarioMax>0.0)){
                                 
-                                ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin) && (parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                                ((parseFloat(data[indicePrecio].replace(/,/gi,''))>= filtro_precioUnitarioMin) && (parseFloat(data[indicePrecio].replace(/,/gi,''))<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
                                 
                                 
                             }else if(filtro_precioUnitarioMin>0.0){
                                 // console.log(4);
-                                ((parseFloat(data[indicePrecio])>= filtro_precioUnitarioMin))? filtro_completos++ :0.0;
+                                ((parseFloat(data[indicePrecio].replace(/,/gi,''))>= filtro_precioUnitarioMin))? filtro_completos++ :0.0;
                                 
                             }else if(filtro_precioUnitarioMax>0.0){
-                                ((parseFloat(data[indicePrecio])<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
+                                ((parseFloat(data[indicePrecio].replace(/,/gi,''))<= filtro_precioUnitarioMax) )? filtro_completos++ :0.0;
                             }
                             //***************************************************************8
                             
                             (data[indiceTerminado] == filtro_terminado)? filtro_completos++ :0;
                             (data[indiceEstado] == filtro_estado)? filtro_completos++ :0;
-                            
-                            
-                            
+                             
                             console.log('filtro_completos: '+filtro_completos+' cantidad_filtros: '+cantidad_filtros);
                             if(filtro_completos==cantidad_filtros){
                                 document.getElementById('cantidadPedidos').value=parseInt (document.getElementById('cantidadPedidos').value)+1;
-                                document.getElementById('totalPedidosGanancias').value=parseFloat(document.getElementById('totalPedidosGanancias').value)+parseFloat(data[indicePrecio]);
+                                document.getElementById('totalPedidosGanancias').value=parseFloat(document.getElementById('totalPedidosGanancias').value)+parseFloat(data[indicePrecio].replace(/,/gi,''));
                                 // $('#cantidadPedidos').val(parseInt($('#cantidadPedidos').val())+1);
                                 // $('#totalPedidosGanancias').val(parseFloat($('#totalPedidosGanancias').val())+parseFloat((data[indicePrecio])));
                                 return true;
                             }
                             return false;
-                            
-                            
-                            
+                               
                         }
+
                         $.fn.dataTable.ext.search.push( filtradoTabla );
                         setTimeout(function(){
                             $('#totalGanancias').html(

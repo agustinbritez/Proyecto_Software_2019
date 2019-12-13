@@ -137,10 +137,13 @@
         $('#ingresoPorProductoDesde').val('{{$vuelto->ingresoPorProductoDesde ?? ""}}');
         $('#ingresoPorProductoHasta').val('{{$vuelto->ingresoPorProductoHasta ?? ""}}');
 </script>
+@if ($vuelto->has('modelos'))
+    
 @foreach ($vuelto->modelos as $item)
 <script>
     console.log($('#modelos').val())
     $('#modelos').val($('#modelos').val().concat(['{{$item}}']));
 </script>
 @endforeach
+@endif
 @endsection

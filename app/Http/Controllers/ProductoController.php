@@ -14,6 +14,7 @@ use App\TipoImagen;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ProductoController extends Controller
@@ -49,7 +50,7 @@ class ProductoController extends Controller
     public function tienda()
     {
         $productos = Producto::where('final', true)
-            ->where('mostrar',true)  
+            ->where('mostrar', true)
             ->join('modelos', 'modelos.id', '=', 'productos.modelo_id')
             ->where('modelos.venta', true)
             ->select('productos.*')
@@ -59,9 +60,98 @@ class ProductoController extends Controller
         $tipoImagenes = TipoImagen::all();
         //modelos para la venta
         $modelosVentas = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
-
-        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes', 'modelosSinPadres'));
+        $vuelto= new Request();
+        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes', 'vuelto'));
     }
+
+    public function filtrarTienda(Request $request)
+    {
+        # code...
+        $modelos = DB::table('modelos')->where('modelos.deleted_at', null)
+        ->where('venta',true);
+
+        if ($request->has('modelos') && ($request->modelos > 0)) {
+            $modelos = $modelos
+                ->where('modelos.id', $request->modelos);
+        }
+        if ($request->has('tipoImagen') && ($request->tipoImagen > 0)) {
+            $modelos = $modelos
+                ->join('componentes', 'componentes.modelo_id', '=', 'modelos.id')
+                ->join('sublimacions', 'componentes.id', '=', 'sublimacions.componente_id')
+                ->join('imagens', 'imagens.id', '=', 'sublimacions.imagen_id')
+                ->where('imagens.tipoImagen_id', $request->tipoImagen);
+            if ($request->has('imagenSeleccionada') && ($request->imagenSeleccionada > 0)) {
+                $modelos = $modelos
+                ->where('imagens.id',$request->imagenSeleccionada);
+             }
+        }
+        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMin != null) && ($request->filtro_precioUnitarioMax != null)&&((floatval($request->filtro_precioUnitarioMin) != 0.0) && (floatval($request->filtro_precioUnitarioMax) != 0.0))) {
+            $modelos = $modelos
+                ->where('precioUnitario', '>=', $request->filtro_precioUnitarioMin)
+                ->where('precioUnitario', '<=', $request->filtro_precioUnitarioMax);
+        } else if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin != null)) {
+            $modelos = $modelos
+                ->where('precioUnitario', '>=', $request->filtro_precioUnitarioMin);
+        } else if (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax != null)) {
+            $modelos = $modelos
+                ->where('precioUnitario', '<=', $request->filtro_precioUnitarioMax);
+        }
+        // if ($request->has('ventas') && ($request->ventas >= 0)) {
+        //     $modelos = $modelos ->join('productos','modelos.id','=','productos.modelo_id')
+        //     ->join('detalle_pedidos','detalle_pedidos.producto_id','=','productos.id')
+        //     ->select('modelos.*',DB::raw('count(productos.id) * detalle_pedidos.cantidad  as cantidadVendida'))
+        //     // ->select('modelos.*')
+        //     ->groupBy('modelos.id');
+        //     if (($request->ventas == 0)) {
+                
+        //         $modelos = $modelos
+        //         ->orderBy('cantidadVendida','asc');
+        //     }else if($request->ventas == 1){
+        //         $modelos = $modelos
+        //         ->orderBy('cantidadVendida','desc');
+        //     }
+        // }
+     
+
+        $modelos = $modelos
+        ->select('modelos.*')
+        ->get();
+        $productos=Producto::where('productos.deleted_at',null)
+        ->join('modelos','modelos.id','=','productos.modelo_id')
+        ->select('productos.*');
+        $modelosEncontrador=collect();
+        foreach ($modelos as $key => $modelo) {
+            $modelosEncontrador->add($modelo->id);
+        }
+        $productos=$productos->whereIn('productos.modelo_id',$modelosEncontrador);
+        
+        // if ($request->has('precios') && ($request->precios >= 0)) {
+        //     if (($request->precios == 0)) {
+                
+        //         $productos = $productos
+        //         ->orderBy('modelos.precioUnitario','asc');
+        //     }else if($request->precios == 1){
+        //         $productos = $productos
+        //         ->orderBy('modelos.precioUnitario','desc');
+        //     }
+        // }
+     
+         $productos=$productos
+        ->where('mostrar',true)
+        ->where('final',true)
+        ->groupBy('productos.id')
+        ->get();
+        $imagenes = Imagen::all();
+        $tipoImagenes = TipoImagen::all();
+        //modelos para la venta
+        $modelosVentas = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
+        $vuelto=$request;
+        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes','vuelto'));
+      
+        
+    }
+
+
 
     // Obtengo las recetas del modelo que tengan hijos modelos que tenga materia prima
     // receta -> hijoMoldeo-> materias primas
@@ -244,9 +334,9 @@ class ProductoController extends Controller
         $rules = array_merge($rules, $rule2);
         $this->validate($request, $rules, $messages);
 
-        $mostrar=0;
-        if($request->has('mostrar')){
-            $mostrar=1;
+        $mostrar = 0;
+        if ($request->has('mostrar')) {
+            $mostrar = 1;
         }
         //creamos el producto
         $form_data = array(
@@ -667,4 +757,46 @@ class ProductoController extends Controller
     {
         //
     }
+
+
+    
+	/**
+	 * Array quickSort($arreglo, $campo) ordena un $arreglo en funcion de un $campo
+	 *
+	 * @param tipo $arreglo a ordenar, en funcion de un $campo, desde $inicio asta $final
+	 * @return $regresa el mismo arreglo pero ordenado
+	 * @access public
+	 * @link: http://es.wikipedia.org/wiki/Quicksort
+	 * -----------------------------Estado pendiente, muy pendiente!!!...----------------------------
+	 */
+	function quickSort($arreglo, $campo, $inicio=0,$final=0){
+		$p=$final;//posicion del pivote sera la final
+		$i=$inicio;//posicion inicial a ordenar
+		if($p==0)//caso inicial ';¬)
+			$p=count($arreglo)-1;
+		if($p-$i>0){//si observamos el arreglo mas pequeño que puede recibir es de 2 donde $j==$i
+			$j=$p-1;
+			for(; $i<$j; $i++){
+				if($arreglo[$i][$campo] <= $arreglo[$p][$campo])
+					continue;
+				if($arreglo[$j][$campo] >= $arreglo[$p][$campo]){
+					--$i; --$j;
+					continue;
+				}
+				$aux=$arreglo[$i];
+				$arreglo[$i]=$arreglo[$j];
+				$arreglo[$j]=$aux;
+			}
+			//el elemento p debe de ir en la posicion $i
+			$valor_pivote = $arreglo[$p];
+			for(; $i<$p; $i++)
+					$arreglo[$i+1]=$arreglo[$i];
+			//finalmente en $j donde todavia esta el valor de i ponemos el valor del pivote
+			$arreglo[$j]=$valor_pivote;
+			//chicharronera recursiva mandamos ordenar tanto la parte alta y la baja
+			$arreglo=$this->quickSort($arreglo, $campo, $inicio, $j-1);
+			$arreglo=$this->quickSort($arreglo, $campo, $j+1, $p);
+		}
+		return $arreglo;
+	}
 }

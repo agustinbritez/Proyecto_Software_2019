@@ -46,6 +46,7 @@ class ControllerMateriaPrima extends Controller
         $materiaPrimas = MateriaPrima::whereColumn('cantidad', '<=', 'stockMinimo')->get();
         $propuestasJoin = MateriaPrima::join('propuesta_materia_primas', 'propuesta_materia_primas.materiaPrima_id', '=', 'materia_primas.id')
             ->whereColumn('materia_primas.cantidad', '<=', 'materia_primas.stockMinimo')
+            ->where('realizado',true)
             ->get();
         $propuestas = collect();
 
@@ -61,7 +62,7 @@ class ControllerMateriaPrima extends Controller
     //recibe una propuesta
     public function propuesta($id)
     {
-        $propuesta = PropuestaMateriaPrima::find($id);
+        $propuesta = PropuestaMateriaPrima::where('realizado',true)->where('id',$id)->first();
         if (is_null($propuesta)) {
             # code...
             return redirect()->back()->withErrors('No existe la propuesta');
@@ -364,7 +365,8 @@ class ControllerMateriaPrima extends Controller
 
 
         $imagen = null;
-        if ($request->hasFile('imagenPrincipal')) {
+        
+        if ($request->hasFile('imagenPrincipal') ) {
             $file = $request->file('imagenPrincipal');
             $hoy = Carbon::now();
             $imagen =  $hoy->format('dmYHi') . '' . time() . '.' . $request->file('imagenPrincipal')->getClientOriginalExtension();
@@ -456,6 +458,7 @@ class ControllerMateriaPrima extends Controller
     {
         $proveedores = MateriaPrima::join('propuesta_materia_primas', 'materia_primas.id', '=', 'propuesta_materia_primas.materiaPrima_id')
             ->join('proveedors', 'proveedors.id', '=', 'propuesta_materia_primas.proveedor_id')
+            ->where('propuesta_materia_primas.realizado',false)
             ->whereColumn('materia_primas.cantidad', '<=', 'materia_primas.stockMinimo')
             ->get();
         $ca = 0;

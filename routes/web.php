@@ -11,6 +11,7 @@
 |
 */
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 // Route::get('estadistica', 'EstadisticaController@productosMasVendidos');
 
@@ -21,6 +22,7 @@ Route::group(['middleware' => ['guest']], function () {
 //todos pueden ver
 
 Route::get('producto/tienda', 'ProductoController@tienda')->name('producto.tienda');
+Route::get('producto/filtrarTienda', 'ProductoController@filtrarTienda')->name('producto.filtrarTienda');
 Route::get('proveedor/obtenerPrecios/{id}', 'ProveedorController@obtenerPrecios')->name('proveedor.obtenerPrecios');
 Route::get('producto/create/{id}', 'ProductoController@create')->name('producto.create');
 Route::get('proveedor/consultarPrecios/{id}', 'ProveedorController@consultarPrecios')->name('proveedor.consultarPrecios');
@@ -93,6 +95,11 @@ Route::middleware(['auth'])->group(function () {
         Route::get('estadistica/evolucionProducto', 'EstadisticaController@evolucionProducto')->name('estadistica.evolucionProducto');
         Route::get('estadistica/filtroEvolucionProducto', 'EstadisticaController@filtroEvolucionProducto')->name('estadistica.filtroEvolucionProducto');
         Route::get('estadistica/ingresosProductos', 'EstadisticaController@ingresosProductos')->name('estadistica.ingresosProductos');
+        Route::get('configuraciones', 'ConfiguracionController@index')->name('configuracion.index');
+        Route::post('configuraciones', 'ConfiguracionController@store')->name('configuracion.store');
+        Route::get('configuraciones/{id}/edit', 'ConfiguracionController@edit')->name('configuracion.edit');
+        Route::post('configuraciones/update', 'ConfiguracionController@update')->name('configuracion.update');
+        Route::delete('configuraciones/destroy', 'ConfiguracionController@destroy')->name('configuracion.destroy');
     });
 
 

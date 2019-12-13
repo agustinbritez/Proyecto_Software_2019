@@ -91,7 +91,8 @@
                         <h3>Lista de Productos a realizar</h3>
 
                         <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
-                                class="btn btn-primary "> <i class="far fa-chart-network"></i>&nbsp;  Optimizacion</button>
+                                class="btn btn-primary "> <i class="far fa-chart-network"></i>&nbsp;
+                                Optimizacion</button>
                         </form>
                     </div>
                 </div>
@@ -110,23 +111,37 @@
                                         <div class="text-center">
 
                                             <h5 class="text-orange">{{$detallex->producto->modelo->nombre}}</h5>
-                                            <p>{{'Numero de pedido: '. $detallex->pedido->id}}</p>
+                                            {{-- <p>{{'Numero de pedido: '. $detallex->pedido->id}}</p> --}}
                                             <p>Fecha Pago:{{' '.$detallex->pedido->getFechaPago()}}
                                             </p>
-                                            <p>Cantidad imagenes:{{' '.$detallex->producto->cantidadImagenes()}}
+                                            <p>Cantidad a Producir: <strong> {{' '.$detallex->cantidad}}</strong>
                                             </p>
+                                            {{-- <p>Cantidad imagenes:{{' '.$detallex->producto->cantidadImagenes()}}
+                                            </p> --}}
                                             <p><span class="badge badge-info ">{{$detallex->estado->nombre ?? 'Sin Estado'}}
                                                 </span></p>
                                         </div>
                                         <div class="text-center">
                                             {{-- botones --}}
-                                            <div>
-                                                <form action="{{ route('detallePedido.show', $detallex->id) }}">
-                                                    <button type="submit"
-                                                        class="edit btn btn-outline-primary btn-sm">Ver
-                                                        Producto</button>
-                                                </form>
-                                            </div>
+                                          
+                                            <div class="row">
+                                                    <div class="col">
+                                                        <form
+                                                            action="{{ route('detallePedido.show', $detallex->id) }}">
+                                                            <button type="submit"
+                                                                class="edit btn btn-outline-success btn-sm">Trabajar
+                                                                Producto</button>
+                                                        </form>
+                                                    </div>
+                                                    <div class="col">
+                                                        <form
+                                                            action="{{ route('detallePedido.index', $detallex->id) }}">
+                                                            <button type="submit"
+                                                                class="edit btn btn-outline-primary btn-sm">Ver
+                                                                Pedido</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
                                         </div>
                                     </div>
                                 </div>
@@ -153,22 +168,35 @@
                                         <div class="text-center">
 
                                             <h5 class="text-orange">{{$detallePedido->producto->modelo->nombre}}</h5>
-                                            <p>{{'Numero de pedido: '. $pedido->id}}</p>
+                                            {{-- <p>{{'Numero de pedido: '. $pedido->id}}</p> --}}
                                             <p>Fecha Pago:{{' '.$detallePedido->pedido->getFechaPago() }}
                                             </p>
-                                            <p>Cantidad imagenes:{{' '.$detallePedido->producto->cantidadImagenes()}}
+                                            <p>Cantidad a Producir: <strong> {{' '.$detallePedido->cantidad}}</strong>
                                             </p>
+                                            {{-- <p>Cantidad imagenes:{{' '.$detallePedido->producto->cantidadImagenes()}}
+                                            </p> --}}
                                             <p><span class="badge badge-info ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                                                 </span></p>
                                         </div>
                                         <div class="text-center">
                                             {{-- botones --}}
-                                            <div>
-                                                <form action="{{ route('detallePedido.show', $detallePedido->id) }}">
-                                                    <button type="submit"
-                                                        class="edit btn btn-outline-primary btn-sm">Ver
-                                                        Producto</button>
-                                                </form>
+                                            <div class="row">
+                                                <div class="col">
+                                                    <form
+                                                        action="{{ route('detallePedido.show', $detallePedido->id) }}">
+                                                        <button type="submit"
+                                                            class="edit btn btn-outline-success btn-sm">Trabajar
+                                                            Producto</button>
+                                                    </form>
+                                                </div>
+                                                <div class="col">
+                                                    <form
+                                                        action="{{ route('detallePedido.index', $detallePedido->pedido->id) }}">
+                                                        <button type="submit"
+                                                            class="edit btn btn-outline-primary btn-sm">Ver
+                                                            Pedido</button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
