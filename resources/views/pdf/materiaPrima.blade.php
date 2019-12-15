@@ -9,7 +9,9 @@
 <div style="margin-bottom: 5px"><strong> Filtros Aplicados: </strong> </div>
 <div style="margin-bottom: 5px">Nombre: <strong> {{' '}} <strong>{{$filtro_nombre ?? ' No aplicado '}}</strong>.</div>
 <div style="margin-bottom: 5px">Cantidad:{{' '}} <strong>{{$filtro_cantidad ?? ' No aplicado '}}</strong>.</div>
-<div style="margin-bottom: 5px">Modelo:{{' '}} <strong>{{$filtro_modelo->nombre ?? ' No aplicado '}}</strong>.</div>
+<div style="margin-bottom: 5px">Sotck Minimo:{{' '}} <strong>{{$filtro_minimo ?? ' No aplicado '}}</strong>.</div>
+<div style="margin-bottom: 5px">Opcion de Producto:{{' '}}
+    <strong>{{$filtro_modelo->nombre ?? ' No aplicado '}}</strong>.</div>
 <hr>
 <div style="margin-bottom: 5px">
     <p>Cantidad Total de Registrados:<strong>{{' '}} {{($cantidadRegistros)}}
@@ -27,6 +29,7 @@
                 <th>Nombre</th>
                 <th>Precio Unitario</th>
                 <th>Cantidad</th>
+                <th>Stock Minimo</th>
                 <th>Medida </th>
                 <th>Modelos </th>
             </tr>
@@ -36,11 +39,12 @@
 
             @foreach ($materiaPrimas as $materia)
             <tr>
-                <td>{{$materia->id}}</td>
+                <td align="right">{{$materia->id}}</td>
                 <td>{{$materia->nombre}}</td>
-                <td>{{$materia->precioUnitario}}</td>
-                <td>{{$materia->cantidad}}</td>
-                <td>{{$materia->medida->nombre}}</td>
+                <td align="right">{{number_format($materia->precioUnitario,2) }}</td>
+                <td align="right">{{number_format($materia->cantidad)}}</td>
+                <td align="right">{{number_format($materia->stockMinimo)}}</td>
+                <td >{{$materia->medida->nombre}}</td>
                 <td>
                     @foreach ($materia->modelos as $key=>$modelo)
                     <span><strong> {{$modelo->nombre}}</strong> </span>&nbsp;&nbsp;

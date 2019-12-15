@@ -24,13 +24,13 @@
 
 
 				<div class="card-body">
-					{{-- <form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data"> --}}
-					<form action="">
+					<form action="{{route('pdf.materiaPrima')}}" method="GET" enctype="multipart/form-data">
+					{{-- <form action=""> --}}
 						@csrf
 						<div align="right">
 
-							{{-- <button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Materia
-								Prima</button> --}}
+							<button type="submit" class="btn  btn-success  btn-flat btn-sm">Reporte Materia
+								Prima</button>
 						</div>
 						<hr>
 						<div class="row">
@@ -41,12 +41,26 @@
 									data-placeholder="Ingrese un nombre a filtrar" style="width: 100%;">
 							</div>
 							<div class="form-group col ">
-								<label class="control-label">Cantidad : </label>
+								<label class="control-label">Cantidad Minima : </label>
 
 								<input type="text" class="form-control text-left" name="filtro_cantidad"
 									id="filtro_cantidad" placeholder="Cantidad de materia prima" data-mask
 									data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
 									'digitsOptional': false, 'placeholder': '0'">
+
+							</div>
+
+							<div class="form-group col clearfix">
+
+								<label>
+									Stock Minimo:
+								</label>
+								<select class="select2" name="filtro_minimo" id="filtro_minimo"
+									data-placeholder="Seleccione " style="width: 100%;">
+									<option value="-1">Cualquiera</option>
+									<option value="0">Si</option>
+									<option value="1">No</option>
+								</select>
 
 							</div>
 							<div class="form-group col">

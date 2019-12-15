@@ -123,7 +123,7 @@
                 }
             });
         });
-        $('#reiniciar').click(function(){
+        $('#reiniciarBusqueda').click(function(){
             $('#reiniciarTodaLaVista').submit();
         });
 </script>

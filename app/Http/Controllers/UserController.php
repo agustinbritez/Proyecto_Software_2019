@@ -27,27 +27,31 @@ class UserController extends Controller
     {
         $usuarios = User::all();
         if (!(auth()->user()->hasRole('admin')) && !(auth()->user()->hasRole('gerente'))) {
-           
-             # code...
-            
-             $admin = Role::where('name', 'admin')->first();
-             $gerente = Role::where('name', 'gerente')->first();
-             $auditor = Role::where('name', 'auditor')->first();
-             $aux=collect();
-             foreach ($usuarios as $usuario) {
-                 # code...
-                 if(!$usuario->hasRole('admin')&&!$usuario->hasRole('gerente')&&!$usuario->hasRole('auditor'))
-                 {
-                     $aux->add($usuario);
-                 }
-             }
-             $usuarios =$aux;
-        } 
-           
-        
+
+            # code...
+
+            $admin = Role::where('name', 'admin')->first();
+            $gerente = Role::where('name', 'gerente')->first();
+            $auditor = Role::where('name', 'auditor')->first();
+            $aux = collect();
+            foreach ($usuarios as $usuario) {
+                # code...
+                if (!$usuario->hasRole('admin') && !$usuario->hasRole('gerente') && !$usuario->hasRole('auditor')) {
+                    $aux->add($usuario);
+                }
+            }
+            $usuarios = $aux;
+            $roles = Role::all()
+                ->where('id', '<>', $admin->id)
+                ->where('id', '<>', $auditor->id)
+                ->where('id', '<>', $gerente->id);
+        } else {
+            $roles = Role::all();
+        }
+
+
 
         $documentos = Documento::all();
-        $roles = Role::all();
 
         return view('usuarios.index', compact('usuarios', 'documentos', 'roles'));
     }
@@ -98,9 +102,9 @@ class UserController extends Controller
         }
 
         $this->validate($request, $rules, $messages);
-        $existe= User::where('email',$request->email)->where('id','<>',$usuario->id)->first();
-        if($existe!=null){
-            return redirect()->back()->withErrors('email','El email ya existe');
+        $existe = User::where('email', $request->email)->where('id', '<>', $usuario->id)->first();
+        if ($existe != null) {
+            return redirect()->back()->withErrors('email', 'El email ya existe');
         }
         $imagen = null;
         if ($request->hasFile('imagenPrincipal')) {
@@ -258,7 +262,6 @@ class UserController extends Controller
             return redirect()->back()->withErrors('email', 'Ya existe un usuario con el correo');
         }
 
-
         $form_data = array(
             'name'        =>  $request->nombre,
             'apellido'    =>  $request->apellido,
@@ -269,13 +272,11 @@ class UserController extends Controller
             'password' => Hash::make('12345678')
         );
         $usuario = User::create($form_data);
-        if (auth()->user()->hasRole('admin')) {
-            # code...
-            $usuario->roles()->sync($request->rol_id);
-        } else {
+        # code...
+        $usuario->roles()->sync($request->rol_id);
 
-            $usuario->assignRoles($request->rol_id);
-        }
+        // $usuario->assignRoles($request->rol_id);
+
 
         return redirect()->back()->with('success', 'Usuario creado con exito!');
     }
@@ -301,8 +302,21 @@ class UserController extends Controller
     {
         if (request()->ajax()) {
             $data = User::findOrFail($id);
+            $admin = Role::where('name', 'admin')->first();
+            $gerente = Role::where('name', 'gerente')->first();
+            $auditor = Role::where('name', 'auditor')->first();
+            if (!(auth()->user()->hasRole('admin')) && !(auth()->user()->hasRole('gerente'))) {
+
+                $totalRoles = Role::where('id', '<>', $admin->id)
+                    ->where('id', '<>', $auditor->id)
+                    ->where('id', '<>', $gerente->id)
+                    ->get();
+            } else {
+
+                $totalRoles = Role::all();
+            }
             return response()->json([
-                'data' => $data, 'totalRoles' => Role::all(),
+                'data' => $data, 'totalRoles' => $totalRoles,
                 'roles' => $data->roles, 'totalDocumentos' => Documento::all()
 
             ]);
@@ -319,7 +333,7 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $rules = [
-            'email'    =>  'required|unique:users,email,' . $request->hidden_id, 
+            'email'    =>  'required|unique:users,email,' . $request->hidden_id,
 
         ];
 
@@ -356,14 +370,13 @@ class UserController extends Controller
         $usuario = User::find($request->hidden_id);
 
         $usuario->update($form_data);
-        return 0;
-        if (auth()->user()->hasRole('admin')) {
-            # code...
-            $usuario->roles()->sync($request->rol_id);
-        } else {
-            $usuario->assignRoles($request->rol_id);
 
-        }
+        # code...
+        $usuario->roles()->sync($request->rol_id);
+
+        // $usuario->roles()->sync($request->rol_id);
+        // $usuario->assignRoles($request->rol_id);
+
 
         return redirect()->back()->with('success', 'Usuario Actualizado con exito!');
 

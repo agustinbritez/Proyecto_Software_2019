@@ -150,7 +150,7 @@
                         <div class="text-center">
                             <button type="submit" name="filtrar" id="filtrar"
                                 class="btn btn-success btn-sm">Buscar</button>
-                            <button type="button" name="reiniciar" id="reiniciar" class="btn btn-info btn-sm">Reiniciar
+                            <button type="button" name="reiniciarBusqueda" id="reiniciarBusqueda" class="btn btn-info btn-sm">Reiniciar
                                 Busqueda</button>
                         </div>
                     </div>
@@ -173,22 +173,24 @@
                     <div class="card-body">
                         <div class="text-center">
 
-                            <h5 class="text-cyan">{{$producto->modelo->nombre}}</h5>
+                            <h5 class="text-cyan" style=" overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"
+                                title="  {{$producto->modelo->nombre}}">
+                                {{$producto->modelo->nombre}}</h5>
                             <h5 class="text-dark">{{'$ '.number_format($producto->modelo->precioUnitario,2)}}</h5>
 
 
                         </div>
                         <div class="row">
-                                <div class="col">
-                                        <form action="{{ route('producto.preshow',$producto->id) }}" method="GET" id="reiniciarTodaLaVista">
-                                            @csrf
-                                            <button class="btn  btn-pill btn-outline-info pt-1 pb-1 verProducto" type="submit">
-                                                Ver Producto
-                                            </button>
-        
-                                        </form>
-                                    </div>
-        
+                            <div class="col">
+                                <form action="{{ route('producto.preshow',$producto->id) }}" method="GET">
+                                    @csrf
+                                    <button class="btn  btn-pill btn-outline-info pt-1 pb-1 verProducto" type="submit">
+                                        Ver Producto
+                                    </button>
+
+                                </form>
+                            </div>
+
                             @guest
                             <div class="col">
 
@@ -210,7 +212,7 @@
 
                             @endguest
 
-                           
+
 
 
                             {{-- <button type="button" class="btn btn-warning" id="agregarCarrito"

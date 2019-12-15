@@ -373,8 +373,9 @@
                             image.width='200';
                             preview.innerHTML = '';
                             preview.append(image);
+                            // preview.html(image);
                             
-                            
+                            $('#hidden_id').val(html.data.id);
                             $('.modal-title').text("Editar Imagen");
                             $('#action_button').val("Editar");
                             $('#action').val("Edit");

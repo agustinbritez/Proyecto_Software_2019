@@ -10,6 +10,7 @@ use App\Movimiento;
 use App\Pedido;
 use App\Proveedor;
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -360,114 +361,46 @@ class PdfController extends Controller
 
     public  function materiaPrima(Request $request)
     {
-        $materiaPrimas = MateriaPrima::all();
-        // CONSANTES
-        $_FILTRO_MAXIMO = 3;
-        $_OPTION_VACIO = 'Cualquiera';
+        $materiaPrimas = DB::table('materia_primas')->where('materia_primas.deleted_at', null);
+        if (($request->filtro_nombre != '') && ($request->filtro_nombre != null)) {
 
-        //******************************* Obtenemos los filtros y contamos cuantos hay ******************************************* */
-
-        $filtro_nombre = $request->filtro_nombre;
-        $filtro_cantidad = $request->filtro_cantidad;
-
-        $filtro_modelo = Modelo::find($request->filtro_modelo);
-        //si no existe el ID que paso entonces le asignamos EL valor VACIO que esta de CONSTANTE
-        $filtro_modelo = ($filtro_modelo == null) ? $_OPTION_VACIO : $filtro_modelo;
-
-        $cantidad_filtros = 0;
-        if (($filtro_nombre != '')) {
-            $cantidad_filtros++;
+            $materiaPrimas = $materiaPrimas->where('materia_primas.nombre', 'like', '%' . $request->filtro_nombre . '%');
         }
-        if ($filtro_modelo != $_OPTION_VACIO) {
-            $cantidad_filtros++;
+        if (intval($request->filtro_modelo) > 0) {
+
+
+            $materiaPrimas = $materiaPrimas->join('recetas', 'recetas.materiaPrima_id', '=', 'materia_primas.id')
+                ->where('recetas.modeloPadre_id', $request->filtro_modelo);
         }
-        if ($filtro_cantidad != '') {
-            $cantidad_filtros++;
-        }
+        $cantidad = str_replace([',', '$', ' ', '.'], '', $request->filtro_cantidad);
+        try {
+            if (intval($cantidad) > 0) {
 
 
-        //******************************* Si no pide filtros devuelve todas las materias primas ******************************************* */
-
-        if ($cantidad_filtros == 0) {
-            if (sizeof($materiaPrimas) == 0) {
-                return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
+                $materiaPrimas = $materiaPrimas->where('materia_primas.cantidad', '>=', $cantidad);
             }
-            $configuracion = Configuracion::where('seleccionado', true)->first();
-            if ($configuracion == null) {
-                $configuracion = new Configuracion();
-                $configuracion->nombre = 'Prueba';
-                $configuracion->telefono = 'Prueba';
-            }
-            $pdf = PDF::loadView('pdf.materiaPrima', [
-                'materiaPrimas' => $materiaPrimas,
-                'cantidadRegistros' => sizeof($materiaPrimas),
-                'configuracion' => $configuracion
-            ]);
-            $dom_pdf = $pdf->getDomPDF();
-            $canvas = $dom_pdf->get_canvas();
-            $y = $canvas->get_height() - 35;
-            $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        } catch (Exception $th) { }
 
-            return $pdf->stream();
+        if ($request->filtro_minimo == 0) {
+
+
+            $materiaPrimas = $materiaPrimas->whereColumn('materia_primas.cantidad', '<=', 'materia_primas.stockMinimo');
+        } else if ($request->filtro_minimo == 1) {
+
+            $materiaPrimas = $materiaPrimas->whereColumn('materia_primas.cantidad', '>=', 'materia_primas.stockMinimo');
+        }
+        $materiaPrimas = $materiaPrimas->select('materia_primas.*')->get();
+        $todasLasMaterias = collect();
+
+        foreach ($materiaPrimas as  $mate) {
+            # code...
+            $todasLasMaterias->add(MateriaPrima::find($mate->id));
         }
 
+        $materiaPrimas = $todasLasMaterias;
 
-        //******************************* Si pide  todos los filtros entra aca ******************************************* */
 
-        if ($cantidad_filtros == $_FILTRO_MAXIMO) {
-
-            foreach ($materiaPrimas as $key => $materia) {
-                $filtro_completos = 0;
-                //la materia prima contiene al modelo del filtro entonces suma
-                $materia->modelos->contains($filtro_modelo) ? $filtro_completos++ : 0;
-                //la materia prima contiene la cantidad del filtro entonces suma
-                ($filtro_cantidad == $materia->cantidad) ? $filtro_completos++ : 0;
-                //la materia prima contiene el nombre del filtro entonces suma
-                (str_contains(strtoupper($materia->nombre),  strtoupper($filtro_nombre))) ? $filtro_completos++ : 0;
-                //si cummple con los tres filtro no hace nada, si no cumple con uno borra de la lista
-                $filtro_completos == $cantidad_filtros ? true : $materiaPrimas->pull($key);
-            }
-            if (sizeof($materiaPrimas) == 0) {
-                return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
-            }
-            $configuracion = Configuracion::where('seleccionado', true)->first();
-            if ($configuracion == null) {
-                $configuracion = new Configuracion();
-                $configuracion->nombre = 'Prueba';
-                $configuracion->telefono = 'Prueba';
-            }
-            $pdf = PDF::loadView('pdf.materiaPrima', [
-                'materiaPrimas' => $materiaPrimas,
-                'cantidadRegistros' => sizeof($materiaPrimas),
-                'configuracion' => $configuracion
-            ]);
-            $dom_pdf = $pdf->getDomPDF();
-            $canvas = $dom_pdf->get_canvas();
-            $y = $canvas->get_height() - 35;
-            $pdf->getDomPDF()->get_canvas()->page_text(500, $y, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
-
-            return $pdf->stream('pdf.materiaPrima');
-        }
-        //******************************* Si pide 1 o 2 filtro entra aca ******************************************* */
-        foreach ($materiaPrimas as $key => $materia) {
-
-            $filtro_completos = 0;
-            //si la meteria prima tiene el modelo del filtro se suma el filtro completo
-            if (($filtro_modelo != $_OPTION_VACIO)) {
-                $materia->modelos->contains($filtro_modelo) ? $filtro_completos++ : 0;
-            }
-            //si la meteria prima tiene la cantidad de materia prima del filtro se suma el filtro completo
-            if (($filtro_cantidad > -1)) {
-                ($filtro_cantidad == $materia->cantidad) ? $filtro_completos++ : 0;
-            }
-            //si la meteria prima tiene el nombre del filtro se suma el filtro completo
-            if (($filtro_nombre != '')) {
-                (str_contains(strtoupper($materia->nombre),  strtoupper($filtro_nombre))) ? $filtro_completos++ : 0;
-            }
-            //si la materia prima no cumple con algun filtro se borra de la lista
-            $filtro_completos == $cantidad_filtros ? true : $materiaPrimas->pull($key);
-        }
-        if (sizeof($materiaPrimas) == 0) {
+        if (sizeof($materiaPrimas) <= 0) {
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
         }
 
@@ -477,11 +410,18 @@ class PdfController extends Controller
             $configuracion->nombre = 'Prueba';
             $configuracion->telefono = 'Prueba';
         }
-
+        $filtro_minimo='No Aplicado';
+        if ($request->filtro_minimo == 0) {
+            # code...
+            $filtro_minimo='Si';
+        }else if($request->filtro_minimo == 1){
+            $filtro_minimo='No';   
+        }
         $pdf = PDF::loadView('pdf.materiaPrima', [
             'materiaPrimas' => $materiaPrimas,
             'cantidadRegistros' => sizeof($materiaPrimas),
-            'filtro_nombre' => $filtro_nombre, 'filtro_cantidad' => $filtro_cantidad, 'filtro_modelo' => $filtro_modelo,
+            'filtro_nombre' => $request->filtro_nombre, 'filtro_cantidad' => $request->filtro_cantidad,
+            'filtro_modelo' => Modelo::find($request->filtro_modelo), 'filtro_minimo' => $filtro_minimo,
             'configuracion' => $configuracion
 
         ]);

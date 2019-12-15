@@ -117,14 +117,15 @@ class ImagenController extends Controller
     {
         if (request()->ajax()) {
             $data = Imagen::findOrFail($id);
-            if ($data == null) {
-                return response()->json([
-                    'data' => null
-                ]);
-            }
+            // if (is_null($data)) {
+            //     return response()->json([
+            //         'data' => $data, 'tipoImagen' => $data->tipoImagen,
+            //         'totalTipoImagenes ' => TipoImagen::all()
+            //     ]);
+            // }
             return response()->json([
                 'data' => $data, 'tipoImagen' => $data->tipoImagen,
-                'totalTipoImagenes ' => TipoImagen::all()
+                'totalTipoImagenes' => TipoImagen::all()
             ]);
         }
     }
@@ -136,7 +137,7 @@ class ImagenController extends Controller
      * @param  \App\Imagen  $imagen
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Imagen $imagen)
+    public function update(Request $request)
     {
         $rules = [
             'nombre'    =>  'required',

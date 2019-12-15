@@ -74,7 +74,7 @@
                                 placeholder="Cantidad de materia prima inicial" data-mask
                                 {{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
-                                'digitsOptional': false, 'placeholder': '0'">
+                        'digitsOptional': false, 'placeholder': '0'">
 
                         </div>
                         <div class="form-group ">
@@ -84,7 +84,7 @@
                                 placeholder="Cantidad de stock minimo" data-mask
                                 {{-- data-inputmask="'alias': 'numeric',  'digits': 0, 'digitsOptional': false"> --}}
                                 data-inputmask="'alias': 'numeric', 'groupSeparator': ',', 'autoGroup': true, 'digits': 0,
-                                'digitsOptional': false, 'placeholder': '0'">
+                        'digitsOptional': false, 'placeholder': '0'">
 
                         </div>
 
@@ -107,14 +107,14 @@
 
 
                         {{-- <div class="form-group">
-                            <label>Modelos : </label>
-                            <select class="select2" multiple="multiple" id='modelos' name="modelos[]"
-                                data-placeholder="Seleccione Un Modelo" style="width: 100%;">
-
-
-                                @if(sizeof($modelos)>0)
-                                @foreach ($modelos as $modelo)
-                                <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
+                        <label>Modelos : </label>
+                        <select class="select2" multiple="multiple" id='modelos' name="modelos[]"
+                        data-placeholder="Seleccione Un Modelo" style="width: 100%;">
+                        
+                        
+                        @if(sizeof($modelos)>0)
+                        @foreach ($modelos as $modelo)
+                        <option value="{{$modelo->id}}">{{$modelo->nombre}}</option>
                         @endforeach
 
                         @endif
@@ -124,9 +124,9 @@
                     </div> --}}
 
                     {{-- <div class="form-group row">
-                        <label for="exampleFormControlFile1">Subir Una Imagen</label>
-                        <input type="file" class="form-control-file" id="imagenPrincipal">
-                    </div> --}}
+                    <label for="exampleFormControlFile1">Subir Una Imagen</label>
+                    <input type="file" class="form-control-file" id="imagenPrincipal">
+                </div> --}}
                     <br />
 
                 </div>
@@ -207,15 +207,15 @@
         }
     });
     $('[data-mask]').inputmask();
-
+    
     $(document).ready(function(){
-
+        
         // parseFloat('21')<parseFloat('1000')?alert('verddero'+parseFloat('1000')):alert('false'+parseFloat('1000'));
         //variables globales 
         //indices del data table que uso para el filtro
         var indiceNombre=2;
         var indiceCantidad=4;
-        var indiceModelos=6;
+        var indiceModelos=7;
         var medidasGlobal;
         var modelosGlobal;
         const vacio='Cualquiera';
@@ -242,7 +242,7 @@
         
         //mascaras******************************************************************************
         
-                
+        
         //cargamos por primera vez las variables globales
         $.ajax({
             url:"/materiaPrima/parametros",
@@ -258,211 +258,232 @@
         
         
         
-       
+        
+        
+        //la siguiente funcion recarga toda la tabla
+        $('#reiniciar').click(function(){
+            // $("#tipoMovimiento ").prop("selectedIndex", 0) ;
             
-            //la siguiente funcion recarga toda la tabla
-            $('#reiniciar').click(function(){
-                // $("#tipoMovimiento ").prop("selectedIndex", 0) ;
-                
-                $('#filtro_nombre').val('');
-                $('#filtro_cantidad').val('');
-                //cargar el select
-                $('#filtro_modelo').find('option').remove();
+            $('#filtro_nombre').val('');
+            $('#filtro_cantidad').val('');
+            //cargar el select
+            $('#filtro_modelo').find('option').remove();
+            $('#filtro_modelo').append($('<option>', {
+                value: vacio,
+                text: 'Cualquiera',
+            }));
+            modelosGlobal.forEach(modelo => {
                 $('#filtro_modelo').append($('<option>', {
-                    value: vacio,
-                    text: 'Cualquiera',
+                    value: modelo.id,
+                    text: modelo.nombre,
                 }));
-                modelosGlobal.forEach(modelo => {
-                    $('#filtro_modelo').append($('<option>', {
-                        value: modelo.id,
-                        text: modelo.nombre,
-                    }));
-                    $('#filtro_modelo').prop("selectedIndex", 0);
-                });
-                
-                //  $('#filtro_modelo').prop("selectedIndex", 0) ;
-                $.fn.dataTable.ext.search.pop(
-                function( settings, data, dataIndex ) {
-                    if(1){
-                        return true ;
-                    }
-                    return false ;
-                }
-                );
-                table.draw() ;
-            }) ;
+                $('#filtro_modelo').prop("selectedIndex", 0);
+            });
             
-            //****************************************** FILTRO DE LA TABLA**************************************************************
-            function filtro_funcion(){
-                var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
-                
-                var filtro_cantidad = ($('#filtro_cantidad').val().replace(/,| $|' '/gi,'') );
-                console.log(filtro_cantidad.length>0);
-                // alert(filtro_cant    idad.length);
-                var filtro_modelo = $('#filtro_modelo option:selected').text();
-                //se guardan la cantidad de filtros que se quieren realizar
-                var cantidad_filtros=0;
-                if((filtro_nombre!='')){
-                    cantidad_filtros++;
-                }
-                if(filtro_modelo!=vacio){
-                    cantidad_filtros++;
-                }
-                if(filtro_cantidad.length>0){
-                    cantidad_filtros++;
-                }
-                
-                // console.log($('#filtro_modelo').text());
-                
-                //no olvidarme de volver a poner (pop) las filas
-                //primero cargamo la tabla completa
-                $.fn.dataTable.ext.search.pop(
-                function( settings, data, dataIndex ) {
-                    //si retorna falso saca de la tabla
+            //  $('#filtro_modelo').prop("selectedIndex", 0) ;
+            $.fn.dataTable.ext.search.pop(
+            function( settings, data, dataIndex ) {
+                if(1){
                     return true ;
-                });
+                }
+                return false ;
+            }
+            );
+            table.draw() ;
+        }) ;
+        
+        //****************************************** FILTRO DE LA TABLA**************************************************************
+        function filtro_funcion(){
+            var filtro_nombre = $('#filtro_nombre').val().trim().toUpperCase() ;
+            var filtro_minimo = parseInt($('#filtro_minimo').val()) ;
+            var filtro_modelo=($('#filtro_modelo option:selected').text());
+            var filtro_cantidad = ($('#filtro_cantidad').val().replace(/,| $|' '/gi,'') );
+            console.log(filtro_cantidad.length>0);
+            // alert(filtro_cant    idad.length);
+            // var filtro_modelo = $('#filtro_modelo option:selected').text().trim().toUpperCase() ;
+            //se guardan la cantidad de filtros que se quieren realizar
+            var cantidad_filtros=0;
+            if((filtro_nombre!='')){
+                cantidad_filtros++;
+            }
+            if(filtro_modelo!=vacio){
+                cantidad_filtros++;
+            }
+            if(filtro_cantidad.length>0){
+                cantidad_filtros++;
+            }
+            if(filtro_minimo>=0){
+                cantidad_filtros++;
+            }
+            
+            
+            
+            // console.log($('#filtro_modelo').text());
+            
+            //no olvidarme de volver a poner (pop) las filas
+            //primero cargamo la tabla completa
+            $.fn.dataTable.ext.search.pop(
+            function( settings, data, dataIndex ) {
+                //si retorna falso saca de la tabla
+                return true ;
+            });
+            
+            //si no hay filtro que cargue todo
+            if(cantidad_filtros>0){
                 
-                //si no hay filtro que cargue todo
-                if(cantidad_filtros>0){
+                
+                var filtro_completos=0;
+                var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
                     
-                    
-                    var filtro_completos=0;
-                    var filtradoTabla = function FuncionFiltrado(settings, data, dataIndex){
+                    //si son todo los filtros que realice todas las acciones directamente
+                    filtro_completos=0;
+                    if(cantidad_filtros==4){
+                        //si contieneModelo es -1 no encontro en la cadena 
+                        // (data[indiceModelos] == filtro_modelo)? filtro_completos++ :0;
+                        (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
+                        if(filtro_minimo==0){
+                            (parseInt(data[indiceCantidad].replace(/,| $|' '/gi,''))<=parseInt(data[5].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+                        }else if(filtro_minimo==1){
+                            (parseInt(data[indiceCantidad].replace(/,| $|' '/gi,''))>=parseInt(data[5].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+
+                        }
+                        // (contieneModelo>-1)? filtro_completos++ : 0;
+                        // (data[indiceCantidad].replace(/,| $|' '/gi,'') )
+                        (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+                        // (parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') )<=parseInt(data[5].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+                        (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
+                        //si cummple con los tres filtro que guarde en la tabla la fila
+                        return filtro_completos==cantidad_filtros? true:false;
                         
-                        //si son todo los filtros que realice todas las acciones directamente
-                        filtro_completos=0;
-                        if(cantidad_filtros==3){
-                            var contieneModelo=data[indiceModelos].indexOf(filtro_modelo);
-                            //si contieneModelo es -1 no encontro en la cadena 
+                    }else{
+                        // si hay 1 o 2 filtros que compruebe todo
+                        
+                        //en data data[indiceNombre] la columna 1 que es Nombre en data[0] esta la columna ID
+                        //se coloco un if mas dentro de cada uno para optimizar
+                        if((filtro_modelo!=vacio)){
                             (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
-                            // (contieneModelo>-1)? filtro_completos++ : 0;
-                            // (data[indiceCantidad].replace(/,| $|' '/gi,'') )
-                            (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
-                            (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
-                            //si cummple con los tres filtro que guarde en la tabla la fila
-                            return filtro_completos==cantidad_filtros? true:false;
-                            
-                        }else{
-                            // si hay 1 o 2 filtros que compruebe todo
-                            
-                            //en data data[indiceNombre] la columna 1 que es Nombre en data[0] esta la columna ID
-                            //se coloco un if mas dentro de cada uno para optimizar
-                            if((filtro_modelo!=vacio)){
-                                var contieneModelo=data[indiceModelos].indexOf(filtro_modelo);
-                                //si contieneModelo es -1 no encontro en la cadena 
-                                // (contieneModelo>-1)? filtro_completos++ : 0;
-                                (data[indiceModelos].toUpperCase().includes(filtro_modelo.toUpperCase()))? filtro_completos++ :0;
-
-                                if(filtro_completos==cantidad_filtros){
-                                    return true;
-                                }
+                            // (data[indiceModelos] == filtro_modelo)? filtro_completos++ :0;
+                            console.log('xxxxx');
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
                             }
-                                
-                            if(filtro_cantidad.length>0){
-                                // console.log(data[indiceCantidad].replace(/,| $|' '/gi,'') );
-                                (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
-                                if(filtro_completos==cantidad_filtros){
-                                    return true;
-                                }
-
-                            }
-                            
-                            if((filtro_nombre!='')){
-                                (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
-                                if(filtro_completos==cantidad_filtros){
-                                    return true;
-                                }
-                            }
-                            //retorna saca de la tabla porque no cumple con ningun filtro 
-                            
-                            return filtro_completos==cantidad_filtros? true:false;
                         }
                         
-                    }
-                    $.fn.dataTable.ext.search.push( filtradoTabla )
-                }
-                
-                table.draw();
-                
-            };
-            
-            
-                //********************************Codigo para que busque en tiempo real el nombre********************************************************** 
-            $('#filtro_nombre').keyup(function (){
-                return filtro_funcion();
-                        
-                    });
-            $('#filtro_cantidad').keyup(function (){
-                return filtro_funcion();
-                        
-                    });
-                    
-                    
-                    
-                    //la siguiente funcion filtra toda la tabla
-                    $('#filtrar').click(function(){
-                        return filtro_funcion();
-                    }) ;
-                    
-                    
-                    //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
-                    $('#create_record').click(function(){
-                        
-                        
-                        $('#form_result').html('');
-                        $("#sample_form").attr("action","{{route('materiaPrima.store')}}");
-                        $('.modal-title').text("Agregar Nueva Materia Prima");
-                        $('#action_button').val("Agregar");
-                        $('#action').val("Add");
-                        $('#nombre').val('');
-                        $('#detalle').val('');
-                        $('#precioUnitario').val('');
-                        $('#cantidad').val('');
-                        $('#stockMinimo').val('');
-                        document.getElementById('cantidad_nueva').style.display='block';
+                        if(filtro_cantidad.length>0){
+                            // console.log(data[indiceCantidad].replace(/,| $|' '/gi,'') );
+                            (parseInt(filtro_cantidad)<=parseInt(data[indiceCantidad].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
+                            }
+                            
+                        }
+                        if(filtro_minimo==0){
+                            (parseInt(data[indiceCantidad].replace(/,| $|' '/gi,''))<=parseInt(data[5].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
+                        }else if(filtro_minimo==1){
+                            (parseInt(data[indiceCantidad].replace(/,| $|' '/gi,''))>=parseInt(data[5].replace(/,| $|' '/gi,'') ))? filtro_completos++ :0;
 
-                        $('#modelos').find('option').attr('selected',false).ready();
-                        // $('#imagenPrincipal').val('');
-                        $('#hidden_id').val('');
+                        }
+                                if(filtro_completos==cantidad_filtros){
+                                    return true;
+                                }
                         
-                        $('#formModal').modal('show');
-                    });
+                        
+                        if((filtro_nombre!='')){
+                            (data[indiceNombre].toUpperCase().includes(filtro_nombre))? filtro_completos++ :0;
+                            if(filtro_completos==cantidad_filtros){
+                                return true;
+                            }
+                        }
+                        //retorna saca de la tabla porque no cumple con ningun filtro 
+                        
+                        return filtro_completos==cantidad_filtros? true:false;
+                    }
                     
+                }
+                $.fn.dataTable.ext.search.push( filtradoTabla )
+            }
+            
+            table.draw();
+            
+        };
+        
+        
+        //********************************Codigo para que busque en tiempo real el nombre********************************************************** 
+        $('#filtro_nombre').keyup(function (){
+            return filtro_funcion();
+            
+        });
+        $('#filtro_cantidad').keyup(function (){
+            return filtro_funcion();
+            
+        });
+        
+        
+        
+        //la siguiente funcion filtra toda la tabla
+        $('#filtrar').click(function(){
+            return filtro_funcion();
+        }) ;
+        
+        
+        //si se da un clic en el boton crear nuevo producto el valor del action cambiara a Add
+        $('#create_record').click(function(){
+            
+            
+            $('#form_result').html('');
+            $("#sample_form").attr("action","{{route('materiaPrima.store')}}");
+            $('.modal-title').text("Agregar Nueva Materia Prima");
+            $('#action_button').val("Agregar");
+            $('#action').val("Add");
+            $('#nombre').val('');
+            $('#detalle').val('');
+            $('#precioUnitario').val('');
+            $('#cantidad').val('');
+            $('#stockMinimo').val('');
+            document.getElementById('cantidad_nueva').style.display='block';
+            
+            $('#modelos').find('option').attr('selected',false).ready();
+            // $('#imagenPrincipal').val('');
+            $('#hidden_id').val('');
+            
+            $('#formModal').modal('show');
+        });
+        
+        
+        
+        //el boton edit en el index que mostrara el modal
+        $(document).on('click', '.edit', function(){
+            var id = $(this).attr('id');
+            $("#sample_form").attr("action","{{route('materiaPrima.update')}}");
+            $('#form_result').html('');
+            $.ajax({
+                url:"/materiaPrima/"+id+"/edit",
+                contentType: false,
+                cache:false,
+                processData: false,
+                dataType:"json",
+                success:function(html){
+                    medidasGlobal=html.totalMedidas;
+                    modelosGlobal=html.totalModelos;
+                    //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
+                    $('#nombre').val(html.data.nombre);
+                    $('#detalle').val(html.data.detalle);
+                    $('#precioUnitario').val(html.data.precioUnitario);
+                    document.getElementById('cantidad_nueva').style.display='none';
+                    $('#stockMinimo').val(html.data.stockMinimo);
+                    // $('#cantidad').val(html.data.cantidad);
+                    $('#hidden_id').val(html.data.id);
+                    $('#medidaSeleccionada').text( html.medida.nombre);
+                    //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
                     
-                    
-                    //el boton edit en el index que mostrara el modal
-                    $(document).on('click', '.edit', function(){
-                        var id = $(this).attr('id');
-                        $("#sample_form").attr("action","{{route('materiaPrima.update')}}");
-                        $('#form_result').html('');
-                        $.ajax({
-                            url:"/materiaPrima/"+id+"/edit",
-                            contentType: false,
-                            cache:false,
-                            processData: false,
-                            dataType:"json",
-                            success:function(html){
-                                medidasGlobal=html.totalMedidas;
-                                modelosGlobal=html.totalModelos;
-                                //el data es la variable que contiene todo los atributos del objeto que se paso por la ruta
-                                $('#nombre').val(html.data.nombre);
-                                $('#detalle').val(html.data.detalle);
-                                $('#precioUnitario').val(html.data.precioUnitario);
-                                document.getElementById('cantidad_nueva').style.display='none';
-                                $('#stockMinimo').val(html.data.stockMinimo);
-                                // $('#cantidad').val(html.data.cantidad);
-                                $('#hidden_id').val(html.data.id);
-                                $('#medidaSeleccionada').text( html.medida.nombre);
-                                //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
-                                
-                                // $('#modelos').find('option').remove();
-                                // html.totalModelos.forEach(modelo => {
-                                //     $('#modelos').append($('<option>', {
-                                //         value: modelo.id,
-                                //         text: modelo.nombre,
-                                //     }));
-                                // });
-                                // html.modelos.forEach(modelo => {
+                    // $('#modelos').find('option').remove();
+                    // html.totalModelos.forEach(modelo => {
+                        //     $('#modelos').append($('<option>', {
+                            //         value: modelo.id,
+                            //         text: modelo.nombre,
+                            //     }));
+                            // });
+                            // html.modelos.forEach(modelo => {
                                 //     $('#modelos option[value="'+modelo.id+'"]').attr('selected','selected');
                                 // });
                                 //*******************************Cargar el selected de modelos SELECT MULTIPLE********************************************
@@ -501,7 +522,7 @@
                                 $('#action_button').val("Editar");
                                 $('#action').val("Edit");
                                 $('#formModal').modal('show');
-
+                                
                             }
                         })
                     });

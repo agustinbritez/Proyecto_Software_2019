@@ -60,7 +60,7 @@ class ProductoController extends Controller
         $tipoImagenes = TipoImagen::all();
         //modelos para la venta
         $modelosVentas = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
-        $vuelto= new Request();
+        $vuelto = new Request();
         return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes', 'vuelto'));
     }
 
@@ -68,7 +68,7 @@ class ProductoController extends Controller
     {
         # code...
         $modelos = DB::table('modelos')->where('modelos.deleted_at', null)
-        ->where('venta',true);
+            ->where('venta', true);
 
         if ($request->has('modelos') && ($request->modelos > 0)) {
             $modelos = $modelos
@@ -82,10 +82,10 @@ class ProductoController extends Controller
                 ->where('imagens.tipoImagen_id', $request->tipoImagen);
             if ($request->has('imagenSeleccionada') && ($request->imagenSeleccionada > 0)) {
                 $modelos = $modelos
-                ->where('imagens.id',$request->imagenSeleccionada);
-             }
+                    ->where('imagens.id', $request->imagenSeleccionada);
+            }
         }
-        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMin != null) && ($request->filtro_precioUnitarioMax != null)&&((floatval($request->filtro_precioUnitarioMin) != 0.0) && (floatval($request->filtro_precioUnitarioMax) != 0.0))) {
+        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMin != null) && ($request->filtro_precioUnitarioMax != null) && ((floatval($request->filtro_precioUnitarioMin) != 0.0) && (floatval($request->filtro_precioUnitarioMax) != 0.0))) {
             $modelos = $modelos
                 ->where('precioUnitario', '>=', $request->filtro_precioUnitarioMin)
                 ->where('precioUnitario', '<=', $request->filtro_precioUnitarioMax);
@@ -103,7 +103,7 @@ class ProductoController extends Controller
         //     // ->select('modelos.*')
         //     ->groupBy('modelos.id');
         //     if (($request->ventas == 0)) {
-                
+
         //         $modelos = $modelos
         //         ->orderBy('cantidadVendida','asc');
         //     }else if($request->ventas == 1){
@@ -111,23 +111,23 @@ class ProductoController extends Controller
         //         ->orderBy('cantidadVendida','desc');
         //     }
         // }
-     
+
 
         $modelos = $modelos
-        ->select('modelos.*')
-        ->get();
-        $productos=Producto::where('productos.deleted_at',null)
-        ->join('modelos','modelos.id','=','productos.modelo_id')
-        ->select('productos.*');
-        $modelosEncontrador=collect();
+            ->select('modelos.*')
+            ->get();
+        $productos = Producto::where('productos.deleted_at', null)
+            ->join('modelos', 'modelos.id', '=', 'productos.modelo_id')
+            ->select('productos.*');
+        $modelosEncontrador = collect();
         foreach ($modelos as $key => $modelo) {
             $modelosEncontrador->add($modelo->id);
         }
-        $productos=$productos->whereIn('productos.modelo_id',$modelosEncontrador);
-        
+        $productos = $productos->whereIn('productos.modelo_id', $modelosEncontrador);
+
         // if ($request->has('precios') && ($request->precios >= 0)) {
         //     if (($request->precios == 0)) {
-                
+
         //         $productos = $productos
         //         ->orderBy('modelos.precioUnitario','asc');
         //     }else if($request->precios == 1){
@@ -135,20 +135,18 @@ class ProductoController extends Controller
         //         ->orderBy('modelos.precioUnitario','desc');
         //     }
         // }
-     
-         $productos=$productos
-        ->where('mostrar',true)
-        ->where('final',true)
-        ->groupBy('productos.id')
-        ->get();
+
+        $productos = $productos
+            ->where('mostrar', true)
+            ->where('final', true)
+            ->groupBy('productos.id')
+            ->get();
         $imagenes = Imagen::all();
         $tipoImagenes = TipoImagen::all();
         //modelos para la venta
         $modelosVentas = Modelo::where('venta', '<>', 0)->where('venta', '<>', null)->get();
-        $vuelto=$request;
-        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes','vuelto'));
-      
-        
+        $vuelto = $request;
+        return view('producto.tienda', compact('productos', 'tipoImagenes', 'modelosVentas', 'imagenes', 'vuelto'));
     }
 
 
@@ -759,44 +757,46 @@ class ProductoController extends Controller
     }
 
 
-    
-	/**
-	 * Array quickSort($arreglo, $campo) ordena un $arreglo en funcion de un $campo
-	 *
-	 * @param tipo $arreglo a ordenar, en funcion de un $campo, desde $inicio asta $final
-	 * @return $regresa el mismo arreglo pero ordenado
-	 * @access public
-	 * @link: http://es.wikipedia.org/wiki/Quicksort
-	 * -----------------------------Estado pendiente, muy pendiente!!!...----------------------------
-	 */
-	function quickSort($arreglo, $campo, $inicio=0,$final=0){
-		$p=$final;//posicion del pivote sera la final
-		$i=$inicio;//posicion inicial a ordenar
-		if($p==0)//caso inicial ';¬)
-			$p=count($arreglo)-1;
-		if($p-$i>0){//si observamos el arreglo mas pequeño que puede recibir es de 2 donde $j==$i
-			$j=$p-1;
-			for(; $i<$j; $i++){
-				if($arreglo[$i][$campo] <= $arreglo[$p][$campo])
-					continue;
-				if($arreglo[$j][$campo] >= $arreglo[$p][$campo]){
-					--$i; --$j;
-					continue;
-				}
-				$aux=$arreglo[$i];
-				$arreglo[$i]=$arreglo[$j];
-				$arreglo[$j]=$aux;
-			}
-			//el elemento p debe de ir en la posicion $i
-			$valor_pivote = $arreglo[$p];
-			for(; $i<$p; $i++)
-					$arreglo[$i+1]=$arreglo[$i];
-			//finalmente en $j donde todavia esta el valor de i ponemos el valor del pivote
-			$arreglo[$j]=$valor_pivote;
-			//chicharronera recursiva mandamos ordenar tanto la parte alta y la baja
-			$arreglo=$this->quickSort($arreglo, $campo, $inicio, $j-1);
-			$arreglo=$this->quickSort($arreglo, $campo, $j+1, $p);
-		}
-		return $arreglo;
-	}
+
+    /**
+     * Array quickSort($arreglo, $campo) ordena un $arreglo en funcion de un $campo
+     *
+     * @param tipo $arreglo a ordenar, en funcion de un $campo, desde $inicio asta $final
+     * @return $regresa el mismo arreglo pero ordenado
+     * @access public
+     * @link: http://es.wikipedia.org/wiki/Quicksort
+     * -----------------------------Estado pendiente, muy pendiente!!!...----------------------------
+     */
+    function quickSort($arreglo, $campo, $inicio = 0, $final = 0)
+    {
+        $p = $final; //posicion del pivote sera la final
+        $i = $inicio; //posicion inicial a ordenar
+        if ($p == 0) //caso inicial ';¬)
+            $p = count($arreglo) - 1;
+        if ($p - $i > 0) { //si observamos el arreglo mas pequeño que puede recibir es de 2 donde $j==$i
+            $j = $p - 1;
+            for (; $i < $j; $i++) {
+                if ($arreglo[$i][$campo] <= $arreglo[$p][$campo])
+                    continue;
+                if ($arreglo[$j][$campo] >= $arreglo[$p][$campo]) {
+                    --$i;
+                    --$j;
+                    continue;
+                }
+                $aux = $arreglo[$i];
+                $arreglo[$i] = $arreglo[$j];
+                $arreglo[$j] = $aux;
+            }
+            //el elemento p debe de ir en la posicion $i
+            $valor_pivote = $arreglo[$p];
+            for (; $i < $p; $i++)
+                $arreglo[$i + 1] = $arreglo[$i];
+            //finalmente en $j donde todavia esta el valor de i ponemos el valor del pivote
+            $arreglo[$j] = $valor_pivote;
+            //chicharronera recursiva mandamos ordenar tanto la parte alta y la baja
+            $arreglo = $this->quickSort($arreglo, $campo, $inicio, $j - 1);
+            $arreglo = $this->quickSort($arreglo, $campo, $j + 1, $p);
+        }
+        return $arreglo;
+    }
 }
