@@ -157,9 +157,9 @@
 
                                         </div>
                                         <div class="col-1">
-                                            <a class="nav-link" data-toggle="dropdown" href="#">
+                                            {{-- <a class="nav-link" data-toggle="dropdown" href="#">
                                                 <i class="fas fa-question-circle" style="font-size: 200%"></i>
-                                            </a>
+                                            </a> --}}
 
 
 

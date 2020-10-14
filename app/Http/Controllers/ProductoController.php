@@ -38,7 +38,9 @@ class ProductoController extends Controller
     {
         $tipoImagenes = TipoImagen::all();
         $modelo = Modelo::find($id);
-
+        if (is_null($modelo)) {
+            return redirect()->back()->withErrors('No existe el producto base');
+        }
         $array = collect();
         $recetasPadres  = $this->obtenerRecetas($modelo, $array);
         $array2 = collect();
@@ -68,34 +70,40 @@ class ProductoController extends Controller
     {
         # code...
         $modelos = DB::table('modelos')->where('modelos.deleted_at', null)
-            ->where('venta', true);
+            ->join('productos', 'modelos.id', '=', 'productos.modelo_id')
+            ->where('modelos.venta', true);
 
         if ($request->has('modelos') && ($request->modelos > 0)) {
             $modelos = $modelos
                 ->where('modelos.id', $request->modelos);
         }
-        if ($request->has('tipoImagen') && ($request->tipoImagen > 0)) {
+        if (($request->has('tipoImagen') && ($request->tipoImagen > 0)) || ($request->has('imagenSeleccionada') && (intval($request->imagenSeleccionada) > 0))) {
             $modelos = $modelos
-                ->join('componentes', 'componentes.modelo_id', '=', 'modelos.id')
-                ->join('sublimacions', 'componentes.id', '=', 'sublimacions.componente_id')
-                ->join('imagens', 'imagens.id', '=', 'sublimacions.imagen_id')
-                ->where('imagens.tipoImagen_id', $request->tipoImagen);
-            if ($request->has('imagenSeleccionada') && ($request->imagenSeleccionada > 0)) {
+                ->join('sublimacions', 'productos.id', '=', 'sublimacions.producto_id')
+                ->join('imagens', 'imagens.id', '=', 'sublimacions.imagen_id');
+            if ($request->has('tipoImagen') && (intval($request->tipoImagen) > 0)) {
+
                 $modelos = $modelos
-                    ->where('imagens.id', $request->imagenSeleccionada);
+                    ->where('imagens.tipoImagen_id', $request->tipoImagen);
+            }
+            if ($request->has('imagenSeleccionada') && (intval($request->imagenSeleccionada) > 0)) {
+
+                $modelos = $modelos
+                    ->where('sublimacions.imagen_id', $request->imagenSeleccionada);
             }
         }
-        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMin != null) && ($request->filtro_precioUnitarioMax != null) && ((floatval($request->filtro_precioUnitarioMin) != 0.0) && (floatval($request->filtro_precioUnitarioMax) != 0.0))) {
+        if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMin != null) && ($request->filtro_precioUnitarioMax != null) && ((floatval($request->filtro_precioUnitarioMin) >= 0.0) && (floatval($request->filtro_precioUnitarioMax) > 0.0))) {
             $modelos = $modelos
                 ->where('precioUnitario', '>=', $request->filtro_precioUnitarioMin)
                 ->where('precioUnitario', '<=', $request->filtro_precioUnitarioMax);
-        } else if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin != null)) {
+        } else if (($request->filtro_precioUnitarioMin != '') && ($request->filtro_precioUnitarioMin != null) && (floatval($request->filtro_precioUnitarioMin) > 0.0)) {
             $modelos = $modelos
                 ->where('precioUnitario', '>=', $request->filtro_precioUnitarioMin);
-        } else if (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax != null)) {
+        } else if (($request->filtro_precioUnitarioMax != '') && ($request->filtro_precioUnitarioMax != null) && (floatval($request->filtro_precioUnitarioMax) > 0.0)) {
             $modelos = $modelos
                 ->where('precioUnitario', '<=', $request->filtro_precioUnitarioMax);
         }
+
         // if ($request->has('ventas') && ($request->ventas >= 0)) {
         //     $modelos = $modelos ->join('productos','modelos.id','=','productos.modelo_id')
         //     ->join('detalle_pedidos','detalle_pedidos.producto_id','=','productos.id')
@@ -112,10 +120,11 @@ class ProductoController extends Controller
         //     }
         // }
 
-
         $modelos = $modelos
-            ->select('modelos.*')
+            ->select('productos.*')
+            ->groupBy('productos.id')
             ->get();
+
         $productos = Producto::where('productos.deleted_at', null)
             ->join('modelos', 'modelos.id', '=', 'productos.modelo_id')
             ->select('productos.*');
@@ -123,18 +132,18 @@ class ProductoController extends Controller
         foreach ($modelos as $key => $modelo) {
             $modelosEncontrador->add($modelo->id);
         }
-        $productos = $productos->whereIn('productos.modelo_id', $modelosEncontrador);
+        $productos = $productos->whereIn('productos.id', $modelosEncontrador);
 
-        // if ($request->has('precios') && ($request->precios >= 0)) {
-        //     if (($request->precios == 0)) {
+        if ($request->has('precios') && ($request->precios >= 0)) {
+            if (($request->precios == 0)) {
 
-        //         $productos = $productos
-        //         ->orderBy('modelos.precioUnitario','asc');
-        //     }else if($request->precios == 1){
-        //         $productos = $productos
-        //         ->orderBy('modelos.precioUnitario','desc');
-        //     }
-        // }
+                $productos = $productos
+                    ->orderBy('modelos.precioUnitario', 'asc');
+            } else if ($request->precios == 1) {
+                $productos = $productos
+                    ->orderBy('modelos.precioUnitario', 'desc');
+            }
+        }
 
         $productos = $productos
             ->where('mostrar', true)
@@ -741,6 +750,14 @@ class ProductoController extends Controller
                 }
             }
         }
+
+        $producto->mostrar = 0;
+        if ($request->has('mostrar')) {
+
+            $producto->mostrar = 1;
+        }
+        $producto->update();
+
 
         return redirect()->back()->with('success', 'Producto Atualizado Con Exito!');
     }

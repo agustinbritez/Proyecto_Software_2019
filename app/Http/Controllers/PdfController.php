@@ -69,12 +69,7 @@ class PdfController extends Controller
             # code...
             $request->filtro_tabla = 'Cualquiera';
         }
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
+
         $pdf = PDF::loadView(
             'pdf.auditoria',
             [
@@ -85,8 +80,8 @@ class PdfController extends Controller
                 'filtro_objeto' => $request->filtro_objeto,
                 'filtro_operacion' => $request->filtro_operacion,
                 'desde' => $request->desde,
-                'hasta' => $request->hasta,
-                'configuracion' => $configuracion
+                'hasta' => $request->hasta
+                // 'configuracion' => $configuracion
             ]
         );
 
@@ -106,18 +101,13 @@ class PdfController extends Controller
         if (!is_null($auditoria)) {
             $auditorias = Audit::where('auditable_id', $auditoria->auditable_id)->where('auditable_type', $auditoria->auditable_type)->latest()->get();
         }
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
+
         $pdf = PDF::loadView(
             'pdf.auditoriaUnObjeto',
             [
                 'auditorias' => $auditorias,
                 'cantidadRegistros' => sizeof($auditorias),
-                'configuracion' => $configuracion
+                // 'configuracion' => $configuracion
             ]
         );
 
@@ -178,16 +168,20 @@ class PdfController extends Controller
         }
         $pedidos = $pedidos->latest()->get();
         $pedidoFiltro = collect();
+        $totalGanancia = 0;
         foreach ($pedidos as $key => $pedido) {
             # code...
             $pedido2 = Pedido::find($pedido->id);
             if (($request->cantidadMin <= $pedido2->getCantidadProductos()) && ($request->cantidadMax >= $pedido2->getCantidadProductos())) {
                 $pedidoFiltro->add($pedido2);
+                $totalGanancia += $pedido2->precio;
             } else if ($request->cantidadMin <= $pedido2->getCantidadProductos()) {
 
                 $pedidoFiltro->add($pedido2);
+                $totalGanancia += $pedido2->precio;
             } else if ($request->cantidadMax >= $pedido2->getCantidadProductos()) {
                 $pedidoFiltro->add($pedido2);
+                $totalGanancia += $pedido2->precio;
             }
         }
         $pedidos = $pedidoFiltro;
@@ -244,12 +238,9 @@ class PdfController extends Controller
         if (sizeof($pedidos) == 0) {
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
         }
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
+
+
+
         $pdf = PDF::loadView(
             'pdf.pedido',
             [
@@ -265,7 +256,8 @@ class PdfController extends Controller
                 'filtro_precioUnitarioMax' => $request->filtro_precioUnitarioMax,
                 'filtro_terminado' => $terminado,
                 'filtro_estado' => $estado,
-                'configuracion' => $configuracion
+                'totalGanancia'=>$totalGanancia
+                // 'configuracion' => $configuracion
             ]
         );
 
@@ -338,13 +330,8 @@ class PdfController extends Controller
         $movimientos = $movimientos->get();
         $filtro = $filtro->union(['movimientos' => $movimientos]);
 
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
-        $filtro = $filtro->union(['configuracion' => $configuracion]);
+
+        // $filtro = $filtro->union(['configuracion' => $configuracion]);
         // return $filtro->all();
         $pdf = PDF::loadView(
             'pdf.movimiento',
@@ -379,7 +366,8 @@ class PdfController extends Controller
 
                 $materiaPrimas = $materiaPrimas->where('materia_primas.cantidad', '>=', $cantidad);
             }
-        } catch (Exception $th) { }
+        } catch (Exception $th) {
+        }
 
         if ($request->filtro_minimo == 0) {
 
@@ -404,25 +392,20 @@ class PdfController extends Controller
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
         }
 
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
-        $filtro_minimo='No Aplicado';
+
+        $filtro_minimo = 'No Aplicado';
         if ($request->filtro_minimo == 0) {
             # code...
-            $filtro_minimo='Si';
-        }else if($request->filtro_minimo == 1){
-            $filtro_minimo='No';   
+            $filtro_minimo = 'Si';
+        } else if ($request->filtro_minimo == 1) {
+            $filtro_minimo = 'No';
         }
         $pdf = PDF::loadView('pdf.materiaPrima', [
             'materiaPrimas' => $materiaPrimas,
             'cantidadRegistros' => sizeof($materiaPrimas),
             'filtro_nombre' => $request->filtro_nombre, 'filtro_cantidad' => $request->filtro_cantidad,
             'filtro_modelo' => Modelo::find($request->filtro_modelo), 'filtro_minimo' => $filtro_minimo,
-            'configuracion' => $configuracion
+            // 'configuracion' => $configuracion
 
         ]);
         // return $pdf->stream('pdf.materiaPrima');
@@ -466,18 +449,18 @@ class PdfController extends Controller
             if (sizeof($proveedores) == 0) {
                 return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
             }
-            $configuracion = Configuracion::where('seleccionado', true)->first();
-            if ($configuracion == null) {
-                $configuracion = new Configuracion();
-                $configuracion->nombre = 'Prueba';
-                $configuracion->telefono = 'Prueba';
-            }
+            // $configuracion = Configuracion::where('seleccionado', true)->first();
+            // if ($configuracion == null) {
+            //     $configuracion = new Configuracion();
+            //     $configuracion->nombre = 'Prueba';
+            //     $configuracion->telefono = 'Prueba';
+            // }
             $pdf = PDF::loadView('pdf.proveedor', [
                 'proveedores' => $proveedores, 'filtro_nombre' => $filtro_nombre,
                 'cantidadRegistros' => sizeof($proveedores),
 
                 'filtro_documento' => $filtro_documento, 'filtro_email' => $filtro_email,
-                'configuracion' => $configuracion
+                // 'configuracion' => $configuracion
             ]);
             $dom_pdf = $pdf->getDomPDF();
             $canvas = $dom_pdf->get_canvas();
@@ -506,19 +489,19 @@ class PdfController extends Controller
             if (sizeof($proveedores) == 0) {
                 return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
             }
-            $configuracion = Configuracion::where('seleccionado', true)->first();
-            if ($configuracion == null) {
-                $configuracion = new Configuracion();
-                $configuracion->nombre = 'Prueba';
-                $configuracion->telefono = 'Prueba';
-            }
+            // $configuracion = Configuracion::where('seleccionado', true)->first();
+            // if ($configuracion == null) {
+            //     $configuracion = new Configuracion();
+            //     $configuracion->nombre = 'Prueba';
+            //     $configuracion->telefono = 'Prueba';
+            // }
 
             $pdf = PDF::loadView('pdf.proveedor', [
                 'proveedores' => $proveedores,
                 'cantidadRegistros' => sizeof($proveedores),
                 'filtro_nombre' => $filtro_nombre,
                 'filtro_documento' => $filtro_documento, 'filtro_email' => $filtro_email,
-                'configuracion' => $configuracion
+                // 'configuracion' => $configuracion
             ]);
             $dom_pdf = $pdf->getDomPDF();
             $canvas = $dom_pdf->get_canvas();
@@ -551,18 +534,13 @@ class PdfController extends Controller
         if (sizeof($proveedores) == 0) {
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
         }
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
+
         $pdf = PDF::loadView('pdf.proveedor', [
             'proveedores' => $proveedores,
             'cantidadRegistros' => sizeof($proveedores),
             'filtro_nombre' => $filtro_nombre,
             'filtro_documento' => $filtro_documento, 'filtro_email' => $filtro_email,
-            'configuracion' => $configuracion
+            // 'configuracion' => $configuracion
         ]);
         $dom_pdf = $pdf->getDomPDF();
         $canvas = $dom_pdf->get_canvas();
@@ -624,13 +602,13 @@ class PdfController extends Controller
             return redirect()->back()->with('warning', 'No se encontraron registros con el filtro ingresado');
         }
         // return $filtro->all();
-        $configuracion = Configuracion::where('seleccionado', true)->first();
-        if ($configuracion == null) {
-            $configuracion = new Configuracion();
-            $configuracion->nombre = 'Prueba';
-            $configuracion->telefono = 'Prueba';
-        }
-        $filtro = $filtro->union(['configuracion' => $configuracion]);
+        // $configuracion = Configuracion::where('seleccionado', true)->first();
+        // if ($configuracion == null) {
+        //     $configuracion = new Configuracion();
+        //     $configuracion->nombre = 'Prueba';
+        //     $configuracion->telefono = 'Prueba';
+        // }
+        // $filtro = $filtro->union(['configuracion' => $configuracion]);
         $pdf = PDF::loadView(
             'pdf.modelo',
 

@@ -23,7 +23,6 @@
                     <h3>Filtro de Pedidos</h3>
                 </div>
 
-
                 <div class="card-body">
                     <form action="{{route('pedido.filtrarTrabajo')}}" method="GET" enctype="multipart/form-data">
                         @csrf
@@ -90,10 +89,14 @@
                     <div class="row justify-content-between">
                         <h3>Lista de Productos a realizar</h3>
 
-                        <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
-                                class="btn btn-primary "> <i class="far fa-chart-network"></i>&nbsp;
-                                Optimizacion</button>
-                        </form>
+                        {{-- <form action="{{ route('pedido.ordenamientoInteligente' ) }}"> <button type="submit"
+                            class="btn btn-primary "> <i class="far fa-chart-network"></i>&nbsp;
+                            Optimizacion</button>
+                        </form> --}}
+                        <button type="submit" class="btn btn-primary ">
+                            <i class="far fa-chart-network"></i>&nbsp;
+                            Optimizacion</button>
+
                     </div>
                 </div>
                 <div class="card-body">
@@ -118,30 +121,43 @@
                                             </p>
                                             {{-- <p>Cantidad imagenes:{{' '.$detallex->producto->cantidadImagenes()}}
                                             </p> --}}
-                                            <p><span class="badge badge-info ">{{$detallex->estado->nombre ?? 'Sin Estado'}}
+                                            @if ($detallex->getEstadoInicial()!=null)
+                                            @if ($detallex->getEstadoInicial()->id != $detallex->estado->id )
+                                            <p><span class="badge badge-warning ">{{$detallex->estado->nombre ?? 'Sin Estado'}}
                                                 </span></p>
+
+
+                                            @else
+                                            <p><span class="badge badge-success ">{{$detallex->estado->nombre ?? 'Sin Estado'}}
+                                                </span></p>
+                                            @endif
+                                            @else
+                                            <p><span class="badge badge-success ">{{$detallex->estado->nombre ?? 'Sin Estado'}}
+                                                </span></p>
+
+
+                                            @endif
                                         </div>
                                         <div class="text-center">
                                             {{-- botones --}}
-                                          
+
                                             <div class="row">
-                                                    <div class="col">
-                                                        <form
-                                                            action="{{ route('detallePedido.show', $detallex->id) }}">
-                                                            <button type="submit"
-                                                                class="edit btn btn-outline-success btn-sm">Trabajar
-                                                                Producto</button>
-                                                        </form>
-                                                    </div>
-                                                    <div class="col">
-                                                        <form
-                                                            action="{{ route('detallePedido.index', $detallex->id) }}">
-                                                            <button type="submit"
-                                                                class="edit btn btn-outline-primary btn-sm">Ver
-                                                                Pedido</button>
-                                                        </form>
-                                                    </div>
+                                                <div class="col">
+                                                    <form action="{{ route('detallePedido.show', $detallex->id) }}">
+                                                        <button type="submit"
+                                                            class="edit btn btn-outline-success btn-sm">Trabajar
+                                                            Producto</button>
+                                                    </form>
                                                 </div>
+                                                <div class="col">
+                                                    <form
+                                                        action="{{ route('detallePedido.index', $detallex->pedido->id) }}">
+                                                        <button type="submit"
+                                                            class="edit btn btn-outline-primary btn-sm">Ver
+                                                            Pedido</button>
+                                                    </form>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -175,8 +191,23 @@
                                             </p>
                                             {{-- <p>Cantidad imagenes:{{' '.$detallePedido->producto->cantidadImagenes()}}
                                             </p> --}}
-                                            <p><span class="badge badge-info ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                                            @if ($detallePedido->getEstadoInicial()!=null)
+                                            @if ($detallePedido->getEstadoInicial()->id != $detallePedido->estado->id )
+                                            <p><span class="badge badge-warning ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                                                 </span></p>
+
+
+                                            @else
+                                            <p><span class="badge badge-success ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                                                </span></p>
+                                            @endif
+                                            @else
+                                            <p><span class="badge badge-success ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
+                                                </span></p>
+
+
+                                            @endif
+
                                         </div>
                                         <div class="text-center">
                                             {{-- botones --}}

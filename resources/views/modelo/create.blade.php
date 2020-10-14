@@ -142,13 +142,23 @@
 
                         </div>
 
-                        <div class="card-footer text-muted justify-content-center">
+                        <div class="card-footer text-muted ">
                             @if ($modificar)
-                            <input type="submit" name="action_button" id="action_button" class="btn btn-success"
-                                value="Actualizar" />
+                            <div class="row">
+                                <div class="col">
 
+                                    <input type="submit" name="action_button" id="action_button" class="btn btn-success"
+                                        value="Actualizar" />
+                                    <input type="hidden" name="action" id="action" value="Edit" />
+                                </div>
+                                <div class="col-2">
+                                    @if ($modelo!=null)
+                                        
+                                    <a href="{{ route('producto.create',$modelo->id ) }}" class="btn btn-warning"> Ver Como Cliente</a>
+                                    @endif
+                                </div>
 
-                            <input type="hidden" name="action" id="action" value="Edit" />
+                            </div>
 
                             @else
                             <input type="submit" name="action_button" id="action_button" class="btn btn-success"
@@ -230,12 +240,12 @@
                                     <div class="form-group col">
                                         <label>Cantidad : </label>
                                         <input class="form-control" type="number" name="cantidad" id="cantidad"
-                                            style="width: 100%;">
+                                            style="width: 100%;" min="1">
                                     </div>
                                     <div class="form-group col">
                                         <label>Prioridad : </label>
                                         <input class="form-control" type="number" name="prioridad" id="prioridad"
-                                            style="width: 100%;">
+                                            style="width: 100%;" min="1">
                                     </div>
 
                                     <div class="form-group col">
@@ -400,7 +410,8 @@
                                 console.log(array);
                                 if(array.errors)
                                 {
-                                     html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert">×</button><p>Corrige los siguientes errores:</p><ul>';
+                                    
+                                     html = '<div class="alert alert-danger"><button type="button" class="close" array-dismiss="alert" aria-label="close">×</button><p>Corrige los siguientes errores:</p><ul>';
                                                                         array.errors.forEach(error => {
                                                                             html+= '<li>'+error + '</li>';
                                                                         });
@@ -436,6 +447,7 @@
                                                         $('#nombreComponente').val('');
                                                     }
                                                     $('#avisosModalComponente').html(html);
+                                                    
                                                 }
                                                 // error:function(){
                                                     //         alert('error');
@@ -751,6 +763,7 @@
                                                                                     
                                                                                     $('#avisos').html('');
                                                                                     $('#alert-aviso').html('');
+                                                                                    $('#avisosModalComponente').html('');
                                                                                 }); 
                                                                                 
                                                                                 $('#botonComponente').click(function(){

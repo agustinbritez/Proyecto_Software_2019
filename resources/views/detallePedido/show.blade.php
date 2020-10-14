@@ -117,11 +117,11 @@
 
                         <h3>
                             <span class=""><a href="#">Producto: {{$producto->modelo->nombre}}</a></span>
-                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==$detallePedido->estado->id)
+                            @if($detallePedido->producto->modelo->flujoTrabajo->getEstadoFinal()->id==$detallePedido->estado->id)
                             <span class="badge badge-danger ">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                             </span>
                             @else
-                            @if ($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id==$detallePedido->estado->id)
+                            @if($detallePedido->producto->modelo->flujoTrabajo->getEstadoInicial()->id==$detallePedido->estado->id)
                             <span class="badge badge-success">{{$detallePedido->estado->nombre ?? 'Sin Estado'}}
                             </span>
 
@@ -432,13 +432,21 @@
                             <div class="col ">
                                 <div id=" " style="max-width: 10rem;" class=" row justify-content-center">
                                     @if ($sublimacion->nuevaImagen!=null)
-                                    <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
-                                        class="bg-transparent" height="150" width="180">
+                                    <a href="{{asset('/imagenes/sublimaciones/sinProcesar/'.$sublimacion->nuevaImagen)??'' }}"
+                                        download="imagen.png">
+
+                                        <img src="{{asset("/imagenes/sublimaciones/sinProcesar/".$sublimacion->nuevaImagen)??'' }}"
+                                            class="bg-transparent" height="150" width="180">
+                                    </a>
 
                                     @else
                                     @if ($sublimacion->imagen !=null)
-                                    <img src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
-                                        class="bg-transparent" height="150" width="180">
+                                    <a href="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
+                                        download="imagen.png">
+
+                                        <img src="{{asset('/imagenes/sublimaciones/'.$sublimacion->imagen->tipoImagen->nombre.'/'.$sublimacion->imagen->imagen )??'' }}"
+                                            class="bg-transparent" height="150" width="180">
+                                    </a>
 
                                     @endif
                                     @endif

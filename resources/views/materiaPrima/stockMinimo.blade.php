@@ -88,8 +88,8 @@
                         <form action="{{ route('materiaPrima.verificarStock') }}">
                             @csrf
 
-                            <button type="submit" name="create_record" id="create_record"
-                                class="btn btn-success btn-sm">Enviar Correo a los proveedores</button>
+                            {{-- <button type="submit" name="create_record" id="create_record"
+                                class="btn btn-success btn-sm">Enviar Correo a los proveedores</button> --}}
                         </form>
                     </div>
 

@@ -21,6 +21,9 @@ class DetallePedidoController extends Controller
     public function index($id)
     {
         $pedido = Pedido::find($id);
+        if(is_null($pedido)){
+            return redirect()->back()->withErrors('No existe el pedido');
+        }
         $detallePedidos = $pedido->detallePedidos;
         $modelos = Modelo::all();
         return view('detallePedido.index', compact('detallePedidos', 'modelos', 'pedido'));

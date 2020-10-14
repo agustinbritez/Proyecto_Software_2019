@@ -93,8 +93,6 @@
 
                                     <td>{{$estado->nombre}} </td>
 
-
-
                                     <td>
                                         <button type="button" name="edit" id="{{$estado->id}}"
                                             class="edit btn btn-outline-primary btn-sm">Editar</button>

@@ -57,6 +57,10 @@ class DetallePedido extends Model implements Auditable
     {
         return $this->producto->modelo->flujoTrabajo->getEstadoFinal();
     }
+    public function getEstadoInicial()
+    {
+        return $this->producto->modelo->flujoTrabajo->getEstadoInicial();
+    }
 
 
     //obtiene la cantidad de dias que estuvo el producto desde que se pago hasta que se termino

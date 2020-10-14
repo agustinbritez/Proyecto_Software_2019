@@ -209,7 +209,8 @@
                         "colvis": "Visibilidad"
                     }
                     
-                }
+                },
+                "ordering": false
                 // processing: true,
                 // serverSide: true,
                 // ajax:{

@@ -788,12 +788,12 @@ class ModeloController extends Controller
         if (!$modelo->materiasPrimas->isEmpty()) {
             return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a materias primas']);
         }
-        // if (!$modelo->componentes->isEmpty()) {
-        //     return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a componentes']);
-        // }
-        // if (!$modelo->productosModelos->isEmpty()) {
-        //     return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a productos']);
-        // }
+        if (!$modelo->componentes->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a componentes']);
+        }
+        if (!$modelo->productosModelos->isEmpty()) {
+            return redirect()->back()->withErrors(['message2' => 'No se puede eliminar el modelo, esta relacionado a productos']);
+        }
         //borramos todas sus recetas
         foreach ($modelo->recetaPadre as $key => $receta) {
             $receta->delete();

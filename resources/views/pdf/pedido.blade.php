@@ -133,6 +133,19 @@
         </tbody>
 
         <tfoot style="background-color:#ccc; color:white;">
+            <tr style="background-color: darkgray; color: black">
+
+                <td colspan="7">
+                    <div id="totalGanancias">
+
+                        <label for="">Precio Total
+                            {{' : '.number_format($totalGanancia,2)}}
+                        </label>
+                    </div>
+             
+                </td>
+
+            </tr>
             <tr>
                 <th>ID</th>
                 <th>Cantidad de Productos</th>

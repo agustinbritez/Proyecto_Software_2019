@@ -45,7 +45,7 @@ class ProveedorController extends Controller
         // }
         return view('proveedor.consulta', compact('proveedor', 'medidas'));
     }
- 
+
 
     public function obtenerPrecios(Request $request, $id)
     {
@@ -202,6 +202,9 @@ class ProveedorController extends Controller
      */
     public function edit($id)
     {
+       
+
+
         if (request()->ajax()) {
             $data = Proveedor::findOrFail($id);
             $totalDocumento = Documento::all();

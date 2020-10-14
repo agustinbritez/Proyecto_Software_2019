@@ -55,7 +55,7 @@
                 <td><img src="{{asset("/imagenes/modelos/".$modelo->imagenPrincipal)}}" alt="" width='70px'
                         height='70px'></td>
                 <td>{{$modelo->nombre??'Sin nombre'}} </td>
-                <td>{{$modelo->precioUnitario??'Sin precio'}} </td>
+                <td align="right">{{ number_format($modelo->precioUnitario,2)??'Sin precio'}} </td>
                 {{-- <td>
                     @if ($modelo->recetaPadre!=null)
 
